@@ -1,6 +1,12 @@
 # নিরাপদ যাত্রা (Nirapod Jatra)
 **Fair Fare Companion & Transparency Engine for Dhaka's Transit Ecosystem**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-059669?style=for-the-badge&logo=github)](https://rahat69x.github.io/nirapod-jatra/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/Rahat69x/nirapod-jatra)
+
+🌐 **Live Website:** [https://rahat69x.github.io/nirapod-jatra/](https://rahat69x.github.io/nirapod-jatra/)  
+📂 **GitHub Repository:** [https://github.com/Rahat69x/nirapod-jatra](https://github.com/Rahat69x/nirapod-jatra)
+
 ---
 
 ## 1. Problem Statement
