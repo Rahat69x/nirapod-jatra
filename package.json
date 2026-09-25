@@ -1,0 +1,20 @@
+{
+  "name": "nirapod-jatra",
+  "version": "1.0.0",
+  "description": "Fair Fare Companion & Transparency Engine for Dhaka Transit Ecosystem",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "dhaka",
+    "transit",
+    "cng",
+    "rickshaw",
+    "metro-rail",
+    "fare-transparency",
+    "bangladesh"
+  ],
+  "author": "Nirapod Jatra Team",
+  "license": "MIT"
+}

@@ -1,0 +1,3263 @@
+<!DOCTYPE html>
+<html lang="bn" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="নিরাপদ যাত্রা (Nirapod Jatra) — ঢাকা শহরের সিএনজি, রিকশা, ব্যাটারি রিকশা ও মেট্রোরেলের ন্যায্য ভাড়া জানুন ও নিরাপদ যাতায়াত নিশ্চিত করুন।">
+  <meta name="theme-color" content="#059669">
+  <title>নিরাপদ যাত্রা | Nirapod Jatra — ঢাকার রিকশা, সিএনজি ও মেট্রোরেল গাইড</title>
+
+  <!-- SVG Favicon with Shield and Transit Symbol -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 4 L56 14 V32 C56 46 45 57 32 60 C19 57 8 46 8 32 V14 Z' fill='%23059669'/%3E%3Cpath d='M32 10 L50 18 V31 C50 42 42 51 32 54 C22 51 14 42 14 31 V18 Z' fill='%23047857'/%3E%3Ccircle cx='24' cy='40' r='5' fill='%23FCD34D'/%3E%3Ccircle cx='40' cy='40' r='5' fill='%23FCD34D'/%3E%3Cpath d='M24 40 L32 26 L40 40 M32 26 L22 26 M32 32 L42 32' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+
+  <!-- Google Fonts: Hind Siliguri for Bangla, Inter for English/Numbers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b'
+            },
+            danger: '#DC2626',
+            warning: '#D97706',
+            info: '#2563EB',
+            surface: '#F8FAF9'
+          },
+          fontFamily: {
+            bangla: ['"Hind Siliguri"', 'sans-serif'],
+            english: ['"Inter"', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Leaflet JS CDN -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    /* Global Typography & Font Stacking */
+    body {
+      font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0b1120;
+      color: #111827;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.3s ease;
+    }
+
+    .num-font {
+      font-family: 'Inter', 'Hind Siliguri', sans-serif;
+      font-feature-settings: "tnum" 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Accessibility Focus States */
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid #059669;
+      outline-offset: 2px;
+    }
+
+    /* Smooth Micro-Animations */
+    .fade-slide-up {
+      animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Scanner Viewfinder Laser Animation */
+    @keyframes scanLaser {
+      0% { top: 6%; opacity: 0.9; }
+      50% { top: 88%; opacity: 1; }
+      100% { top: 6%; opacity: 0.9; }
+    }
+
+    .laser-line {
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #10b981, #34d399, transparent);
+      box-shadow: 0 0 12px #10b981;
+      border-radius: 2px;
+      animation: scanLaser 2.2s infinite ease-in-out;
+    }
+
+    /* Pulse Glow for SOS Button */
+    @keyframes pulseAlert {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 0 14px rgba(220, 38, 38, 0);
+      }
+    }
+
+    .sos-pulse {
+      animation: pulseAlert 1.8s infinite;
+    }
+
+    /* Leaflet Overrides */
+    .leaflet-container {
+      font-family: 'Hind Siliguri', 'Inter', sans-serif !important;
+      border-radius: 1rem;
+    }
+
+    .custom-map-pin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      border-radius: 9999px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      border: 2px solid white;
+    }
+
+    /* ============================================================== */
+    /* AMOLED DARK THEME OVERRIDES                                     */
+    /* ============================================================== */
+    #appShell.dark {
+      background-color: #030712 !important;
+      color: #f9fafb !important;
+      border-color: #1f2937 !important;
+    }
+
+    #appShell.dark .bg-surface {
+      background-color: #030712 !important;
+    }
+
+    #appShell.dark .bg-white {
+      background-color: #111827 !important;
+      color: #f9fafb !important;
+      border-color: #1f2937 !important;
+    }
+
+    #appShell.dark .bg-slate-50 {
+      background-color: #1f2937 !important;
+      color: #f3f4f6 !important;
+      border-color: #374151 !important;
+    }
+
+    #appShell.dark .bg-slate-100 {
+      background-color: #1f2937 !important;
+      color: #e5e7eb !important;
+      border-color: #374151 !important;
+    }
+
+    #appShell.dark .text-slate-900,
+    #appShell.dark .text-slate-800,
+    #appShell.dark .text-slate-700 {
+      color: #f9fafb !important;
+    }
+
+    #appShell.dark .text-slate-600,
+    #appShell.dark .text-slate-500 {
+      color: #9ca3af !important;
+    }
+
+    #appShell.dark .text-slate-400 {
+      color: #6b7280 !important;
+    }
+
+    #appShell.dark .border-slate-200,
+    #appShell.dark .border-slate-100 {
+      border-color: #1f2937 !important;
+    }
+
+    #appShell.dark select,
+    #appShell.dark input {
+      background-color: #1f2937 !important;
+      color: #f9fafb !important;
+      border-color: #374151 !important;
+    }
+
+    #appShell.dark select:focus,
+    #appShell.dark input:focus {
+      background-color: #111827 !important;
+      border-color: #10b981 !important;
+    }
+
+    #appShell.dark nav {
+      background-color: rgba(17, 24, 39, 0.95) !important;
+      border-color: #1f2937 !important;
+    }
+
+    /* Dark Mode Leaflet Map Tiles */
+    #appShell.dark #routeMap .leaflet-tile {
+      filter: brightness(0.75) invert(1) contrast(1.15) hue-rotate(180deg) saturate(0.8);
+    }
+
+    #appShell.dark #routeMap .leaflet-container {
+      background: #0b0f19;
+    }
+
+    #appShell.dark .leaflet-popup-content-wrapper,
+    #appShell.dark .leaflet-popup-tip {
+      background: #111827 !important;
+      color: #f9fafb !important;
+    }
+
+    /* Prefers Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="h-full flex flex-col items-center justify-start bg-slate-950 md:py-6 select-none sm:select-auto">
+
+  <!-- Desktop Backdrop Glow & Frame -->
+  <div class="fixed inset-0 pointer-events-none opacity-20 z-0 flex items-center justify-center">
+    <div class="w-[620px] h-[620px] bg-emerald-600 rounded-full blur-[150px]"></div>
+  </div>
+
+  <!-- Main Mobile-First Shell (max-w-md, centered with shadow) -->
+  <div id="appShell" class="w-full max-w-md bg-surface min-h-screen sm:min-h-[860px] sm:max-h-[940px] flex flex-col relative z-10 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-700/30 overflow-hidden text-slate-800 transition-colors duration-200">
+
+    <!-- ===== TOP HEADER ===== -->
+    <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 text-white px-4 pt-3.5 pb-3.5 shadow-md relative z-20 flex-shrink-0">
+      <!-- Top Row: Status Indicator, Title, Theme Toggle & Language Switcher -->
+      <div class="flex items-center justify-between mb-2">
+        <!-- Brand Info -->
+        <div class="flex items-center space-x-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-inner text-amber-300 text-xl shrink-0">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <h1 class="text-xl font-bold tracking-tight text-white leading-none font-bangla" data-i18n="appTitle">নিরাপদ যাত্রা</h1>
+              <span class="bg-amber-400/20 text-amber-300 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-amber-300/30 num-font">ঢাকা</span>
+            </div>
+            <p class="text-[11px] text-emerald-100 font-medium tracking-wide mt-0.5 truncate max-w-[190px] sm:max-w-none" data-i18n="appSubtitle">ঢাকা শহরের রিকশা, সিএনজি ও মেট্রোর বিশ্বস্ত সঙ্গী</p>
+          </div>
+        </div>
+
+        <!-- Right Side: Dark Mode Toggle + Language Switcher -->
+        <div class="flex items-center space-x-1.5">
+          <!-- Dark Mode Toggle Button -->
+          <button id="themeToggleBtn" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="নাইট মোড / ডার্ক মোড" class="w-7 h-7 rounded-full bg-black/20 hover:bg-black/35 backdrop-blur border border-white/25 flex items-center justify-center text-amber-300 text-xs transition active:scale-90">
+            <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+          </button>
+
+          <!-- Language Switcher -->
+          <button id="langToggleBtn" type="button" aria-label="Toggle language between Bangla and English" class="flex items-center bg-black/20 hover:bg-black/30 backdrop-blur border border-white/25 rounded-full p-0.5 text-xs font-semibold transition active:scale-95">
+            <span id="langPillBn" class="px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition">বাং</span>
+            <span id="langPillEn" class="px-2 py-0.5 rounded-full text-white/80 transition">ENG</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Problem Context Banner & Real-Time Weather Badge -->
+      <div class="bg-white/10 rounded-xl px-3 py-1.5 border border-white/10 flex items-center justify-between text-xs text-emerald-50">
+        <div class="flex items-center space-x-1.5 truncate">
+          <i class="fa-solid fa-bullhorn text-amber-300 text-[11px] shrink-0"></i>
+          <span class="truncate font-medium text-[11px]" data-i18n="bannerProblem">মিটারহীন অতিরিক্ত ভাড়া থেকে বাঁচুন — আগে জানুন, পরে উঠুন</span>
+        </div>
+        <!-- Live Weather Auto-Badge (Open-Meteo) -->
+        <div id="liveWeatherBadge" class="hidden text-[10px] bg-white/15 text-emerald-100 px-2 py-0.5 rounded-full border border-white/20 flex items-center shrink-0 font-medium ml-1">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT TABS CONTAINER (Scrollable) ===== -->
+    <main class="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-24 relative" id="mainContainer">
+
+      <!-- ========================================== -->
+      <!-- TAB 1: FARE ESTIMATOR (ন্যায্য ভাড়া)      -->
+      <!-- ========================================== -->
+      <section id="tabFare" class="space-y-3.5 transition-all">
+
+        <!-- Vehicle Type Selector (3 Distinct Selectable Cards) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+            <span data-i18n="selectVehicleLabel">১. বাহন নির্বাচন করুন</span>
+            <span class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold" id="vehicleRatePreview">৳৫০ প্রথম ২ কিমি + ৳১৬/কিমি</span>
+          </label>
+          <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="বাহনের ধরন নির্বাচন">
+            <!-- CNG Card -->
+            <button type="button" id="btnVehicleCng" onclick="selectVehicle('cng')" class="vehicle-card p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center relative bg-white border-emerald-600 shadow-sm" aria-checked="true" role="radio">
+              <span class="absolute top-1.5 right-1.5 text-emerald-600 text-xs check-badge">
+                <i class="fa-solid fa-circle-check"></i>
+              </span>
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-300 text-lg mb-1">
+                <i class="fa-solid fa-taxi"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-900 leading-tight" data-i18n="vehicleCng">সিএনজি অটো</span>
+              <span class="text-[10px] text-slate-500 mt-0.5" data-i18n="vehicleCngSpeed">দ্রুত • মিটারহীন</span>
+            </button>
+
+            <!-- Cycle Rickshaw Card -->
+            <button type="button" id="btnVehicleRickshaw" onclick="selectVehicle('rickshaw')" class="vehicle-card p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center relative bg-white border-slate-200 hover:border-slate-300" aria-checked="false" role="radio">
+              <span class="absolute top-1.5 right-1.5 text-emerald-600 text-xs check-badge hidden">
+                <i class="fa-solid fa-circle-check"></i>
+              </span>
+              <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 flex items-center justify-center text-amber-700 dark:text-amber-300 text-lg mb-1">
+                <i class="fa-solid fa-bicycle"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-900 leading-tight" data-i18n="vehicleRickshaw">সাধারণ রিকশা</span>
+              <span class="text-[10px] text-slate-500 mt-0.5" data-i18n="vehicleRickshawLimit">স্বল্প দূরত্ব • ≤৭ কিমি</span>
+            </button>
+
+            <!-- Battery Rickshaw Card -->
+            <button type="button" id="btnVehicleBattery" onclick="selectVehicle('battery')" class="vehicle-card p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center relative bg-white border-slate-200 hover:border-slate-300" aria-checked="false" role="radio">
+              <span class="absolute top-1.5 right-1.5 text-emerald-600 text-xs check-badge hidden">
+                <i class="fa-solid fa-circle-check"></i>
+              </span>
+              <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-700 dark:text-blue-300 text-lg mb-1">
+                <i class="fa-solid fa-bolt"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-900 leading-tight" data-i18n="vehicleBattery">ইজিবাইক/ব্যাটারি</span>
+              <span class="text-[10px] text-slate-500 mt-0.5" data-i18n="vehicleBatteryLimit">মাঝারি দূরত্ব • সাশ্রয়ী</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Route Selection Card (Categorized Inputs + Swap Button + Presets) -->
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center space-x-1.5">
+              <i class="fa-solid fa-route text-emerald-600"></i>
+              <span data-i18n="routeSelectLabel">২. যাত্রা শুরু ও গন্তব্য নির্ধারণ</span>
+            </label>
+            <span class="text-[11px] text-slate-400 flex items-center space-x-1">
+              <i class="fa-solid fa-hand-pointer text-[10px]"></i>
+              <span data-i18n="mapTapNotice">বা ম্যাপে ট্যাপ করুন</span>
+            </span>
+          </div>
+
+          <!-- Inputs Group with Swap Button -->
+          <div class="relative space-y-2">
+            <!-- Pickup Point Input -->
+            <div class="relative flex items-center">
+              <span class="absolute left-3 text-emerald-600 text-sm">
+                <i class="fa-solid fa-location-dot"></i>
+              </span>
+              <select id="startSelect" aria-label="যাত্রা শুরু স্থান" onchange="onLandmarkSelect('start', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-8 text-xs font-semibold text-slate-800 focus:bg-white transition cursor-pointer">
+                <option value="" disabled selected data-i18n="pickupPlaceholder">যাত্রা শুরুর স্থান নির্বাচন করুন...</option>
+                <!-- Populated via JS with optgroups (Metro, Hubs, Landmarks) -->
+              </select>
+            </div>
+
+            <!-- Floating Swap Button -->
+            <div class="absolute right-3 top-[36px] z-10">
+              <button type="button" id="swapRouteBtn" onclick="swapLocations()" aria-label="Swap pickup and destination" class="w-7 h-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:border-emerald-500 active:scale-90 flex items-center justify-center transition">
+                <i class="fa-solid fa-arrow-down-up-across-line text-[11px]"></i>
+              </button>
+            </div>
+
+            <!-- Destination Point Input -->
+            <div class="relative flex items-center">
+              <span class="absolute left-3 text-red-500 text-sm">
+                <i class="fa-solid fa-flag-checkered"></i>
+              </span>
+              <select id="endSelect" aria-label="গন্তব্যের স্থান" onchange="onLandmarkSelect('end', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-8 text-xs font-semibold text-slate-800 focus:bg-white transition cursor-pointer">
+                <option value="" disabled selected data-i18n="destPlaceholder">গন্তব্যের স্থান নির্বাচন করুন...</option>
+                <!-- Populated via JS with optgroups -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Quick Tap Route Pills (Popular Routes) -->
+          <div>
+            <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block mb-1" data-i18n="quickRoutesLabel">জনপ্রিয় রুট:</span>
+            <div class="flex flex-wrap gap-1.5" id="quickPillsContainer">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Inline Validation / Error Notice Container -->
+          <div id="routeValidationNotice" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-center space-x-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 shrink-0"></i>
+            <span id="routeValidationText">শুরু এবং গন্তব্য একই জায়গা মনে হচ্ছে</span>
+          </div>
+        </div>
+
+        <!-- Interactive Leaflet Map Display (Exact 260px container) -->
+        <div class="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm relative">
+          <div class="flex items-center justify-between px-2 pb-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+            <span class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span data-i18n="mapTitle">লাইভ রুট ম্যাপ</span>
+            </span>
+            <span id="mapRouteStatusBadge" class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full font-medium">পয়েন্ট নির্ধারণ করুন</span>
+          </div>
+
+          <!-- 260px Height Container with Rounded Corners & Border -->
+          <div id="routeMap" class="w-full h-[260px] rounded-xl border border-slate-200 relative z-0" aria-label="ঢাকা শহরের রুট ম্যাপ"></div>
+
+          <!-- Reset / Recenter Button on Map -->
+          <div class="absolute bottom-4 right-4 z-[400] flex space-x-1.5">
+            <button type="button" onclick="centerDhakaMap()" aria-label="Center map to Dhaka" class="px-2.5 py-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-md border border-slate-200 dark:border-slate-700 hover:bg-white active:scale-95 flex items-center space-x-1">
+              <i class="fa-solid fa-crosshairs text-emerald-600 text-[10px]"></i>
+              <span data-i18n="centerDhaka">ঢাকা কেন্দ্র</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Condition Toggle Chips (Rain, Peak Hour, Night) + Live Weather -->
+        <div class="bg-white rounded-2xl p-3 border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center space-x-1">
+              <span data-i18n="conditionsLabel">৩. বর্তমান পরিস্থিতি (সার্জ ও চাপ)</span>
+            </label>
+            <!-- Live weather status line with refresh -->
+            <div class="flex items-center space-x-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <span id="weatherStatusText"><i class="fa-solid fa-cloud-sun text-amber-500 mr-1"></i>আবহাওয়া লোড হচ্ছে...</span>
+              <button type="button" onclick="fetchLiveDhakaWeather()" title="আবহাওয়া রিফ্রেশ" class="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 p-0.5">
+                <i class="fa-solid fa-rotate-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <!-- Rain Toggle -->
+            <button type="button" id="chipRain" onclick="toggleCondition('rain')" class="condition-chip p-2 rounded-xl border border-slate-200 text-center transition flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100" aria-pressed="false">
+              <span class="text-base mb-0.5">🌧️</span>
+              <span class="text-xs font-semibold text-slate-800" data-i18n="condRain">বৃষ্টি হচ্ছে</span>
+              <span class="text-[10px] text-slate-500 font-english mt-0.5">+৩৫-৫০%</span>
+            </button>
+
+            <!-- Peak Hour Toggle -->
+            <button type="button" id="chipPeak" onclick="toggleCondition('peak')" class="condition-chip p-2 rounded-xl border border-slate-200 text-center transition flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100" aria-pressed="false">
+              <span class="text-base mb-0.5">⏰</span>
+              <span class="text-xs font-semibold text-slate-800" data-i18n="condPeak">পিক-আওয়ার</span>
+              <span class="text-[10px] text-slate-500 font-english mt-0.5">+২০-২৫%</span>
+            </button>
+
+            <!-- Late Night Toggle -->
+            <button type="button" id="chipNight" onclick="toggleCondition('night')" class="condition-chip p-2 rounded-xl border border-slate-200 text-center transition flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100" aria-pressed="false">
+              <span class="text-base mb-0.5">🌙</span>
+              <span class="text-xs font-semibold text-slate-800" data-i18n="condNight">গভীর রাত</span>
+              <span class="text-[10px] text-slate-500 font-english mt-0.5">+২০-৩০%</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Primary Action Button: Calculate Fair Fare -->
+        <button type="button" id="btnCalculateFare" onclick="calculateFareAction()" disabled class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-emerald-700/25 transition active:scale-[0.99] flex items-center justify-center space-x-2 text-base">
+          <i class="fa-solid fa-calculator text-emerald-200"></i>
+          <span data-i18n="calculateBtn">ভাড়া গণনা করুন</span>
+        </button>
+
+        <!-- Result Card (Animated Fade-In upon calculation) -->
+        <div id="resultCard" class="hidden fade-slide-up bg-white rounded-2xl border-2 border-emerald-500/50 shadow-xl overflow-hidden p-4 space-y-3">
+          <!-- Top Row: Route Badge, Distance, Time, and Fallback Notice -->
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <div class="flex items-center space-x-2">
+              <span id="resDistanceBadge" class="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs px-2.5 py-1 rounded-lg num-font flex items-center space-x-1">
+                <i class="fa-solid fa-location-arrow text-[10px]"></i>
+                <span id="resDistanceText">৫.২ কিমি</span>
+              </span>
+              <span id="resDurationBadge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs px-2.5 py-1 rounded-lg num-font flex items-center space-x-1">
+                <i class="fa-solid fa-clock text-[10px]"></i>
+                <span id="resDurationText">২২ মিনিট</span>
+              </span>
+            </div>
+            <!-- Mode tag (OSRM / Offline Haversine) -->
+            <span id="resRoutingModeBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900">
+              <i class="fa-solid fa-wifi mr-1"></i>ওএসআরএম রুট
+            </span>
+          </div>
+
+          <!-- Big Fare Display -->
+          <div class="text-center py-2.5 bg-gradient-to-b from-emerald-50/80 to-transparent dark:from-emerald-950/40 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
+            <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider block" data-i18n="fairFareRangeLabel">ন্যায্য ভাড়া</span>
+            <div class="flex items-baseline justify-center space-x-2 mt-1">
+              <span id="resFareAmount" class="text-3xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight num-font">৳ ১২০ - ৳ ১৪৫</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1" id="resFareSubtext">স্বাভাবিক ট্রাফিক ও দূরত্ব অনুযায়ী নির্ধারিত</p>
+          </div>
+
+          <!-- Vehicle Specific Distance Warnings (if any) -->
+          <div id="resVehicleNotice" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-start space-x-2">
+            <i class="fa-solid fa-circle-exclamation text-amber-600 mt-0.5 shrink-0"></i>
+            <span id="resVehicleNoticeText"></span>
+          </div>
+
+          <!-- Ride-Hailing Benchmarks (Uber & Pathao) -->
+          <div class="bg-slate-50 dark:bg-slate-900/90 rounded-xl p-3 border border-slate-200 dark:border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+                <i class="fa-solid fa-scale-balanced text-emerald-600"></i>
+                <span data-i18n="rideHailingTitle">উবার ও পাঠাও খরচ তুলনা</span>
+              </span>
+              <span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold px-2 py-0.5 rounded-full" data-i18n="appVsStreetBadge">অ্যাপ বনাম লোকাল</span>
+            </div>
+
+            <!-- 3-Column Comparative Grid -->
+            <div class="grid grid-cols-3 gap-2 text-center text-xs">
+              <!-- Pathao / Uber Moto -->
+              <div class="bg-white dark:bg-slate-800/80 p-2 rounded-xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between shadow-xs">
+                <div class="flex items-center justify-center space-x-1 text-slate-500 dark:text-slate-400 mb-0.5">
+                  <i class="fa-solid fa-motorcycle text-amber-500 text-xs"></i>
+                  <span class="text-[10px] font-bold" data-i18n="uberMoto">পাঠাও/উবার বাইক</span>
+                </div>
+                <span id="resUberMotoFare" class="font-extrabold text-slate-900 dark:text-slate-100 num-font text-xs">৳ ৯০ - ১১৫</span>
+                <span class="text-[9px] text-slate-400 mt-0.5" data-i18n="motoSub">বাইক • ১ জন</span>
+              </div>
+
+              <!-- Uber / Pathao CNG -->
+              <div class="bg-white dark:bg-slate-800/80 p-2 rounded-xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between shadow-xs">
+                <div class="flex items-center justify-center space-x-1 text-slate-500 dark:text-slate-400 mb-0.5">
+                  <i class="fa-solid fa-taxi text-emerald-500 text-xs"></i>
+                  <span class="text-[10px] font-bold" data-i18n="uberCng">উবার/পাঠাও সিএনজি</span>
+                </div>
+                <span id="resUberCngFare" class="font-extrabold text-slate-900 dark:text-slate-100 num-font text-xs">৳ ১৭০ - ২১০</span>
+                <span class="text-[9px] text-slate-400 mt-0.5" data-i18n="cngSub">অ্যাপ ৩-হুইলার</span>
+              </div>
+
+              <!-- UberX / Pathao Car -->
+              <div class="bg-white dark:bg-slate-800/80 p-2 rounded-xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between shadow-xs">
+                <div class="flex items-center justify-center space-x-1 text-slate-500 dark:text-slate-400 mb-0.5">
+                  <i class="fa-solid fa-car text-blue-500 text-xs"></i>
+                  <span class="text-[10px] font-bold" data-i18n="uberCar">উবারএক্স / কার</span>
+                </div>
+                <span id="resUberCarFare" class="font-extrabold text-slate-900 dark:text-slate-100 num-font text-xs">৳ ২৬০ - ৩১০</span>
+                <span class="text-[9px] text-slate-400 mt-0.5" data-i18n="carSub">এসি কার • ৪ জন</span>
+              </div>
+            </div>
+
+            <!-- Dynamic App Comparison Tip -->
+            <div class="text-[10px] text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-200/70 dark:border-slate-700/70 flex items-start space-x-1.5 leading-snug">
+              <i class="fa-solid fa-lightbulb text-amber-500 shrink-0 mt-0.5"></i>
+              <span id="resUberTipText">রাস্তার সিএনজিতে দরকষাকষিতে অ্যাপের চেয়ে প্রায় ৳৩০-৫০ সাশ্রয় হয়। বৃষ্টিতে উবার/পাঠাও-এ সার্জ ২ গুণ পর্যন্ত হতে পারে।</span>
+            </div>
+          </div>
+
+          <!-- Smart Negotiation Script Alert Box + WEB SPEECH AUDIO GUIDE -->
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-100">
+                <i class="fa-solid fa-quote-left text-emerald-600"></i>
+                <span data-i18n="negotiationTitle">দরকষাকষির কৌশল</span>
+              </div>
+              <!-- Audio Guide TTS Button -->
+              <button type="button" id="btnPlayNegotiationAudio" onclick="toggleNegotiationAudio()" aria-label="Play negotiation script aloud" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900 dark:hover:bg-emerald-800 text-emerald-800 dark:text-emerald-200 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition active:scale-95 shadow-sm">
+                <i id="audioSpeakerIcon" class="fa-solid fa-volume-high text-[11px]"></i>
+                <span id="audioBtnText" data-i18n="listenVoice">শুনে নিন</span>
+              </button>
+            </div>
+            <p id="resNegotiationScript" class="text-xs text-slate-700 leading-relaxed font-medium bg-white p-2.5 rounded-lg border border-slate-100 shadow-inner">
+              প্রথমে ৳১৬০ বলুন। ড্রাইভার ৳২১০ চাইতে পারে। শেষ পর্যন্ত ৳১৭৫ এর মধ্যে রফা করার চেষ্টা করুন।
+            </p>
+          </div>
+
+          <!-- Multimodal Dhaka Metro Rail Advisor Card (MRT Line 6) -->
+          <div id="resMetroAdvisorCard" class="hidden bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-xl p-3 border border-emerald-500/30 space-y-1.5 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold flex items-center space-x-1.5 text-emerald-200">
+                <i class="fa-solid fa-train-subway text-amber-300"></i>
+                <span data-i18n="multimodalTitle">মেট্রোরেল বিকল্প ও সাশ্রয়ী টিপস</span>
+              </span>
+              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-mono font-bold">MRT-6</span>
+            </div>
+            <p id="resMetroAdvisorText" class="text-xs text-emerald-100 leading-relaxed font-medium">
+              <!-- Dynamically populated via JS -->
+            </p>
+          </div>
+
+          <!-- Trip Sharing Action Buttons (WhatsApp & SMS) -->
+          <div class="grid grid-cols-2 gap-2 pt-0.5">
+            <button type="button" onclick="shareTripViaWhatsApp()" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+              <span data-i18n="shareWhatsapp">হোয়াটসঅ্যাপ শেয়ার</span>
+            </button>
+            <button type="button" onclick="shareTripViaSms()" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95">
+              <i class="fa-solid fa-comment-sms text-sm text-amber-300"></i>
+              <span data-i18n="shareSms">এসএমএস ট্র্যাকিং</span>
+            </button>
+          </div>
+
+          <!-- CTA to contribute to community feed (Opens Quick-Report Modal) -->
+          <button type="button" onclick="openQuickReportModal()" class="w-full py-2.5 px-3 bg-emerald-50 dark:bg-emerald-950 hover:bg-emerald-100 dark:hover:bg-emerald-900 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 font-bold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95">
+            <i class="fa-solid fa-hand-holding-dollar text-emerald-600 dark:text-emerald-400"></i>
+            <span data-i18n="btnShareTrip">আমি এই ট্রিপে কত দিয়েছি জানান</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: CROWDSOURCED RATES (কমিউনিটি রেট)   -->
+      <!-- ========================================== -->
+      <section id="tabCommunity" class="space-y-3.5 hidden transition-all">
+
+        <!-- Top Explainer Header Card -->
+        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="relative z-10 space-y-1">
+            <div class="flex items-center space-x-1.5">
+              <i class="fa-solid fa-users text-amber-300"></i>
+              <h2 class="text-sm font-bold tracking-tight" data-i18n="communityTitle">কমিউনিটি ফেয়ার লেজার</h2>
+            </div>
+            <p class="text-xs text-blue-100 leading-snug" data-i18n="communitySubtitle">
+              সাধারণ যাত্রীদের দেওয়া বাস্তব ভাড়ার তথ্য। আপনার অভিজ্ঞতাও যুক্ত করুন এবং অতিরিক্ত ভাড়া প্রতিরোধ করুন।
+            </p>
+          </div>
+          <i class="fa-solid fa-chart-line absolute -bottom-3 -right-3 text-white/10 text-6xl pointer-events-none"></i>
+        </div>
+
+        <!-- Add Contribution Card / Form -->
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between cursor-pointer" onclick="toggleContributionForm()">
+            <span class="text-xs font-bold text-slate-800 flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-plus"></i>
+              </span>
+              <span data-i18n="contributeCardTitle">নতুন ভাড়ার তথ্য যোগ করুন</span>
+            </span>
+            <i id="contribChevron" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
+          </div>
+
+          <!-- Form Fields -->
+          <form id="communityForm" onsubmit="handleCommunitySubmit(event)" class="space-y-2.5 pt-1">
+            <div class="grid grid-cols-2 gap-2">
+              <!-- Vehicle -->
+              <div>
+                <label for="comVehicle" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comVehicleLabel">বাহনের ধরন</label>
+                <select id="comVehicle" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
+                  <option value="cng" data-i18n="vehicleCng">সিএনজি অটো</option>
+                  <option value="rickshaw" data-i18n="vehicleRickshaw">সাধারণ রিকশা</option>
+                  <option value="battery" data-i18n="vehicleBattery">ইজিবাইক/ব্যাটারি</option>
+                </select>
+              </div>
+
+              <!-- Distance -->
+              <div>
+                <label for="comDistance" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comDistanceLabel">দূরত্ব (কিমি)</label>
+                <input type="number" id="comDistance" step="0.1" min="0.1" max="100" required placeholder="যেমন: ৪.৫" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800 num-font">
+              </div>
+            </div>
+
+            <!-- Route Start & End -->
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="comStart" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comStartLabel">শুরুর স্থান</label>
+                <input type="text" id="comStart" required placeholder="ফার্মগেট" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
+              </div>
+              <div>
+                <label for="comEnd" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comEndLabel">গন্তব্য</label>
+                <input type="text" id="comEnd" required placeholder="গুলশান ১" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
+              </div>
+            </div>
+
+            <!-- Fare Paid & Note -->
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="comFare" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comFareLabel">পরিশোধিত ভাড়া (৳)</label>
+                <input type="number" id="comFare" min="5" step="5" required placeholder="যেমন: ১২০" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800 num-font">
+              </div>
+              <div>
+                <label for="comNote" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comNoteLabel">মন্তব্য (ঐচ্ছিক)</label>
+                <input type="text" id="comNote" placeholder="বৃষ্টি বা জ্যাম ছিল" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800">
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-md transition active:scale-95 text-xs flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span data-i18n="btnSubmitRate">রেট যুক্ত করুন</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Filter Chips for Feed -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-1" id="communityFilterBar">
+          <button type="button" onclick="filterCommunityFeed('all')" id="comFilterAll" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-white shadow-sm shrink-0" data-i18n="filterAll">সব ট্রিপ</button>
+          <button type="button" onclick="filterCommunityFeed('cng')" id="comFilterCng" class="px-3 py-1 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0" data-i18n="filterCng">সিএনজি</button>
+          <button type="button" onclick="filterCommunityFeed('rickshaw')" id="comFilterRickshaw" class="px-3 py-1 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0" data-i18n="filterRickshaw">সাধারণ রিকশা</button>
+          <button type="button" onclick="filterCommunityFeed('battery')" id="comFilterBattery" class="px-3 py-1 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0" data-i18n="filterBattery">ব্যাটারি রিকশা</button>
+        </div>
+
+        <!-- Live Community Feed List -->
+        <div id="communityFeedList" class="space-y-2.5">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: SAFETY & VERIFICATION (ভেরিফিকেশন) -->
+      <!-- ========================================== -->
+      <section id="tabSafety" class="space-y-3.5 hidden transition-all">
+
+        <!-- Phase 2 / Hackathon Vision Prototype Notice -->
+        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-2xl p-3 text-xs text-amber-900 dark:text-amber-200 flex items-start space-x-2">
+          <i class="fa-solid fa-flask-vial text-amber-600 mt-0.5 shrink-0 text-sm"></i>
+          <div>
+            <span class="font-bold block" data-i18n="safetyVisionBadge">হ্যাকাথন ভিশন / দ্বিতীয় ধাপ প্রোটোটাইপ</span>
+            <p class="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5 leading-snug" data-i18n="safetyVisionDesc">
+              যাত্রীদের ব্যক্তিগত নিরাপত্তা নিশ্চিত করতে ব্র্যাক / ডিএমপি ডাটাবেজ ইন্টিগ্রেশনের পরিকল্পিত মডেল। নিচের ডেমো ডাটা দিয়ে পরীক্ষা করুন।
+            </p>
+          </div>
+        </div>
+
+        <!-- AUDIBLE EMERGENCY DISTRESS SIREN (Web Audio API) -->
+        <div class="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-2xl p-3.5 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-rose-900 dark:text-rose-200 uppercase tracking-wider flex items-center space-x-1.5">
+              <i class="fa-solid fa-bullhorn text-rose-600"></i>
+              <span data-i18n="sirenBtnTitle">উচ্চ-শব্দ জরুরি সাইরেন (Distress Siren)</span>
+            </label>
+            <span class="text-[10px] bg-rose-200 dark:bg-rose-900 text-rose-800 dark:text-rose-200 font-bold px-2 py-0.5 rounded-full">অফলাইন সক্রিয়</span>
+          </div>
+          <p class="text-[11px] text-rose-800 dark:text-rose-300 leading-snug" data-i18n="sirenDesc">
+            বিপদজনক পরিস্থিতিতে চালক বা আশপাশের মানুষের মনোযোগ আকর্ষণের জন্য ব্রাউজার স্পিকার দিয়ে তীব্র সাইরেন বাজান।
+          </p>
+          <button type="button" id="btnDistressSiren" onclick="toggleDistressSiren()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3 px-4 rounded-xl text-xs transition active:scale-95 flex items-center justify-center space-x-2 shadow-md">
+            <i id="sirenBtnIcon" class="fa-solid fa-volume-high text-amber-300 text-base"></i>
+            <span id="sirenBtnText" data-i18n="sirenBtnStart">জরুরি সাইরেন বাজান (Sound Siren)</span>
+          </button>
+        </div>
+
+        <!-- Driver / Plate Verification Card -->
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+              <i class="fa-solid fa-id-card text-emerald-600"></i>
+              <span data-i18n="driverVerifyTitle">ড্রাইভার ও বাহন যাচাইকরণ</span>
+            </label>
+            <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">ডেমো সক্রিয়</span>
+          </div>
+
+          <!-- Plate Input & Search Button -->
+          <div class="space-y-2">
+            <div class="flex space-x-2">
+              <input type="text" id="plateNumberInput" placeholder="ঢাকা মেট্রো-থ ১১-১২৩৪" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:bg-white">
+              <button type="button" onclick="verifyDriverPlate()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow-sm transition active:scale-95 flex items-center space-x-1">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span data-i18n="btnVerify">যাচাই</span>
+              </button>
+            </div>
+
+            <!-- Quick Pill Samples for Demo (One-tap testing) -->
+            <div>
+              <span class="text-[10px] text-slate-400 font-semibold block mb-1" data-i18n="samplePlatesLabel">টেস্ট করার জন্য ক্লিক করুন:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="fillAndVerifyPlate('ঢাকা মেট্রো-থ ১১-১২৩৪')" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono border border-slate-200">ঢাকা মেট্রো-থ ১১-১২৩৪</button>
+                <button type="button" onclick="fillAndVerifyPlate('ঢাকা মেট্রো-গ ৩৩-৯০১২')" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono border border-slate-200">ঢাকা মেট্রো-গ ৩৩-৯০১২</button>
+                <button type="button" onclick="fillAndVerifyPlate('ঢাকা মেট্রো-চ ২২-৫৬৭৮')" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono border border-slate-200">ঢাকা মেট্রো-চ ২২-৫৬৭৮</button>
+                <button type="button" onclick="fillAndVerifyPlate('ঢাকা মেট্রো-খ ৯৯-৯৯৯৯')" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-mono border border-slate-200">অজানা প্লেট</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verification Result Display Area -->
+          <div id="verifyResultContainer" class="hidden pt-1">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <!-- Simulated QR Code Scanner Viewfinder -->
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm space-y-3">
+          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+            <i class="fa-solid fa-qrcode text-emerald-600"></i>
+            <span data-i18n="qrScanTitle">স্মার্ট কিউআর স্ক্যানার (সিমুলেশন)</span>
+          </label>
+
+          <!-- Mock Camera Viewfinder with laser line -->
+          <div class="w-full h-36 bg-slate-950 rounded-xl relative overflow-hidden flex items-center justify-center border-2 border-dashed border-slate-700">
+            <!-- Viewfinder corner brackets -->
+            <div class="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-emerald-400"></div>
+            <div class="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-emerald-400"></div>
+            <div class="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-emerald-400"></div>
+            <div class="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-emerald-400"></div>
+
+            <!-- Scanning laser animation -->
+            <div class="laser-line"></div>
+
+            <!-- Viewfinder center icon -->
+            <div class="text-center text-slate-500 space-y-1">
+              <i class="fa-solid fa-camera text-2xl text-slate-400"></i>
+              <span class="block text-[11px] text-slate-400" data-i18n="qrInstruction">সিএনজি বা রিকশার কোড ফ্রেমের মধ্যে রাখুন</span>
+            </div>
+          </div>
+
+          <!-- Instant QR Test Button -->
+          <button type="button" onclick="simulateQrScan()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs transition active:scale-95 flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-barcode text-amber-300"></i>
+            <span data-i18n="btnTestQr">টেস্ট কিউআর কোড স্ক্যান করুন</span>
+          </button>
+        </div>
+
+        <!-- 5 ESSENTIAL COMMUTER SAFETY TIPS ACCORDION -->
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between cursor-pointer" onclick="toggleSafetyTips()">
+            <span class="text-xs font-bold text-slate-800 flex items-center space-x-2">
+              <i class="fa-solid fa-shield-cat text-emerald-600"></i>
+              <span data-i18n="safetyTipsTitle">যাত্রীদের ৫টি আবশ্যিক নিরাপত্তা পরামর্শ</span>
+            </span>
+            <i id="tipsChevron" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
+          </div>
+          <div id="safetyTipsContent" class="hidden text-xs text-slate-600 space-y-2 pt-2 border-t border-slate-100">
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">১</span>
+              <p class="text-[11px] leading-snug"><strong data-i18n="tip1Title">নম্বর প্লেট শেয়ার:</strong> ওঠার আগেই নম্বর প্লেটের বিবরণ পরিবার বা বিশ্বস্ত নম্বরে হোয়াটসঅ্যাপ/এসএমএসে পাঠিয়ে দিন।</p>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">২</span>
+              <p class="text-[11px] leading-snug"><strong data-i18n="tip2Title">সিএনজির গ্রিল ও লক:</strong> সিএনজিতে ওঠার পর দুই পাশের গ্রিল সঠিকভাবে লক করা আছে কিনা নিজে নিশ্চিত হোন।</p>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">৩</span>
+              <p class="text-[11px] leading-snug"><strong data-i18n="tip3Title">লাইভ রুট ট্র্যাকিং:</strong> ড্রাইভার অপরিচিত অন্ধকার গলি বা ভুল রাস্তা ধরলে অবিলম্বে প্রশ্ন করুন এবং ম্যাপে নজর রাখুন।</p>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">৪</span>
+              <p class="text-[11px] leading-snug"><strong data-i18n="tip4Title">ন্যায্য ভাড়া আগে স্থির:</strong> মিটার না থাকলে ওঠার আগেই অ্যাপের ন্যায্য সীমা দেখে নিশ্চিত দরকষাকষি করে দাম ঠিক করুন।</p>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">৫</span>
+              <p class="text-[11px] leading-snug"><strong data-i18n="tip5Title">৯৯৯ জরুরি হেল্পলাইন:</strong> যেকোনো অনিরাপদ পরিস্থিতিতে কালবিলম্ব না করে সরাসরি ৯৯৯-এ কল করুন এবং জরুরি সংকেত ট্রিগার করুন।</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency SOS Section (High-Alert Red Button + Contacts) -->
+        <div class="bg-red-50/70 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-2xl p-4 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-red-900 dark:text-red-300 uppercase tracking-wider flex items-center space-x-1.5">
+              <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+              <span data-i18n="emergencySosTitle">জরুরি নিরাপত্তা সংকেত (SOS)</span>
+            </span>
+            <span class="text-[10px] bg-red-200 dark:bg-red-900 text-red-900 dark:text-red-200 font-bold px-2 py-0.5 rounded-full">৯৯৯ সাপোর্ট</span>
+          </div>
+
+          <!-- Big SOS Button with Radar Pulse -->
+          <div class="py-1 flex justify-center">
+            <button type="button" onclick="openSosConfirmModal()" class="sos-pulse bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-red-600/30 text-sm flex items-center space-x-2 active:scale-95 transition">
+              <i class="fa-solid fa-tower-broadcast text-lg animate-pulse"></i>
+              <span data-i18n="btnTriggerSos">জরুরি সংকেত (Emergency SOS)</span>
+            </button>
+          </div>
+
+          <!-- Emergency Trusted Contacts List -->
+          <div class="bg-white rounded-xl p-3 border border-red-100 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800" data-i18n="trustedContactsTitle">বিশ্বস্ত যোগাযোগ নম্বর (সর্বোচ্চ ৪টি)</span>
+              <button type="button" onclick="openAddContactPrompt()" class="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold hover:underline" data-i18n="btnAddContact">+ নতুন নম্বর</button>
+            </div>
+            <div id="sosContactsList" class="space-y-1 text-xs">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Post-Hackathon Roadmap Card (Section 14: Future Vision) -->
+        <div class="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900/60 rounded-2xl p-3.5 space-y-2.5">
+          <button type="button" onclick="toggleRoadmap()" class="w-full flex items-center justify-between text-left">
+            <span class="text-xs font-bold text-indigo-950 dark:text-indigo-200 flex items-center space-x-1.5">
+              <i class="fa-solid fa-compass-drafting text-indigo-600"></i>
+              <span data-i18n="roadmapTitle">পরবর্তী রোডম্যাপ (Future Vision)</span>
+            </span>
+            <div class="flex items-center space-x-1.5">
+              <span class="text-[9px] bg-indigo-200/70 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold px-2 py-0.5 rounded-full" data-i18n="phase2Badge">ফেজ ২ প্ল্যান</span>
+              <i id="roadmapChevron" class="fa-solid fa-chevron-down text-indigo-500 text-xs transition duration-200"></i>
+            </div>
+          </button>
+          
+          <div id="roadmapContent" class="hidden space-y-2 text-xs pt-1 border-t border-indigo-200/60 dark:border-indigo-900/40 text-indigo-900 dark:text-indigo-200">
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">১</span>
+              <div>
+                <strong class="block text-[11px]" data-i18n="rm1Title">ড্রাইভার অনবোর্ডিং ও লাইভ জিপিএস ডিজিটাল মিটার</strong>
+                <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm1Desc">ড্রাইভারদের কিউআর স্টিকার ও লাইটওয়েট ওয়েব অ্যাপ দিয়ে রিয়েল-টাইম দূরত্ব ট্র্যাকিং।</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">২</span>
+              <div>
+                <strong class="block text-[11px]" data-i18n="rm2Title">ঢাকার বাইরে সম্প্রসারণ (চট্টগ্রাম, সিলেট, রাজশাহী)</strong>
+                <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm2Desc">স্থানীয় রুট ক্যাপ্টেনদের মাধ্যমে দেশের প্রধান বিভাগীয় শহরগুলোর নিজস্ব রেট কার্ড সংযোজন।</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">৩</span>
+              <div>
+                <strong class="block text-[11px]" data-i18n="rm3Title">বাটন ফোনের জন্য এসএমএস ও ইউএসএসডি (*XXX#)</strong>
+                <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm3Desc">স্মার্টফোন বা ইন্টারনেট বিহীন প্রবীণ ও সাধারণ যাত্রীদের জন্য সরাসরি এসএমএসে ন্যায্য ভাড়া প্রাপ্তি।</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">৪</span>
+              <div>
+                <strong class="block text-[11px]" data-i18n="rm4Title">কমিউনিটি রেটিং ভিত্তিক ভেরিফায়েড ড্রাইভার ট্রাস্ট স্কোর</strong>
+                <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm4Desc">যাত্রীদের রেটিং ও ফিডব্যাকের ভিত্তিতে চালকদের ট্রাস্ট স্কোর এবং নিরাপত্তা ব্যাজ প্রদান।</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">৫</span>
+              <div>
+                <strong class="block text-[11px]" data-i18n="rm5Title">ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ দাখিল</strong>
+                <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm5Desc">আইনশৃঙ্খলা রক্ষাকারী বাহিনী ও বিআরটিএ-এর সাথে অফিশিয়াল পার্টনারশিপে ডিজিটাল কেস রেজিস্ট্রি।</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ===== FIXED BOTTOM NAVIGATION BAR ===== -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-1.5 px-4 flex items-center justify-around z-30 shadow-lg">
+      <!-- Tab 1: Fare Estimator -->
+      <button type="button" id="navBtnFare" onclick="switchTab('fare')" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl transition text-emerald-600" aria-label="ন্যায্য ভাড়া ট্যাব">
+        <i class="fa-solid fa-calculator text-base mb-0.5"></i>
+        <span class="text-[11px] font-bold tracking-tight" data-i18n="navFare">ন্যায্য ভাড়া</span>
+      </button>
+
+      <!-- Tab 2: Community Rates -->
+      <button type="button" id="navBtnCommunity" onclick="switchTab('community')" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl transition text-slate-400 hover:text-slate-600 relative" aria-label="কমিউনিটি রেট ট্যাব">
+        <div class="relative">
+          <i class="fa-solid fa-users text-base mb-0.5"></i>
+          <span id="navCommunityBadge" class="absolute -top-1 -right-2 bg-emerald-600 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center num-font">8</span>
+        </div>
+        <span class="text-[11px] font-medium tracking-tight" data-i18n="navCommunity">কমিউনিটি রেট</span>
+      </button>
+
+      <!-- Tab 3: Safety & Verification -->
+      <button type="button" id="navBtnSafety" onclick="switchTab('safety')" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl transition text-slate-400 hover:text-slate-600" aria-label="নিরাপত্তা ট্যাব">
+        <i class="fa-solid fa-shield-halved text-base mb-0.5"></i>
+        <span class="text-[11px] font-medium tracking-tight" data-i18n="navSafety">সেফটি ও ভেরিফিকেশন</span>
+      </button>
+    </nav>
+
+    <!-- ===== MODAL: QUICK-REPORT TRIP (From Fare Result) ===== -->
+    <div id="quickReportModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 space-y-3 fade-slide-up">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <span class="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
+            <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
+            <span data-i18n="modalQuickReportTitle">আপনার ট্রিপের ভাড়া জানান</span>
+          </span>
+          <button type="button" onclick="closeQuickReportModal()" class="text-slate-400 hover:text-slate-600 text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleQuickReportSubmit(event)" class="space-y-2.5 text-xs">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comRouteLabel">রুট ও বাহন</label>
+            <div id="modalRouteSummary" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2 font-semibold text-slate-800 dark:text-slate-100">
+              ফার্মগেট ➔ গুলশান ১ (৫.২ কিমি • সিএনজি)
+            </div>
+            <div id="modalUberBenchmark" class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 flex items-center justify-between px-1">
+            </div>
+          </div>
+
+          <div>
+            <label for="modalFarePaid" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comFareLabel">আপনি কত দিয়েছেন? (৳)</label>
+            <input type="number" id="modalFarePaid" required min="5" step="5" placeholder="যেমন: ১৬০" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-bold text-slate-900 num-font">
+          </div>
+
+          <div>
+            <label for="modalTripNote" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comNoteLabel">মন্তব্য (ঐচ্ছিক)</label>
+            <input type="text" id="modalTripNote" placeholder="যেমন: মোড়ে জ্যাম ছিল" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-800">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="closeQuickReportModal()" class="py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition" data-i18n="btnCancel">বাতিল</button>
+            <button type="submit" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition" data-i18n="btnSubmitRate">যোগ করুন</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== MODAL: SOS CONFIRMATION ===== -->
+    <div id="sosConfirmModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl border border-red-200 text-center space-y-3 fade-slide-up">
+        <div class="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl mx-auto">
+          <i class="fa-solid fa-circle-exclamation animate-bounce"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-900" data-i18n="sosConfirmTitle">আপনি কি নিশ্চিত?</h3>
+        <p class="text-xs text-slate-600 leading-relaxed" data-i18n="sosConfirmDesc">
+          জরুরি সংকেত নিশ্চিত করলে আপনার বর্তমান জিপিএস লোকেশন ও যাত্রার বিবরণ আপনার বিশ্বস্ত নম্বরসমূহ এবং ৯৯৯ পুলিশ হেল্পলাইনে এসএমএস পাঠানোর প্রোটোটাইপ কার্যকর হবে।
+        </p>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button type="button" onclick="closeSosConfirmModal()" class="py-2.5 px-3 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition" data-i18n="btnCancel">বাতিল</button>
+          <button type="button" onclick="executeSosTrigger()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition" data-i18n="btnConfirmSos">হ্যাঁ, পাঠান</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MODAL: SOS RECEIPT / ACTIVE ALERT ===== -->
+    <div id="sosReceiptModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 space-y-3.5 fade-slide-up">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <span class="text-xs font-bold text-emerald-800 flex items-center space-x-1.5">
+            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+            <span data-i18n="sosSentTitle">জরুরি সংকেত পাঠানো হয়েছে (সিমুলেশন)</span>
+          </span>
+          <button type="button" onclick="closeSosReceiptModal()" class="text-slate-400 hover:text-slate-600 text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-2 text-xs">
+          <div class="flex justify-between items-center text-slate-600">
+            <span data-i18n="sosReceiptGps">শনাক্তকৃত জিপিএস:</span>
+            <span id="sosReceiptCoords" class="font-mono font-bold text-slate-900 num-font">23.7561° N, 90.3872° E</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-600">
+            <span data-i18n="sosReceiptTime">সময়:</span>
+            <span id="sosReceiptTimeVal" class="font-bold text-slate-900 num-font">এখনই</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-600">
+            <span data-i18n="sosReceiptPolice">জাতীয় হেল্পলাইন:</span>
+            <span class="font-bold text-red-600 font-mono">৯৯৯ (কলযোগ্য)</span>
+          </div>
+        </div>
+
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-[11px] text-emerald-900 leading-snug">
+          <i class="fa-solid fa-info-circle text-emerald-600 mr-1"></i>
+          <span data-i18n="sosReceiptMessage">বিশ্বস্ত নম্বরগুলোতে আপনার লাইভ ট্র্যাকিং লিংক ও টেক্সট এসএমএস প্রস্তুত হয়েছে। জরুরি মুহূর্তে সরাসরি ৯৯৯ ডায়াল করুন।</span>
+        </div>
+
+        <button type="button" onclick="closeSosReceiptModal()" class="w-full py-2.5 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl transition" data-i18n="btnClose">ঠিক আছে</button>
+      </div>
+    </div>
+
+    <!-- ===== TOAST NOTIFICATION CONTAINER ===== -->
+    <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col space-y-2 w-11/12 max-w-sm"></div>
+
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC                                    -->
+  <!-- ============================================================== -->
+  <script>
+    // ===== CONSTANTS =====
+
+    // Vehicle configurations with deterministic rates and caps
+    const VEHICLE_CONFIGS = {
+      cng: {
+        id: 'cng',
+        nameBn: 'সিএনজি অটো-রিকশা',
+        nameEn: 'CNG Auto-Rickshaw',
+        baseFare: 50,
+        coveredKm: 2.0,
+        perKmRate: 16,
+        congestionRate: 3.5, // ৳ per estimated minute
+        rainSurge: 1.35,
+        peakSurge: 1.25,
+        nightSurge: 1.30,
+        minFareFloor: 50,
+        speedKmh: 18,
+        disclaimerLimitKm: null
+      },
+      rickshaw: {
+        id: 'rickshaw',
+        nameBn: 'সাধারণ রিকশা',
+        nameEn: 'Cycle Rickshaw',
+        baseFare: 25,
+        coveredKm: 1.0,
+        perKmRate: 22,
+        congestionRate: 0,
+        rainSurge: 1.50,
+        peakSurge: 1.20,
+        nightSurge: 1.25,
+        minFareFloor: 25,
+        speedKmh: 10,
+        disclaimerLimitKm: 7.0,
+        disclaimerNoticeBn: 'দূরপাল্লার যাত্রায় রিকশার বদলে সিএনজি বা মেট্রোরেল নেয়ার পরামর্শ দেওয়া হচ্ছে।',
+        disclaimerNoticeEn: 'CNG or Metro Rail is strongly recommended over cycle rickshaw for long trips.'
+      },
+      battery: {
+        id: 'battery',
+        nameBn: 'ইজিবাইক/ব্যাটারি রিকশা',
+        nameEn: 'Battery Rickshaw / Easybike',
+        baseFare: 20,
+        coveredKm: 1.0,
+        perKmRate: 14,
+        congestionRate: 0,
+        rainSurge: 1.30,
+        peakSurge: 1.20,
+        nightSurge: 1.20,
+        minFareFloor: 20,
+        speedKmh: 14,
+        disclaimerLimitKm: 10.0,
+        disclaimerNoticeBn: 'লম্বা রুটে ব্যাটারি রিকশা পাওয়া কঠিন হতে পারে।',
+        disclaimerNoticeEn: 'Battery rickshaws may be difficult to find for long routes.'
+      }
+    };
+
+    // Pre-loaded Dhaka Landmarks + Comprehensive MRT-6 Metro Stations
+    const DHAKA_LANDMARKS = [
+      // --- Metro Rail MRT-6 Stations ---
+      { id: 'mrt_uttara_north', nameBn: 'উত্তরা উত্তর (মেট্রো)', nameEn: 'Uttara North (MRT)', coords: [23.8767, 90.3879], category: 'metro' },
+      { id: 'mrt_uttara_center', nameBn: 'উত্তরা সেন্টার (মেট্রো)', nameEn: 'Uttara Center (MRT)', coords: [23.8643, 90.3888], category: 'metro' },
+      { id: 'mrt_uttara_south', nameBn: 'উত্তরা দক্ষিণ (মেট্রো)', nameEn: 'Uttara South (MRT)', coords: [23.8504, 90.3881], category: 'metro' },
+      { id: 'mrt_pallabi', nameBn: 'পল্লবী (মেট্রো)', nameEn: 'Pallabi (MRT)', coords: [23.8315, 90.3644], category: 'metro' },
+      { id: 'mrt_mirpur11', nameBn: 'মিরপুর ১১ (মেট্রো)', nameEn: 'Mirpur 11 (MRT)', coords: [23.8188, 90.3659], category: 'metro' },
+      { id: 'mrt_mirpur10', nameBn: 'মিরপুর ১০ (মেট্রো)', nameEn: 'Mirpur 10 (MRT)', coords: [23.8069, 90.3687], category: 'metro' },
+      { id: 'mrt_kazipara', nameBn: 'কাজীপাড়া (মেট্রো)', nameEn: 'Kazipara (MRT)', coords: [23.7946, 90.3725], category: 'metro' },
+      { id: 'mrt_shewrapara', nameBn: 'শেওড়াপাড়া (মেট্রো)', nameEn: 'Shewrapara (MRT)', coords: [23.7876, 90.3734], category: 'metro' },
+      { id: 'mrt_agargaon', nameBn: 'আগারগাঁও (মেট্রো)', nameEn: 'Agargaon (MRT)', coords: [23.7782, 90.3789], category: 'metro' },
+      { id: 'mrt_bijoy_sarani', nameBn: 'বিজয় সরণি (মেট্রো)', nameEn: 'Bijoy Sarani (MRT)', coords: [23.7667, 90.3875], category: 'metro' },
+      { id: 'mrt_farmgate', nameBn: 'ফার্মগেট (মেট্রো)', nameEn: 'Farmgate (MRT)', coords: [23.7561, 90.3872], category: 'metro' },
+      { id: 'mrt_karwan_bazar', nameBn: 'কাওরান বাজার (মেট্রো)', nameEn: 'Karwan Bazar (MRT)', coords: [23.7508, 90.3927], category: 'metro' },
+      { id: 'mrt_shahbagh', nameBn: 'শাহবাগ (মেট্রো)', nameEn: 'Shahbagh (MRT)', coords: [23.7381, 90.3958], category: 'metro' },
+      { id: 'mrt_dhaka_univ', nameBn: 'ঢাকা বিশ্ববিদ্যালয় টিএসসি (মেট্রো)', nameEn: 'Dhaka Univ TSC (MRT)', coords: [23.7314, 90.3958], category: 'metro' },
+      { id: 'mrt_secretariat', nameBn: 'বাংলাদেশ সচিবালয় (মেট্রো)', nameEn: 'Bangladesh Secretariat (MRT)', coords: [23.7289, 90.4072], category: 'metro' },
+      { id: 'mrt_motijheel', nameBn: 'মতিঝিল (মেট্রো)', nameEn: 'Motijheel (MRT)', coords: [23.7290, 90.4176], category: 'metro' },
+
+      // --- Major Hubs & Terminals ---
+      { id: 'farmgate', nameBn: 'ফার্মগেট মোড়', nameEn: 'Farmgate Intersection', coords: [23.7561, 90.3872], category: 'hub' },
+      { id: 'dhanmondi27', nameBn: 'ধানমন্ডি ২৭', nameEn: 'Dhanmondi 27', coords: [23.7539, 90.3705], category: 'hub' },
+      { id: 'dhanmondi32', nameBn: 'ধানমন্ডি ৩২', nameEn: 'Dhanmondi 32', coords: [23.7516, 90.3783], category: 'hub' },
+      { id: 'gulshan1', nameBn: 'গুলশান ১ সার্কেল', nameEn: 'Gulshan 1 Circle', coords: [23.7788, 90.4173], category: 'hub' },
+      { id: 'gulshan2', nameBn: 'গুলশান ২ সার্কেল', nameEn: 'Gulshan 2 Circle', coords: [23.7925, 90.4162], category: 'hub' },
+      { id: 'banani11', nameBn: 'বনানী ১১', nameEn: 'Banani 11', coords: [23.7935, 90.4046], category: 'hub' },
+      { id: 'mohakhali', nameBn: 'মহাখালী বাস টার্মিনাল', nameEn: 'Mohakhali Bus Terminal', coords: [23.7776, 90.3995], category: 'hub' },
+      { id: 'mirpur1', nameBn: 'মিরপুর ১ গোলচত্বর', nameEn: 'Mirpur 1 Circle', coords: [23.7956, 90.3537], category: 'hub' },
+      { id: 'mirpur10', nameBn: 'মিরপুর ১০ গোলচত্বর', nameEn: 'Mirpur 10 Roundabout', coords: [23.8069, 90.3687], category: 'hub' },
+      { id: 'mohammadpur', nameBn: 'মোহাম্মদপুর টাউন হল', nameEn: 'Mohammadpur Town Hall', coords: [23.7594, 90.3622], category: 'hub' },
+      { id: 'motijheel', nameBn: 'মতিঝিল শাপলা চত্বর', nameEn: 'Motijheel Shapla Chottor', coords: [23.7290, 90.4176], category: 'hub' },
+      { id: 'jatrabari', nameBn: 'যাত্রাবাড়ী চৌরাস্তা', nameEn: 'Jatrabari Chourasta', coords: [23.7107, 90.4331], category: 'hub' },
+      { id: 'badda', nameBn: 'মধ্য বাড্ডা', nameEn: 'Madhya Badda', coords: [23.7844, 90.4262], category: 'hub' },
+      { id: 'rampura', nameBn: 'রামপুরা ব্রিজ', nameEn: 'Rampura Bridge', coords: [23.7628, 90.4247], category: 'hub' },
+      { id: 'khilgaon', nameBn: 'খিলগাঁও রেলগেট', nameEn: 'Khilgaon Railgate', coords: [23.7504, 90.4239], category: 'hub' },
+      { id: 'uttara3', nameBn: 'উত্তরা সেক্টর ৩', nameEn: 'Uttara Sector 3', coords: [23.8681, 90.3986], category: 'hub' },
+
+      // --- Key Destinations & Landmarks ---
+      { id: 'bashundhara', nameBn: 'বসুন্ধরা সিটি (পান্থপথ)', nameEn: 'Bashundhara City Mall', coords: [23.7508, 90.3927], category: 'landmark' },
+      { id: 'bashundhara_gate', nameBn: 'বসুন্ধরা আবাসিক গেট', nameEn: 'Bashundhara R/A Gate', coords: [23.8194, 90.4287], category: 'landmark' },
+      { id: 'newmarket', nameBn: 'নিউ মার্কেট', nameEn: 'New Market', coords: [23.7333, 90.3846], category: 'landmark' },
+      { id: 'shahbagh', nameBn: 'শাহবাগ মোড়', nameEn: 'Shahbagh Intersection', coords: [23.7381, 90.3958], category: 'landmark' },
+      { id: 'curzon', nameBn: 'কার্জন হল (ঢাবি)', nameEn: 'Dhaka Univ Curzon Hall', coords: [23.7275, 90.4042], category: 'landmark' },
+      { id: 'airport', nameBn: 'হযরত শাহজালাল বিমানবন্দর', nameEn: 'Hazrat Shahjalal Airport', coords: [23.8433, 90.3978], category: 'landmark' },
+      { id: 'kamalapur', nameBn: 'কমলাপুর রেলওয়ে স্টেশন', nameEn: 'Kamalapur Railway Station', coords: [23.7319, 90.4267], category: 'landmark' },
+      { id: 'sadarghat', nameBn: 'সদরঘাট লঞ্চ টার্মিনাল', nameEn: 'Sadarghat Launch Terminal', coords: [23.7058, 90.4116], category: 'landmark' }
+    ];
+    const PRESET_LANDMARKS = DHAKA_LANDMARKS;
+
+    // Seed Crowdsourced Trips for localStorage
+    const SEED_COMMUNITY_TRIPS = [
+      { id: 1, vehicle: 'cng', start: 'ফার্মগেট', end: 'গুলশান ১', distanceKm: 5.2, farePaid: 160, note: 'মহাখালী ফ্লাইওভারে জ্যাম ছিল', timestamp: Date.now() - 1000 * 60 * 18 },
+      { id: 2, vehicle: 'rickshaw', start: 'ধানমন্ডি ২৭', end: 'সায়েন্স ল্যাব', distanceKm: 2.1, farePaid: 50, note: 'স্মুথ ও ন্যায্য ট্রিপ', timestamp: Date.now() - 1000 * 60 * 55 },
+      { id: 3, vehicle: 'battery', start: 'মিরপুর ১০', end: 'মিরপুর ২', distanceKm: 1.8, farePaid: 30, note: 'স্ট্যান্ডার্ড রেট', timestamp: Date.now() - 1000 * 60 * 120 },
+      { id: 4, vehicle: 'cng', start: 'উত্তরা সেক্টর ৩', end: 'বিমানবন্দর', distanceKm: 4.0, farePaid: 140, note: 'দেরী রাতের ট্রিপ', timestamp: Date.now() - 1000 * 60 * 240 },
+      { id: 5, vehicle: 'cng', start: 'বনানী ১১', end: 'গুলশান ১', distanceKm: 1.6, farePaid: 70, note: 'ড্রাইভার হালকা বেশি চেয়েছিল', timestamp: Date.now() - 1000 * 60 * 360 },
+      { id: 6, vehicle: 'rickshaw', start: 'শাহবাগ', end: 'নিউ মার্কেট', distanceKm: 1.9, farePaid: 45, note: 'বৃষ্টির মধ্যেও ন্যায্য ছিল', timestamp: Date.now() - 1000 * 60 * 500 },
+      { id: 7, vehicle: 'battery', start: 'যাত্রাবাড়ী', end: 'মতিঝিল', distanceKm: 3.3, farePaid: 90, note: 'পিক আওয়ার', timestamp: Date.now() - 1000 * 60 * 720 },
+      { id: 8, vehicle: 'cng', start: 'বসুন্ধরা সিটি', end: 'বনানী ১১', distanceKm: 2.7, farePaid: 100, note: 'স্বাভাবিক রেট', timestamp: Date.now() - 1000 * 60 * 940 }
+    ];
+
+    // Seed Driver Verification Records
+    const MOCK_DRIVERS_DB = [
+      {
+        plate: 'ঢাকা মেট্রো-থ ১১-১২৩৪',
+        driverNameBn: 'মো. কামাল হোসেন',
+        driverNameEn: 'Md. Kamal Hossain',
+        rating: 4.8,
+        activeYears: 3,
+        reportsCount: 0,
+        vehicleType: 'সিএনজি অটো',
+        safetyScore: 96,
+        isVerified: true
+      },
+      {
+        plate: 'ঢাকা মেট্রো-চ ২২-৫৬৭৮',
+        driverNameBn: 'আবুল কালাম',
+        driverNameEn: 'Abul Kalam',
+        rating: 4.5,
+        activeYears: 2,
+        reportsCount: 1,
+        vehicleType: 'সিএনজি অটো',
+        safetyScore: 88,
+        isVerified: true
+      },
+      {
+        plate: 'ঢাকা মেট্রো-গ ৩৩-৯০১২',
+        driverNameBn: 'রিনা বেগম',
+        driverNameEn: 'Rina Begum',
+        rating: 4.9,
+        activeYears: 4,
+        reportsCount: 0,
+        vehicleType: 'সিএনজি অটো (নারী চালক)',
+        safetyScore: 99,
+        isVerified: true
+      },
+      {
+        plate: 'ঢাকা মেট্রো-হ ৪৪-৩৪৩৪',
+        driverNameBn: 'রফিকুল ইসলাম',
+        driverNameEn: 'Rafiqul Islam',
+        rating: 4.7,
+        activeYears: 2,
+        reportsCount: 0,
+        vehicleType: 'ব্যাটারিচালিত অটো',
+        safetyScore: 94,
+        isVerified: true
+      }
+    ];
+
+    // Default SOS Contacts
+    const DEFAULT_SOS_CONTACTS = [
+      { name: 'জাতীয় জরুরি সেবা (DMP)', phone: '999', isFixed: true },
+      { name: 'পরিবার ১ (মা / বাবা)', phone: '01711000000', isFixed: false },
+      { name: 'বন্ধু / সহকর্মী', phone: '01819000000', isFixed: false }
+    ];
+
+    // Storage Keys
+    const STORAGE_KEY_LANG = 'nirapod_lang';
+    const STORAGE_KEY_THEME = 'nirapod_theme';
+    const STORAGE_KEY_COMMUNITY = 'nirapod_trips';
+    const STORAGE_KEY_CONTACTS = 'nirapod_contacts';
+
+    // ===== STATE =====
+
+    const state = {
+      language: 'bn',              // 'bn' | 'en'
+      theme: 'light',              // 'light' | 'dark'
+      activeTab: 'fare',           // 'fare' | 'community' | 'safety'
+      selectedVehicle: 'cng',      // 'cng' | 'rickshaw' | 'battery'
+      startPoint: null,            // { name, lat, lng } | null
+      endPoint: null,              // { name, lat, lng } | null
+      conditions: {
+        rain: false,
+        peak: false,
+        night: false
+      },
+      liveWeather: null,           // { temp, isRaining, rain, code }
+      lastResult: null,            // { distanceKm, minutes, minFare, maxFare, mode }
+      communityTrips: [],          // loaded from localStorage
+      sosContacts: [],             // loaded from localStorage
+      map: null,                   // Leaflet map instance
+      routePolyline: null,         // Active route polyline layer
+      startMarker: null,           // Start pin marker
+      endMarker: null,             // End pin marker
+      activeCommunityFilter: 'all' // 'all' | 'cng' | 'rickshaw' | 'battery'
+    };
+
+    // ===== AUDIO GUIDE (WEB SPEECH API) STATE =====
+    let isSpeaking = false;
+
+    // ===== AUDIBLE SIREN (WEB AUDIO API) STATE =====
+    let audioCtx = null;
+    let sirenOscillator = null;
+    let sirenGainNode = null;
+    let isSirenActive = false;
+    let sirenTimer = null;
+
+    // ===== I18N DICTIONARY =====
+
+    const translations = {
+      bn: {
+        appTitle: 'নিরাপদ যাত্রা',
+        appSubtitle: 'ঢাকা শহরের রিকশা, সিএনজি ও মেট্রোর বিশ্বস্ত সঙ্গী',
+        liveRatesActive: 'সরাসরি রেট সক্রিয়',
+        bannerProblem: 'মিটারহীন অতিরিক্ত ভাড়া থেকে বাঁচুন — আগে জানুন, পরে উঠুন',
+        selectVehicleLabel: '১. বাহন নির্বাচন করুন',
+        vehicleCng: 'সিএনজি অটো',
+        vehicleCngSpeed: 'দ্রুত • মিটারহীন',
+        vehicleRickshaw: 'সাধারণ রিকশা',
+        vehicleRickshawLimit: 'স্বল্প দূরত্ব • ≤৭ কিমি',
+        vehicleBattery: 'ইজিবাইক/ব্যাটারি',
+        vehicleBatteryLimit: 'মাঝারি দূরত্ব • সাশ্রয়ী',
+        routeSelectLabel: '২. যাত্রা শুরু ও গন্তব্য নির্ধারণ',
+        mapTapNotice: 'বা ম্যাপে ট্যাপ করুন',
+        pickupPlaceholder: 'যাত্রা শুরুর স্থান নির্বাচন করুন...',
+        destPlaceholder: 'গন্তব্যের স্থান নির্বাচন করুন...',
+        quickRoutesLabel: 'জনপ্রিয় রুট:',
+        samePointError: 'শুরু এবং গন্তব্য একই জায়গা মনে হচ্ছে',
+        tooLongError: 'এই দূরত্বের জন্য অ্যাপটি ডিজাইন করা হয়নি — বাস/মেট্রো বিবেচনা করুন।',
+        mapTitle: 'লাইভ রুট ম্যাপ',
+        mapRouteStatusBadge: 'পয়েন্ট নির্ধারণ করুন',
+        centerDhaka: 'ঢাকা কেন্দ্র',
+        conditionsLabel: '৩. বর্তমান পরিস্থিতি (সার্জ ও চাপ)',
+        surgeMaxCap: 'সর্বোচ্চ ক্যাপ: ১.৯ গুণ',
+        condRain: 'বৃষ্টি হচ্ছে',
+        condPeak: 'অফিস পিক-আওয়ার',
+        condNight: 'গভীর রাত',
+        calculateBtn: 'ভাড়া গণনা করুন',
+        fairFareRangeLabel: 'ন্যায্য ভাড়া',
+        negotiationTitle: 'দরকষাকষির কৌশল',
+        listenVoice: 'শুনে নিন',
+        stopVoice: 'থামুন',
+        multimodalTitle: 'মেট্রোরেল বিকল্প ও সাশ্রয়ী টিপস',
+        shareWhatsapp: 'হোয়াটসঅ্যাপ শেয়ার',
+        shareSms: 'এসএমএস ট্র্যাকিং',
+        btnShareTrip: 'আমি এই ট্রিপে কত দিয়েছি জানান',
+        navFare: 'ন্যায্য ভাড়া',
+        navCommunity: 'কমিউনিটি রেট',
+        navSafety: 'সেফটি ও ভেরিফিকেশন',
+        communityTitle: 'কমিউনিটি ফেয়ার লেজার',
+        communitySubtitle: 'সাধারণ যাত্রীদের দেওয়া বাস্তব ভাড়ার তথ্য। আপনার অভিজ্ঞতাও যুক্ত করুন এবং অতিরিক্ত ভাড়া প্রতিরোধ করুন।',
+        contributeCardTitle: 'নতুন ভাড়ার তথ্য যোগ করুন',
+        comVehicleLabel: 'বাহনের ধরন',
+        comDistanceLabel: 'দূরত্ব (কিমি)',
+        comStartLabel: 'শুরুর স্থান',
+        comEndLabel: 'গন্তব্য',
+        comFareLabel: 'পরিশোধিত ভাড়া (৳)',
+        comNoteLabel: 'মন্তব্য (ঐচ্ছিক)',
+        comRouteLabel: 'রুট ও বাহন',
+        modalQuickReportTitle: 'আপনার ট্রিপের ভাড়া জানান',
+        btnSubmitRate: 'রেট যুক্ত করুন',
+        filterAll: 'সব ট্রিপ',
+        filterCng: 'সিএনজি',
+        filterRickshaw: 'সাধারণ রিকশা',
+        filterBattery: 'ব্যাটারি রিকশা',
+        badgeFair: 'ন্যায্য ছিল',
+        badgeOvercharge: 'বেশি নিয়েছে',
+        badgeDiscount: 'সাশ্রয়ী',
+        safetyVisionBadge: 'হ্যাকাথন ভিশন / দ্বিতীয় ধাপ প্রোটোটাইপ',
+        safetyVisionDesc: 'যাত্রীদের ব্যক্তিগত নিরাপত্তা নিশ্চিত করতে ব্র্যাক / ডিএমপি ডাটাবেজ ইন্টিগ্রেশনের পরিকল্পিত মডেল। নিচের ডেমো ডাটা দিয়ে পরীক্ষা করুন।',
+        sirenBtnTitle: 'উচ্চ-শব্দ জরুরি সাইরেন (Distress Siren)',
+        sirenDesc: 'বিপদজনক পরিস্থিতিতে চালক বা আশপাশের মানুষের মনোযোগ আকর্ষণের জন্য ব্রাউজার স্পিকার দিয়ে তীব্র সাইরেন বাজান।',
+        sirenBtnStart: 'জরুরি সাইরেন বাজান (Sound Siren)',
+        sirenBtnStop: 'সাইরেন বন্ধ করুন (Stop Siren)',
+        driverVerifyTitle: 'ড্রাইভার ও বাহন যাচাইকরণ',
+        btnVerify: 'যাচাই করুন',
+        samplePlatesLabel: 'টেস্ট করার জন্য ক্লিক করুন:',
+        qrScanTitle: 'স্মার্ট কিউআর স্ক্যানার (সিমুলেশন)',
+        qrInstruction: 'সিএনজি বা রিকশার কোড ফ্রেমের মধ্যে রাখুন',
+        btnTestQr: 'টেস্ট কিউআর কোড স্ক্যান করুন',
+        safetyTipsTitle: 'যাত্রীদের ৫টি আবশ্যিক নিরাপত্তা পরামর্শ',
+        tip1Title: 'নম্বর প্লেট শেয়ার:',
+        tip2Title: 'সিএনজির গ্রিল ও লক:',
+        tip3Title: 'লাইভ রুট ট্র্যাকিং:',
+        tip4Title: 'ন্যায্য ভাড়া আগে স্থির:',
+        tip5Title: '৯৯৯ জরুরি হেল্পলাইন:',
+        emergencySosTitle: 'জরুরি নিরাপত্তা সংকেত (SOS)',
+        btnTriggerSos: 'জরুরি সংকেত (Emergency SOS)',
+        trustedContactsTitle: 'বিশ্বস্ত যোগাযোগ নম্বর (সর্বোচ্চ ৪টি)',
+        btnAddContact: '+ নতুন নম্বর',
+        sosConfirmTitle: 'আপনি কি নিশ্চিত?',
+        sosConfirmDesc: 'জরুরি সংকেত নিশ্চিত করলে আপনার বর্তমান জিপিএস লোকেশন ও যাত্রার বিবরণ আপনার বিশ্বস্ত নম্বরসমূহ এবং ৯৯৯ পুলিশ হেল্পলাইনে এসএমএস পাঠানোর প্রোটোটাইপ কার্যকর হবে।',
+        btnCancel: 'বাতিল',
+        btnConfirmSos: 'হ্যাঁ, পাঠান',
+        sosSentTitle: 'জরুরি সংকেত পাঠানো হয়েছে (সিমুলেশন)',
+        sosReceiptGps: 'শনাক্তকৃত জিপিএস:',
+        sosReceiptTime: 'সময়:',
+        sosReceiptPolice: 'জাতীয় হেল্পলাইন:',
+        sosReceiptMessage: 'বিশ্বস্ত নম্বরগুলোতে আপনার লাইভ ট্র্যাকিং লিংক ও টেক্সট এসএমএস প্রস্তুত হয়েছে। জরুরি মুহূর্তে সরাসরি ৯৯৯ ডায়াল করুন।',
+        btnClose: 'ঠিক আছে',
+        verifiedStatus: 'যাচাইকৃত চালক',
+        unverifiedStatus: 'অযাচাইকৃত প্লেট',
+        ratingLabel: 'রেটিং',
+        tripsLabel: 'অভিজ্ঞতা',
+        safetyScoreLabel: 'সুরক্ষা স্কোর',
+        reportsLabel: 'অভিযোগ',
+        osrmRoutingBadge: 'ওএসআরএম রুট',
+        offlineRoutingBadge: 'অফলাইন হিসাব (উইন্ডিং)',
+        emptyFeedTitle: 'কোনো ট্রিপ পাওয়া যায়নি',
+        emptyFeedSubtitle: 'আপনার প্রথম ট্রিপের রেট যোগ করে কমিউনিটিকে সাহায্য করুন!',
+        toastAdded: 'নতুন ট্রিপের তথ্য যোগ হয়েছে!',
+        mrtGroupLabel: '🚇 ঢাকা মেট্রো রেল স্টেশন (MRT-6)',
+        hubGroupLabel: '📍 প্রধান এলাকা ও বাস টার্মিনাল',
+        landmarkGroupLabel: '🎓 বিশ্ববিদ্যালয় ও বিশেষ স্থান',
+        rideHailingTitle: 'উবার ও পাঠাও খরচ তুলনা',
+        appVsStreetBadge: 'অ্যাপ বনাম লোকাল',
+        uberMoto: 'পাঠাও/উবার বাইক',
+        uberCng: 'উবার/পাঠাও সিএনজি',
+        uberCar: 'উবারএক্স / কার',
+        motoSub: 'বাইক • ১ জন',
+        cngSub: 'অ্যাপ ৩-হুইলার',
+        carSub: 'এসি কার • ৪ জন',
+        uberCompareInCard: 'উবার/পাঠাও অ্যাপ রেট:',
+        roadmapTitle: 'পরবর্তী রোডম্যাপ (Future Vision)',
+        phase2Badge: 'ফেজ ২ প্ল্যান',
+        rm1Title: 'ড্রাইভার অনবোর্ডিং ও লাইভ জিপিএস ডিজিটাল মিটার',
+        rm1Desc: 'ড্রাইভারদের কিউআর স্টিকার ও লাইটওয়েট ওয়েব অ্যাপ দিয়ে রিয়েল-টাইম দূরত্ব ট্র্যাকিং।',
+        rm2Title: 'ঢাকার বাইরে সম্প্রসারণ (চট্টগ্রাম, সিলেট, রাজশাহী)',
+        rm2Desc: 'স্থানীয় রুট ক্যাপ্টেনদের মাধ্যমে দেশের প্রধান বিভাগীয় শহরগুলোর নিজস্ব রেট কার্ড সংযোজন।',
+        rm3Title: 'বাটন ফোনের জন্য এসএমএস ও ইউএসএসডি (*XXX#)',
+        rm3Desc: 'স্মার্টফোন বা ইন্টারনেট বিহীন প্রবীণ ও সাধারণ যাত্রীদের জন্য সরাসরি এসএমএসে ন্যায্য ভাড়া প্রাপ্তি।',
+        rm4Title: 'কমিউনিটি রেটিং ভিত্তিক ভেরিফায়েড ড্রাইভার ট্রাস্ট স্কোর',
+        rm4Desc: 'যাত্রীদের রেটিং ও ফিডব্যাকের ভিত্তিতে চালকদের ট্রাস্ট স্কোর এবং নিরাপত্তা ব্যাজ প্রদান।',
+        rm5Title: 'ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ দাখিল',
+        rm5Desc: 'আইনশৃঙ্খলা রক্ষাকারী বাহিনী ও বিআরটিএ-এর সাথে অফিশিয়াল পার্টনারশিপে ডিজিটাল কেস রেজিস্ট্রি।'
+      },
+      en: {
+        appTitle: 'Nirapod Jatra',
+        appSubtitle: 'Your trusted companion for Dhaka transit fares & safety',
+        liveRatesActive: 'Live Rates Active',
+        bannerProblem: 'Avoid unmetered overcharging — know fair fares before riding',
+        selectVehicleLabel: '1. Select Vehicle',
+        vehicleCng: 'CNG Auto',
+        vehicleCngSpeed: 'Fast • Unmetered',
+        vehicleRickshaw: 'Cycle Rickshaw',
+        vehicleRickshawLimit: 'Short Trip • ≤7 km',
+        vehicleBattery: 'Battery Auto',
+        vehicleBatteryLimit: 'Medium Trip • Affordable',
+        routeSelectLabel: '2. Select Route (Pickup & Dropoff)',
+        mapTapNotice: 'or tap anywhere on map',
+        pickupPlaceholder: 'Choose pickup location...',
+        destPlaceholder: 'Choose destination...',
+        quickRoutesLabel: 'Popular Routes:',
+        samePointError: 'Pickup and destination appear to be the same location',
+        tooLongError: 'This app is not designed for this distance — please consider bus/metro.',
+        mapTitle: 'Live Route Map',
+        mapRouteStatusBadge: 'Select route points',
+        centerDhaka: 'Dhaka Center',
+        conditionsLabel: '3. Conditions (Surges & Delays)',
+        surgeMaxCap: 'Maximum Cap: 1.9x',
+        condRain: 'Raining',
+        condPeak: 'Peak Hour',
+        condNight: 'Late Night',
+        calculateBtn: 'Calculate Fair Fare',
+        fairFareRangeLabel: 'Fair Fare',
+        negotiationTitle: 'Negotiation Strategy',
+        listenVoice: 'Listen Audio',
+        stopVoice: 'Stop',
+        multimodalTitle: 'Metro Rail Alternative & Savings',
+        shareWhatsapp: 'Share WhatsApp',
+        shareSms: 'Share via SMS',
+        btnShareTrip: 'Share what you paid for this trip',
+        navFare: 'Fare Estimator',
+        navCommunity: 'Community Rates',
+        navSafety: 'Safety & Verification',
+        communityTitle: 'Community Fare Ledger',
+        communitySubtitle: 'Real fare data reported by daily commuters. Contribute your ride to build transparency.',
+        contributeCardTitle: 'Contribute New Ride Fare',
+        comVehicleLabel: 'Vehicle Type',
+        comDistanceLabel: 'Distance (km)',
+        comStartLabel: 'Pickup Location',
+        comEndLabel: 'Destination',
+        comFareLabel: 'Fare Paid (৳)',
+        comNoteLabel: 'Comment (Optional)',
+        comRouteLabel: 'Route & Vehicle',
+        modalQuickReportTitle: 'Report Your Ride Fare',
+        btnSubmitRate: 'Submit Rate',
+        filterAll: 'All Trips',
+        filterCng: 'CNG',
+        filterRickshaw: 'Cycle Rickshaw',
+        filterBattery: 'Battery Rickshaw',
+        badgeFair: 'Fair Price',
+        badgeOvercharge: 'Overcharged',
+        badgeDiscount: 'Discounted',
+        safetyVisionBadge: 'Hackathon Vision / Phase 2 Prototype',
+        safetyVisionDesc: 'Planned framework for BRAC / DMP database verification to protect vulnerable riders. Test with mock records below.',
+        sirenBtnTitle: 'Audible Distress Siren',
+        sirenDesc: 'Draw instant public attention and alert bystanders with a piercing alternating frequency siren.',
+        sirenBtnStart: 'Sound Distress Siren',
+        sirenBtnStop: 'Stop Siren',
+        driverVerifyTitle: 'Driver & Vehicle Verification',
+        btnVerify: 'Verify',
+        samplePlatesLabel: 'Click to test sample plates:',
+        qrScanTitle: 'Smart QR Scanner (Simulation)',
+        qrInstruction: 'Align vehicle QR code inside viewfinder',
+        btnTestQr: 'Scan Test QR Code',
+        safetyTipsTitle: '5 Essential Commuter Safety Tips',
+        tip1Title: 'Share Plate Number:',
+        tip2Title: 'CNG Grill & Locks:',
+        tip3Title: 'Live Route Tracking:',
+        tip4Title: 'Fix Fair Fare First:',
+        tip5Title: '999 Police Helpline:',
+        emergencySosTitle: 'Emergency SOS Signal',
+        btnTriggerSos: 'Emergency SOS',
+        trustedContactsTitle: 'Trusted Contacts (Up to 4)',
+        btnAddContact: '+ Add Contact',
+        sosConfirmTitle: 'Are you sure?',
+        sosConfirmDesc: 'Confirming SOS will trigger a prototype dispatch of your GPS coordinates and ride details to your trusted contacts and National Police 999.',
+        btnCancel: 'Cancel',
+        btnConfirmSos: 'Yes, Send SOS',
+        sosSentTitle: 'Emergency SOS Dispatched (Simulation)',
+        sosReceiptGps: 'Detected GPS:',
+        sosReceiptTime: 'Timestamp:',
+        sosReceiptPolice: 'Police Helpline:',
+        sosReceiptMessage: 'Live GPS location & tracking link queued for your contacts. In immediate danger, call 999 directly.',
+        btnClose: 'Close',
+        verifiedStatus: 'Verified Driver',
+        unverifiedStatus: 'Unverified Plate',
+        ratingLabel: 'Rating',
+        tripsLabel: 'Experience',
+        safetyScoreLabel: 'Safety Score',
+        reportsLabel: 'Reports',
+        osrmRoutingBadge: 'OSRM Route',
+        offlineRoutingBadge: 'Offline Estimate (Winding)',
+        emptyFeedTitle: 'No rides found',
+        emptyFeedSubtitle: 'Contribute your first ride fare to help the community!',
+        toastAdded: 'Trip fare added to community ledger!',
+        mrtGroupLabel: '🚇 Dhaka Metro Rail Stations (MRT-6)',
+        hubGroupLabel: '📍 Major Hubs & Terminals',
+        landmarkGroupLabel: '🎓 Universities & Key Destinations',
+        rideHailingTitle: 'Uber & Pathao Estimates',
+        appVsStreetBadge: 'App vs Local',
+        uberMoto: 'Pathao / Uber Moto',
+        uberCng: 'Uber / Pathao CNG',
+        uberCar: 'UberX / Car',
+        motoSub: 'Bike • 1 Person',
+        cngSub: 'App Auto',
+        carSub: 'AC Car • 4 Persons',
+        uberCompareInCard: 'Uber/Pathao App Fare:',
+        roadmapTitle: 'Post-Hackathon Roadmap (Future Vision)',
+        phase2Badge: 'Phase 2 Plan',
+        rm1Title: 'Driver Onboarding & Live GPS Digital Meter Mode',
+        rm1Desc: 'Driver QR stickers and lightweight web companion for real-time GPS tracking without vehicle hardware.',
+        rm2Title: 'City-Wide Expansion Beyond Dhaka (CTG, Sylhet, Rajshahi)',
+        rm2Desc: 'Empower local route captains to seed municipal pricing tables for regional cities.',
+        rm3Title: 'SMS / USSD Fallback (*XXX#) for Feature Phones',
+        rm3Desc: 'Direct non-smartphone fare queries to reach low-income, elderly, and rural riders.',
+        rm4Title: 'Verified-Driver Trust Score Fed by Real Community Ratings',
+        rm4Desc: 'Machine-learning score system driven by passenger feedback with anti-spoof detection.',
+        rm5Title: 'Direct Law-Enforcement (DMP) & BRTA Incident Reporting',
+        rm5Desc: 'Official reporting escalation pipeline for passenger safety and fare abuse.'
+      }
+    };
+
+    // ===== RIDE-HAILING ESTIMATION ENGINE (UBER & PATHAO BENCHMARKS) =====
+
+    function calculateRideHailingEstimates(distanceKm, travelMinutes, conditions) {
+      const minutes = (travelMinutes && travelMinutes > 0) ? travelMinutes : estimateMinutes(distanceKm, 'cng');
+      let surge = 1.0;
+      if (conditions && conditions.rain) surge *= 1.30;
+      if (conditions && conditions.peak) surge *= 1.20;
+      if (conditions && conditions.night) surge *= 1.25;
+      if (surge > 1.85) surge = 1.85;
+
+      // Moto (Pathao / Uber Moto)
+      const motoRaw = (30 + (distanceKm * 14) + (minutes * 0.75)) * surge;
+      const motoMin = Math.max(45, Math.round((motoRaw * 0.90) / 5) * 5);
+      const motoMax = Math.max(motoMin + 15, Math.round((motoRaw * 1.15) / 5) * 5);
+
+      // App CNG (Uber CNG / Pathao Auto)
+      const cngRaw = (55 + (distanceKm * 18) + (minutes * 2.50) + 15) * surge;
+      const cngMin = Math.max(70, Math.round((cngRaw * 0.90) / 5) * 5);
+      const cngMax = Math.max(cngMin + 20, Math.round((cngRaw * 1.15) / 5) * 5);
+
+      // Car (UberX / Pathao Car)
+      const carRaw = (90 + (distanceKm * 25) + (minutes * 3.50)) * surge;
+      const carMin = Math.max(150, Math.round((carRaw * 0.90) / 5) * 5);
+      const carMax = Math.max(carMin + 30, Math.round((carRaw * 1.18) / 5) * 5);
+
+      return {
+        surge,
+        motoMin,
+        motoMax,
+        cngMin,
+        cngMax,
+        carMin,
+        carMax
+      };
+    }
+
+    // ===== FARE ENGINE =====
+
+    // Calculates deterministic fair fare range and script based on vehicle, distance, and surges
+    function calculateFareEngine(vehicleId, distanceKm, travelMinutes, conditions) {
+      const cfg = VEHICLE_CONFIGS[vehicleId];
+      if (!cfg) return null;
+
+      // 1. Calculate surges with naive stacking cap of 1.9x
+      let activeSurgeMultiplier = 1.0;
+      if (conditions.rain) activeSurgeMultiplier *= cfg.rainSurge;
+      if (conditions.peak) activeSurgeMultiplier *= cfg.peakSurge;
+      if (conditions.night) activeSurgeMultiplier *= cfg.nightSurge;
+
+      if (activeSurgeMultiplier > 1.90) {
+        activeSurgeMultiplier = 1.90; // Stacking cap
+      }
+
+      // 2. Compute billable distance beyond covered km
+      const billableKm = Math.max(0, distanceKm - cfg.coveredKm);
+
+      // 3. Compute base + distance + congestion buffer
+      const distanceCost = billableKm * cfg.perKmRate;
+      const congestionCost = (travelMinutes || estimateMinutes(distanceKm, vehicleId)) * cfg.congestionRate;
+      const rawFare = (cfg.baseFare + distanceCost + congestionCost) * activeSurgeMultiplier;
+
+      // 4. Compute range rounded to nearest ৳5
+      let minFare = Math.round((rawFare * 0.90) / 5) * 5;
+      let maxFare = Math.round((rawFare * 1.18) / 5) * 5;
+
+      // 5. Floor constraint
+      if (minFare < cfg.minFareFloor) {
+        minFare = cfg.minFareFloor;
+      }
+      if (maxFare < minFare) {
+        maxFare = minFare + 10;
+      }
+
+      // 6. Negotiation script generation
+      const script = generateNegotiationScript(vehicleId, distanceKm, minFare, maxFare, conditions);
+
+      return {
+        vehicleId,
+        distanceKm,
+        travelMinutes,
+        rawFare,
+        activeSurgeMultiplier,
+        minFare,
+        maxFare,
+        script
+      };
+    }
+
+    // Generates smart dynamic negotiation scripts
+    function generateNegotiationScript(vehicleId, distanceKm, minFare, maxFare, conditions) {
+      const lang = state.language;
+      const midFare = Math.round(((minFare + maxFare) / 2) / 5) * 5;
+      const askFare = maxFare + 20;
+
+      if (conditions.rain && conditions.peak) {
+        return lang === 'bn'
+          ? `বৃষ্টি ও ব্যস্ত সময় একসাথে — ড্রাইভার স্বাভাবিকের চেয়ে অনেক বেশি চাইতে পারে, তবুও ${formatCurrency(maxFare, lang)}-এর মধ্যে থাকার চেষ্টা করুন।`
+          : `Heavy rain and peak rush stacked — drivers may quote high, but firmly aim to stay within ${formatCurrency(maxFare, lang)}.`;
+      }
+
+      if (conditions.rain) {
+        return lang === 'bn'
+          ? `বৃষ্টির কারণে চাহিদা বেশি। ড্রাইভার ২০–৪০% বেশি চাইবে। ন্যায্য সীমা ${formatCurrency(minFare, lang)}–${formatCurrency(maxFare, lang)}।`
+          : `High demand due to rain. Drivers might ask 20–40% extra. Fair window is ${formatCurrency(minFare, lang)}–${formatCurrency(maxFare, lang)}.`;
+      }
+
+      if (conditions.night) {
+        return lang === 'bn'
+          ? `দেরী রাতের ভ্রমণ। নিরাপত্তার স্বার্থে পরিচিত রুট ব্যবহার করুন এবং ${formatCurrency(maxFare, lang)}-এর বেশি দেবেন না।`
+          : `Late night travel. For safety, pick well-lit main avenues and avoid paying more than ${formatCurrency(maxFare, lang)}.`;
+      }
+
+      if (distanceKm < 1.5) {
+        return lang === 'bn'
+          ? `খুব কাছের দূরত্ব — অনেক চালক এই ট্রিপ নিতে না-ও চাইতে পারেন। প্রথমেই সরাসরি গন্তব্য বলুন এবং ${formatCurrency(minFare, lang)} অফার করুন।`
+          : `Short distance trip — drivers might hesitate for short fares. Directly state destination and offer ${formatCurrency(minFare, lang)}.`;
+      }
+
+      return lang === 'bn'
+        ? `প্রথমে ${formatCurrency(minFare, lang)} বলুন। ড্রাইভার ${formatCurrency(askFare, lang)} চাইতে পারে। শেষ পর্যন্ত ${formatCurrency(midFare, lang)} এর মধ্যে রফা করার চেষ্টা করুন।`
+        : `Start by offering ${formatCurrency(minFare, lang)}. Driver might ask ${formatCurrency(askFare, lang)}. Settle near ${formatCurrency(midFare, lang)}.`;
+    }
+
+    // Straight-line distance between two coordinates with Dhaka road winding factor 1.38
+    function calculateHaversine(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return (R * c) * 1.38; // City road winding factor
+    }
+
+    // Formats a number as Bangladeshi Taka currency, respecting active language
+    function formatCurrency(amount, lang) {
+      const rounded = Math.round(amount / 5) * 5;
+      return lang === 'bn' ? `৳${toBengaliNumber(rounded)}` : `৳${rounded}`;
+    }
+
+    // Converts standard digits in a string/number to Bengali numerals
+    function toBengaliNumber(input) {
+      const map = { '0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯' };
+      return String(input).replace(/[0-9]/g, d => map[d]);
+    }
+
+    // Rough travel-time estimate in minutes from distance and vehicle type
+    function estimateMinutes(distanceKm, vehicle) {
+      const speedKmh = { cng: 18, rickshaw: 10, battery: 14 };
+      const speed = speedKmh[vehicle] || 15;
+      return Math.max(3, Math.round((distanceKm / speed) * 60));
+    }
+
+    // Simple debounce utility for landmark search inputs
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    // ===== THEME LOGIC (AMOLED DARK MODE) =====
+
+    function initTheme() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY_THEME) || localStorage.getItem('nj_theme');
+        if (saved === 'dark' || saved === 'light') {
+          setTheme(saved);
+          return;
+        }
+      } catch (e) {}
+
+      // Auto-detect night time (between 8:00 PM and 6:00 AM) or system dark preference
+      const hour = new Date().getHours();
+      const isNight = hour >= 20 || hour < 6;
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (isNight || prefersDark) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
+    }
+
+    function toggleTheme() {
+      const next = state.theme === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+      showToast(state.language === 'bn' 
+        ? (next === 'dark' ? 'নাইট মোড চালু হয়েছে' : 'লাইট মোড চালু হয়েছে') 
+        : (next === 'dark' ? 'Night mode enabled' : 'Light mode enabled'));
+    }
+
+    function setTheme(theme) {
+      state.theme = theme;
+      try {
+        localStorage.setItem(STORAGE_KEY_THEME, theme);
+        localStorage.setItem('nj_theme', theme);
+      } catch (e) {}
+
+      const shell = document.getElementById('appShell');
+      const icon = document.getElementById('themeToggleIcon');
+
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        shell.classList.add('dark');
+        if (icon) {
+          icon.className = 'fa-solid fa-sun text-amber-300';
+        }
+      } else {
+        document.documentElement.classList.remove('dark');
+        shell.classList.remove('dark');
+        if (icon) {
+          icon.className = 'fa-solid fa-moon text-amber-200';
+        }
+      }
+    }
+
+    // ===== AUDIO GUIDE (WEB SPEECH API) =====
+
+    function toggleNegotiationAudio() {
+      if (!('speechSynthesis' in window)) {
+        showToast(state.language === 'bn' ? 'আপনার ব্রাউজার ভয়েস সমর্থন করে না' : 'Voice synthesis not supported in this browser');
+        return;
+      }
+
+      const icon = document.getElementById('audioSpeakerIcon');
+      const text = document.getElementById('audioBtnText');
+      const scriptElem = document.getElementById('resNegotiationScript');
+
+      if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        icon.className = 'fa-solid fa-volume-high text-[11px]';
+        text.textContent = translations[state.language].listenVoice;
+        return;
+      }
+
+      const textToSpeak = scriptElem ? scriptElem.textContent.trim() : '';
+      if (!textToSpeak) return;
+
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(textToSpeak);
+
+      const voices = window.speechSynthesis.getVoices();
+      if (state.language === 'bn') {
+        utter.lang = 'bn-BD';
+        const bnVoice = voices.find(v => v.lang && v.lang.startsWith('bn'));
+        if (bnVoice) utter.voice = bnVoice;
+        utter.rate = 0.95;
+      } else {
+        utter.lang = 'en-US';
+        const enVoice = voices.find(v => v.lang && v.lang.startsWith('en'));
+        if (enVoice) utter.voice = enVoice;
+        utter.rate = 1.0;
+      }
+
+      utter.onstart = () => {
+        isSpeaking = true;
+        icon.className = 'fa-solid fa-volume-high animate-bounce text-emerald-600 dark:text-emerald-400 text-[11px]';
+        text.textContent = translations[state.language].stopVoice;
+      };
+
+      utter.onend = () => {
+        isSpeaking = false;
+        icon.className = 'fa-solid fa-volume-high text-[11px]';
+        text.textContent = translations[state.language].listenVoice;
+      };
+
+      utter.onerror = () => {
+        isSpeaking = false;
+        icon.className = 'fa-solid fa-volume-high text-[11px]';
+        text.textContent = translations[state.language].listenVoice;
+      };
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    // ===== AUDIBLE EMERGENCY SIREN (WEB AUDIO API) =====
+
+    function toggleDistressSiren() {
+      if (isSirenActive) {
+        stopDistressSiren();
+        return;
+      }
+
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) {
+          showToast(state.language === 'bn' ? 'ব্রাউজার অডিও সমর্থিত নয়' : 'Web Audio not supported');
+          return;
+        }
+
+        audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        sirenOscillator = audioCtx.createOscillator();
+        sirenGainNode = audioCtx.createGain();
+
+        sirenOscillator.type = 'sawtooth';
+        sirenOscillator.frequency.setValueAtTime(750, audioCtx.currentTime);
+
+        let high = true;
+        sirenTimer = setInterval(() => {
+          if (!sirenOscillator || !audioCtx) return;
+          const targetFreq = high ? 1150 : 750;
+          sirenOscillator.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.08);
+          high = !high;
+        }, 280);
+
+        sirenGainNode.gain.setValueAtTime(0.35, audioCtx.currentTime);
+        sirenOscillator.connect(sirenGainNode);
+        sirenGainNode.connect(audioCtx.destination);
+        sirenOscillator.start();
+
+        isSirenActive = true;
+        const btn = document.getElementById('btnDistressSiren');
+        const icon = document.getElementById('sirenBtnIcon');
+        const text = document.getElementById('sirenBtnText');
+
+        btn.classList.remove('bg-rose-600', 'hover:bg-rose-700');
+        btn.classList.add('bg-black', 'text-amber-300', 'border-2', 'border-amber-400', 'animate-pulse');
+        icon.className = 'fa-solid fa-triangle-exclamation text-rose-500 text-base animate-bounce';
+        text.textContent = translations[state.language].sirenBtnStop;
+
+        showToast(state.language === 'bn' ? 'জরুরি সাইরেন বাজছে! বন্ধ করতে পুনরায় ট্যাপ করুন' : 'Distress siren sounding! Tap again to stop');
+      } catch (err) {
+        console.warn('Siren audio error:', err);
+        showToast('Audio error');
+      }
+    }
+
+    function stopDistressSiren() {
+      if (sirenTimer) {
+        clearInterval(sirenTimer);
+        sirenTimer = null;
+      }
+      if (sirenOscillator) {
+        try {
+          sirenOscillator.stop();
+          sirenOscillator.disconnect();
+        } catch (e) {}
+        sirenOscillator = null;
+      }
+      if (audioCtx) {
+        try {
+          audioCtx.close();
+        } catch (e) {}
+        audioCtx = null;
+      }
+      isSirenActive = false;
+
+      const btn = document.getElementById('btnDistressSiren');
+      const icon = document.getElementById('sirenBtnIcon');
+      const text = document.getElementById('sirenBtnText');
+
+      if (btn) {
+        btn.className = 'w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3 px-4 rounded-xl text-xs transition active:scale-95 flex items-center justify-center space-x-2 shadow-md';
+        icon.className = 'fa-solid fa-volume-high text-amber-300 text-base';
+        text.textContent = translations[state.language].sirenBtnStart;
+      }
+    }
+
+    // ===== LIVE DHAKA WEATHER AUTO-DETECTION (OPEN-METEO) =====
+
+    async function fetchLiveDhakaWeather() {
+      const badge = document.getElementById('liveWeatherBadge');
+      const text = document.getElementById('weatherStatusText');
+      const lang = state.language;
+
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,precipitation,weather_code');
+        if (!res.ok) throw new Error('Weather fetch failed');
+        const data = await res.json();
+        const current = data.current;
+        const temp = Math.round(current.temperature_2m);
+        const rain = current.precipitation;
+        const code = current.weather_code;
+
+        const isRaining = rain > 0.1 || (code >= 51 && code <= 99);
+        state.liveWeather = { temp, isRaining, rain, code };
+
+        const tempStr = lang === 'bn' ? `${toBengaliNumber(temp)}°C` : `${temp}°C`;
+
+        if (badge) {
+          badge.classList.remove('hidden');
+          if (isRaining) {
+            badge.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy text-amber-300 mr-1 animate-pulse"></i><span>${lang === 'bn' ? 'বৃষ্টি (' + tempStr + ')' : 'Rain (' + tempStr + ')'}</span>`;
+            badge.className = 'text-[10px] bg-amber-400/25 text-amber-200 px-2 py-0.5 rounded-full border border-amber-300/40 flex items-center shrink-0 font-semibold';
+          } else {
+            badge.innerHTML = `<i class="fa-solid fa-cloud-sun text-emerald-300 mr-1"></i><span>${lang === 'bn' ? 'ঢাকা ' + tempStr : 'Dhaka ' + tempStr}</span>`;
+            badge.className = 'text-[10px] bg-white/15 text-emerald-100 px-2 py-0.5 rounded-full border border-white/20 flex items-center shrink-0 font-medium';
+          }
+        }
+
+        if (text) {
+          text.innerHTML = isRaining
+            ? `<i class="fa-solid fa-cloud-showers-heavy text-blue-500 mr-1"></i><span class="font-bold text-blue-600 dark:text-blue-400">${lang === 'bn' ? 'বৃষ্টি (' + tempStr + ')' : 'Raining (' + tempStr + ')'}</span>`
+            : `<i class="fa-solid fa-cloud-sun text-amber-500 mr-1"></i><span>${lang === 'bn' ? 'পরিষ্কার (' + tempStr + ')' : 'Clear (' + tempStr + ')'}</span>`;
+        }
+
+        if (isRaining && !state.conditions.rain) {
+          toggleCondition('rain');
+          showToast(lang === 'bn' ? `ঢাকায় বৃষ্টি সনাক্ত হয়েছে (${tempStr}) — রেইন সার্জ চালু করা হলো` : `Rain detected in Dhaka (${tempStr}) — rain surge auto-applied`);
+        }
+      } catch (e) {
+        console.warn('Weather auto-detect error:', e);
+        if (text) {
+          text.innerHTML = `<i class="fa-solid fa-cloud-sun text-amber-500 mr-1"></i><span>ঢাকা (২৮°C)</span>`;
+        }
+      }
+    }
+
+    // ===== MULTIMODAL METRO RAIL ADVISOR =====
+
+    function checkMultimodalMetroRecommendation(start, end, result) {
+      const container = document.getElementById('resMetroAdvisorCard');
+      const textElem = document.getElementById('resMetroAdvisorText');
+      const lang = state.language;
+
+      if (!container || !textElem) return;
+
+      if (!start || !end || result.distanceKm < 4.2) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      const metroStations = DHAKA_LANDMARKS.filter(l => l.category === 'metro');
+      let nearestStartStation = null;
+      let minStartDist = 999;
+      let nearestEndStation = null;
+      let minEndDist = 999;
+
+      metroStations.forEach(st => {
+        const dStart = calculateHaversine(start.lat, start.lng, st.coords[0], st.coords[1]) / 1.38;
+        if (dStart < minStartDist) {
+          minStartDist = dStart;
+          nearestStartStation = st;
+        }
+        const dEnd = calculateHaversine(end.lat, end.lng, st.coords[0], st.coords[1]) / 1.38;
+        if (dEnd < minEndDist) {
+          minEndDist = dEnd;
+          nearestEndStation = st;
+        }
+      });
+
+      if (nearestStartStation && nearestEndStation && nearestStartStation.id !== nearestEndStation.id && minStartDist <= 3.5 && minEndDist <= 3.5) {
+        const startName = lang === 'bn' ? nearestStartStation.nameBn : nearestStartStation.nameEn;
+        const endName = lang === 'bn' ? nearestEndStation.nameBn : nearestEndStation.nameEn;
+
+        const estRickshaw1 = Math.max(25, Math.round((25 + minStartDist * 20) / 5) * 5);
+        const estMetroFare = 40;
+        const estRickshaw2 = Math.max(25, Math.round((25 + minEndDist * 20) / 5) * 5);
+        const totalMetroTrip = estRickshaw1 + estMetroFare + estRickshaw2;
+        const directFare = result.minFare;
+        const savings = Math.max(30, directFare - totalMetroTrip);
+
+        const savingsStr = formatCurrency(savings, lang);
+        const totalStr = formatCurrency(totalMetroTrip, lang);
+
+        if (lang === 'bn') {
+          textElem.innerHTML = `
+            <strong>💡 সাশ্রয়ী বিকল্প:</strong> সরাসরি ${result.vehicleId === 'cng' ? 'সিএনজি' : 'রিকশার'} চেয়ে রিকশায় <strong>${startName}</strong>-এ গিয়ে <strong>${endName}</strong> পর্যন্ত মেট্রোরেল (MRT-6) নিলে প্রায় <strong>${savingsStr}</strong> সাশ্রয় হবে এবং ট্রাফিকের ৩০-৪৫ মিনিট সময় বাঁচবে! (সম্ভাব্য মোট ব্যয়: ~${totalStr})
+          `;
+        } else {
+          textElem.innerHTML = `
+            <strong>💡 Smart Commute Tip:</strong> Instead of direct ${result.vehicleId.toUpperCase()}, take a rickshaw to <strong>${startName}</strong>, ride MRT-6 to <strong>${endName}</strong>, and save ~<strong>${savingsStr}</strong> while skipping 30-45 mins of traffic! (Est. total: ~${totalStr})
+          `;
+        }
+        container.classList.remove('hidden');
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    // ===== WHATSAPP & SMS RIDE SHARING =====
+
+    function shareTripViaWhatsApp() {
+      if (!state.lastResult || !state.startPoint || !state.endPoint) {
+        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first');
+        return;
+      }
+
+      const lang = state.language;
+      const startName = state.startPoint.name;
+      const endName = state.endPoint.name;
+      const vName = state.selectedVehicle === 'cng' ? 'সিএনজি' : (state.selectedVehicle === 'rickshaw' ? 'সাধারণ রিকশা' : 'ইজিবাইক');
+      const fare = `${formatCurrency(state.lastResult.minFare, lang)} - ${formatCurrency(state.lastResult.maxFare, lang)}`;
+      const mapsLink = `https://maps.google.com/?q=${state.startPoint.lat},${state.startPoint.lng}`;
+      const rh = calculateRideHailingEstimates(state.lastResult.distanceKm, state.lastResult.travelMinutes, state.conditions);
+      const uberRef = lang === 'bn'
+        ? `📱 উবার/পাঠাও আনুমানিক: বাইক ${formatCurrency(rh.motoMin, 'bn')}-${formatCurrency(rh.motoMax, 'bn')}, সিএনজি ${formatCurrency(rh.cngMin, 'bn')}-${formatCurrency(rh.cngMax, 'bn')}`
+        : `📱 Uber/Pathao Est: Bike ${formatCurrency(rh.motoMin, 'en')}-${formatCurrency(rh.motoMax, 'en')}, CNG ${formatCurrency(rh.cngMin, 'en')}-${formatCurrency(rh.cngMax, 'en')}`;
+
+      const text = lang === 'bn'
+        ? `🛡️ *নিরাপদ যাত্রা ট্রিপ আপডেট:*\n📍 শুরু: ${startName}\n🏁 গন্তব্য: ${endName}\n🛺 বাহন: ${vName} (${toBengaliNumber(state.lastResult.distanceKm)} কিমি)\n💰 ন্যায্য ভাড়া: ${fare}\n${uberRef}\n📍 লাইভ লোকেশন: ${mapsLink}\n🚨 জরুরি হেল্পলাইন: ৯৯৯`
+        : `🛡️ *Nirapod Jatra Trip Alert:*\n📍 Pickup: ${startName}\n🏁 Dropoff: ${endName}\n🛺 Vehicle: ${state.selectedVehicle.toUpperCase()} (${state.lastResult.distanceKm} km)\n💰 Fair Fare: ${fare}\n${uberRef}\n📍 Live GPS: ${mapsLink}\n🚨 Emergency Helpline: 999`;
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareTripViaSms() {
+      if (!state.lastResult || !state.startPoint || !state.endPoint) {
+        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first');
+        return;
+      }
+
+      const lang = state.language;
+      const startName = state.startPoint.name;
+      const endName = state.endPoint.name;
+      const fare = `${formatCurrency(state.lastResult.minFare, lang)} - ${formatCurrency(state.lastResult.maxFare, lang)}`;
+      const mapsLink = `https://maps.google.com/?q=${state.startPoint.lat},${state.startPoint.lng}`;
+      const rh = calculateRideHailingEstimates(state.lastResult.distanceKm, state.lastResult.travelMinutes, state.conditions);
+      const uberRef = lang === 'bn'
+        ? `(উবার/পাঠাও: বাইক ${formatCurrency(rh.motoMin, 'bn')}, সিএনজি ${formatCurrency(rh.cngMin, 'bn')})`
+        : `(Uber/Pathao: Bike ${formatCurrency(rh.motoMin, 'en')}, CNG ${formatCurrency(rh.cngMin, 'en')})`;
+
+      const body = `নিরাপদ যাত্রা: ${startName} -> ${endName}, ভাড়া: ${fare} ${uberRef}. লোকেশন: ${mapsLink}`;
+      window.location.href = `sms:?body=${encodeURIComponent(body)}`;
+    }
+
+    // ===== SAFETY TIPS TOGGLE =====
+
+    function toggleSafetyTips() {
+      const content = document.getElementById('safetyTipsContent');
+      const chevron = document.getElementById('tipsChevron');
+      if (!content) return;
+      const isHidden = content.classList.toggle('hidden');
+      if (chevron) {
+        if (isHidden) {
+          chevron.classList.remove('rotate-180');
+        } else {
+          chevron.classList.add('rotate-180');
+        }
+      }
+    }
+
+    function toggleRoadmap() {
+      const content = document.getElementById('roadmapContent');
+      const chevron = document.getElementById('roadmapChevron');
+      if (!content) return;
+      const isHidden = content.classList.toggle('hidden');
+      if (chevron) {
+        if (isHidden) {
+          chevron.classList.remove('rotate-180');
+        } else {
+          chevron.classList.add('rotate-180');
+        }
+      }
+    }
+
+    // ===== I18N LOGIC =====
+
+    function setLanguage(lang) {
+      state.language = lang === 'en' ? 'en' : 'bn';
+      try {
+        localStorage.setItem(STORAGE_KEY_LANG, state.language);
+        localStorage.setItem('nj_language', state.language);
+      } catch (e) {
+        console.warn('localStorage write failed:', e);
+      }
+
+      const pillBn = document.getElementById('langPillBn');
+      const pillEn = document.getElementById('langPillEn');
+      if (state.language === 'bn') {
+        pillBn.className = 'px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition';
+        pillEn.className = 'px-2 py-0.5 rounded-full text-white/80 transition';
+        document.documentElement.lang = 'bn';
+      } else {
+        pillBn.className = 'px-2 py-0.5 rounded-full text-white/80 transition';
+        pillEn.className = 'px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition';
+        document.documentElement.lang = 'en';
+      }
+
+      const elements = document.querySelectorAll('[data-i18n]');
+      elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[state.language][key]) {
+          el.textContent = translations[state.language][key];
+        }
+      });
+
+      renderLandmarkDropdowns();
+      renderPopularRoutePills();
+      updateVehicleRatePreview();
+
+      if (state.lastResult) {
+        renderCalculationResult(state.lastResult);
+      }
+
+      renderCommunityFeed();
+      renderSosContacts();
+    }
+
+    function toggleLanguage() {
+      const nextLang = state.language === 'bn' ? 'en' : 'bn';
+      setLanguage(nextLang);
+    }
+
+    // ===== MAP LOGIC =====
+
+    function initMap() {
+      if (state.map) return;
+
+      const dhakaCenter = [23.7561, 90.3872];
+      state.map = L.map('routeMap', {
+        zoomControl: true,
+        attributionControl: false
+      }).setView(dhakaCenter, 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18
+      }).addTo(state.map);
+
+      state.map.on('click', handleMapClick);
+    }
+
+    function handleMapClick(e) {
+      const lat = parseFloat(e.latlng.lat.toFixed(5));
+      const lng = parseFloat(e.latlng.lng.toFixed(5));
+
+      if (!state.startPoint || (state.startPoint && state.endPoint)) {
+        state.startPoint = {
+          name: state.language === 'bn' ? 'ম্যাপ পিন (শুরু)' : 'Map Pin (Start)',
+          lat,
+          lng,
+          isCustomPin: true
+        };
+        state.endPoint = null;
+        updateMapMarkers();
+        updateDropdownSelections();
+        validateRouteInputs();
+        showToast(state.language === 'bn' ? 'শুরুর স্থান সেট হয়েছে — এবার গন্তব্যে ক্লিক করুন' : 'Start set — now tap destination');
+      } else if (state.startPoint && !state.endPoint) {
+        state.endPoint = {
+          name: state.language === 'bn' ? 'ম্যাপ পিন (গন্তব্য)' : 'Map Pin (Dest)',
+          lat,
+          lng,
+          isCustomPin: true
+        };
+        updateMapMarkers();
+        updateDropdownSelections();
+        validateRouteInputs();
+        requestRouteAndCalculate();
+      }
+    }
+
+    function centerDhakaMap() {
+      if (!state.map) return;
+      state.map.setView([23.7561, 90.3872], 12);
+    }
+
+    function updateMapMarkers() {
+      if (!state.map) return;
+
+      if (state.startMarker) {
+        state.map.removeLayer(state.startMarker);
+        state.startMarker = null;
+      }
+      if (state.startPoint) {
+        const startIcon = L.divIcon({
+          className: 'custom-map-pin bg-emerald-600',
+          html: '<i class="fa-solid fa-location-dot"></i>',
+          iconSize: [28, 28],
+          iconAnchor: [14, 28]
+        });
+        state.startMarker = L.marker([state.startPoint.lat, state.startPoint.lng], { icon: startIcon })
+          .addTo(state.map)
+          .bindPopup(`<b>${state.language === 'bn' ? 'যাত্রা শুরু:' : 'Pickup:'}</b> ${state.startPoint.name}`);
+      }
+
+      if (state.endMarker) {
+        state.map.removeLayer(state.endMarker);
+        state.endMarker = null;
+      }
+      if (state.endPoint) {
+        const endIcon = L.divIcon({
+          className: 'custom-map-pin bg-red-600',
+          html: '<i class="fa-solid fa-flag-checkered"></i>',
+          iconSize: [28, 28],
+          iconAnchor: [14, 28]
+        });
+        state.endMarker = L.marker([state.endPoint.lat, state.endPoint.lng], { icon: endIcon })
+          .addTo(state.map)
+          .bindPopup(`<b>${state.language === 'bn' ? 'গন্তব্য:' : 'Destination:'}</b> ${state.endPoint.name}`);
+      }
+    }
+
+    async function fetchRoute(start, end) {
+      if (!start || !end) return null;
+
+      const straightDistanceKm = calculateHaversine(start.lat, start.lng, end.lat, end.lng) / 1.38;
+      if (straightDistanceKm < 0.05) {
+        return { isSamePoint: true };
+      }
+
+      const url = `https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`OSRM status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          const distanceKm = parseFloat((route.distance / 1000).toFixed(2));
+          const durationMinutes = Math.max(3, Math.round(route.duration / 60));
+          const coordinates = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+
+          return {
+            mode: 'osrm',
+            distanceKm,
+            durationMinutes,
+            coordinates
+          };
+        } else {
+          throw new Error('No route found in OSRM payload');
+        }
+      } catch (err) {
+        console.warn('OSRM routing network fallback triggered:', err.message);
+        const fallbackDistanceKm = parseFloat(calculateHaversine(start.lat, start.lng, end.lat, end.lng).toFixed(2));
+        const fallbackMinutes = estimateMinutes(fallbackDistanceKm, state.selectedVehicle);
+        const fallbackCoordinates = [
+          [start.lat, start.lng],
+          [end.lat, end.lng]
+        ];
+
+        return {
+          mode: 'haversine',
+          distanceKm: fallbackDistanceKm,
+          durationMinutes: fallbackMinutes,
+          coordinates: fallbackCoordinates
+        };
+      }
+    }
+
+    function renderRouteOnMap(routeData) {
+      if (!state.map || !routeData || !routeData.coordinates) return;
+
+      if (state.routePolyline) {
+        state.map.removeLayer(state.routePolyline);
+        state.routePolyline = null;
+      }
+
+      const isOsrm = routeData.mode === 'osrm';
+      const polylineOptions = {
+        color: isOsrm ? '#2563EB' : '#64748B',
+        weight: isOsrm ? 5 : 4,
+        opacity: 0.9,
+        dashArray: isOsrm ? null : '6, 8',
+        lineJoin: 'round'
+      };
+
+      state.routePolyline = L.polyline(routeData.coordinates, polylineOptions).addTo(state.map);
+
+      state.map.fitBounds(state.routePolyline.getBounds(), {
+        padding: [30, 30],
+        maxZoom: 15
+      });
+    }
+
+    // ===== RENDER FUNCTIONS =====
+
+    function renderLandmarkDropdowns() {
+      const startSelect = document.getElementById('startSelect');
+      const endSelect = document.getElementById('endSelect');
+      const lang = state.language;
+
+      const placeholderStart = lang === 'bn' ? 'যাত্রা শুরুর স্থান নির্বাচন করুন...' : 'Choose pickup location...';
+      const placeholderEnd = lang === 'bn' ? 'গন্তব্যের স্থান নির্বাচন করুন...' : 'Choose destination...';
+
+      const groups = [
+        { key: 'metro', labelBn: translations.bn.mrtGroupLabel, labelEn: translations.en.mrtGroupLabel },
+        { key: 'hub', labelBn: translations.bn.hubGroupLabel, labelEn: translations.en.hubGroupLabel },
+        { key: 'landmark', labelBn: translations.bn.landmarkGroupLabel, labelEn: translations.en.landmarkGroupLabel }
+      ];
+
+      function buildOptions(placeholder, currentId) {
+        let html = `<option value="" disabled ${!currentId ? 'selected' : ''}>${placeholder}</option>`;
+        groups.forEach(g => {
+          const list = DHAKA_LANDMARKS.filter(l => l.category === g.key);
+          if (list.length > 0) {
+            html += `<optgroup label="${lang === 'bn' ? g.labelBn : g.labelEn}">`;
+            list.forEach(l => {
+              const name = lang === 'bn' ? l.nameBn : l.nameEn;
+              const isSelected = currentId === l.id ? 'selected' : '';
+              html += `<option value="${l.id}" ${isSelected}>${name}</option>`;
+            });
+            html += `</optgroup>`;
+          }
+        });
+        return html;
+      }
+
+      startSelect.innerHTML = buildOptions(placeholderStart, state.startPoint ? state.startPoint.landmarkId : null);
+      endSelect.innerHTML = buildOptions(placeholderEnd, state.endPoint ? state.endPoint.landmarkId : null);
+    }
+
+    function renderPopularRoutePills() {
+      const container = document.getElementById('quickPillsContainer');
+      const popularPresets = [
+        { startId: 'farmgate', endId: 'gulshan1', labelBn: 'ফার্মগেট ➔ গুলশান ১', labelEn: 'Farmgate ➔ Gulshan 1' },
+        { startId: 'mirpur10', endId: 'motijheel', labelBn: 'মিরপুর ১০ ➔ মতিঝিল', labelEn: 'Mirpur 10 ➔ Motijheel' },
+        { startId: 'dhanmondi27', endId: 'newmarket', labelBn: 'ধানমন্ডি ২৭ ➔ নিউ মার্কেট', labelEn: 'Dhanmondi 27 ➔ New Market' },
+        { startId: 'farmgate', endId: 'mrt_dhaka_univ', labelBn: 'ফার্মগেট ➔ ঢাবি (মেট্রো)', labelEn: 'Farmgate ➔ DU (MRT)' },
+        { startId: 'uttara3', endId: 'airport', labelBn: 'উত্তরা ➔ বিমানবন্দর', labelEn: 'Uttara ➔ Airport' }
+      ];
+
+      container.innerHTML = popularPresets.map(preset => {
+        const label = state.language === 'bn' ? preset.labelBn : preset.labelEn;
+        return `
+          <button type="button" onclick="applyPresetRoute('${preset.startId}', '${preset.endId}')" class="text-[11px] bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition font-medium active:scale-95">
+            ${label}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderCalculationResult(result) {
+      const resultCard = document.getElementById('resultCard');
+      const resDistanceText = document.getElementById('resDistanceText');
+      const resDurationText = document.getElementById('resDurationText');
+      const resFareAmount = document.getElementById('resFareAmount');
+      const resFareSubtext = document.getElementById('resFareSubtext');
+      const resRoutingModeBadge = document.getElementById('resRoutingModeBadge');
+      const resVehicleNotice = document.getElementById('resVehicleNotice');
+      const resVehicleNoticeText = document.getElementById('resVehicleNoticeText');
+      const resNegotiationScript = document.getElementById('resNegotiationScript');
+
+      const lang = state.language;
+
+      resDistanceText.textContent = lang === 'bn'
+        ? `${toBengaliNumber(result.distanceKm)} কিমি`
+        : `${result.distanceKm} km`;
+
+      resDurationText.textContent = lang === 'bn'
+        ? `${toBengaliNumber(result.travelMinutes)} মিনিট`
+        : `${result.travelMinutes} mins`;
+
+      resFareAmount.textContent = `${formatCurrency(result.minFare, lang)} – ${formatCurrency(result.maxFare, lang)}`;
+
+      let activeSurgesList = [];
+      if (state.conditions.rain) activeSurgesList.push(lang === 'bn' ? 'বৃষ্টি' : 'Rain');
+      if (state.conditions.peak) activeSurgesList.push(lang === 'bn' ? 'পিক-আওয়ার' : 'Peak');
+      if (state.conditions.night) activeSurgesList.push(lang === 'bn' ? 'রাত' : 'Night');
+
+      if (activeSurgesList.length > 0) {
+        resFareSubtext.textContent = lang === 'bn'
+          ? `সক্রিয় শর্ত: ${activeSurgesList.join(' + ')} (গুণিতক: ${toBengaliNumber(result.activeSurgeMultiplier.toFixed(2))}x)`
+          : `Active: ${activeSurgesList.join(' + ')} (Surge: ${result.activeSurgeMultiplier.toFixed(2)}x)`;
+      } else {
+        resFareSubtext.textContent = lang === 'bn'
+          ? 'স্বাভাবিক ট্রাফিক ও দূরত্ব অনুযায়ী নির্ধারিত'
+          : 'Standard rate based on real road distance & traffic';
+      }
+
+      if (result.mode === 'osrm') {
+        resRoutingModeBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+        resRoutingModeBadge.innerHTML = `<i class="fa-solid fa-route mr-1"></i>${translations[lang].osrmRoutingBadge}`;
+      } else {
+        resRoutingModeBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
+        resRoutingModeBadge.innerHTML = `<i class="fa-solid fa-compass mr-1"></i>${translations[lang].offlineRoutingBadge}`;
+      }
+
+      const cfg = VEHICLE_CONFIGS[result.vehicleId];
+      if (cfg && cfg.disclaimerLimitKm && result.distanceKm > cfg.disclaimerLimitKm) {
+        resVehicleNotice.classList.remove('hidden');
+        resVehicleNoticeText.textContent = lang === 'bn' ? cfg.disclaimerNoticeBn : cfg.disclaimerNoticeEn;
+      } else {
+        resVehicleNotice.classList.add('hidden');
+      }
+
+      // Populate Ride-Hailing Benchmarks (Uber & Pathao)
+      const rh = calculateRideHailingEstimates(result.distanceKm, result.travelMinutes, state.conditions);
+      const resUberMotoFare = document.getElementById('resUberMotoFare');
+      const resUberCngFare = document.getElementById('resUberCngFare');
+      const resUberCarFare = document.getElementById('resUberCarFare');
+      const resUberTipText = document.getElementById('resUberTipText');
+
+      if (resUberMotoFare) {
+        resUberMotoFare.textContent = `${formatCurrency(rh.motoMin, lang)} - ${formatCurrency(rh.motoMax, lang)}`;
+      }
+      if (resUberCngFare) {
+        resUberCngFare.textContent = `${formatCurrency(rh.cngMin, lang)} - ${formatCurrency(rh.cngMax, lang)}`;
+      }
+      if (resUberCarFare) {
+        resUberCarFare.textContent = `${formatCurrency(rh.carMin, lang)} - ${formatCurrency(rh.carMax, lang)}`;
+      }
+      if (resUberTipText) {
+        if (result.vehicleId === 'cng') {
+          const savings = Math.max(20, Math.round((rh.cngMin - result.minFare) / 5) * 5);
+          resUberTipText.textContent = lang === 'bn'
+            ? `রাস্তার সিএনজিতে দরকষাকষিতে অ্যাপ সিএনজির চেয়ে প্রায় ${formatCurrency(savings, 'bn')} সাশ্রয় সম্ভব।${rh.surge > 1 ? ` (বৃষ্টি/পিকে অ্যাপে ${toBengaliNumber(rh.surge.toFixed(1))}x সার্জ প্রযোজ্য)` : ''}`
+            : `Haggling street CNG saves ~${formatCurrency(savings, 'en')} vs Uber/Pathao CNG.${rh.surge > 1 ? ` (${rh.surge.toFixed(1)}x surge active on apps)` : ''}`;
+        } else if (result.vehicleId === 'rickshaw' || result.vehicleId === 'battery') {
+          const savings = Math.max(15, Math.round((rh.motoMin - result.minFare) / 5) * 5);
+          resUberTipText.textContent = lang === 'bn'
+            ? `স্বল্প দূরত্বে রিকশা/ইজিবাইকে পাঠাও বাইকের চেয়েও প্রায় ${formatCurrency(savings, 'bn')} সাশ্রয় হয়।`
+            : `Rickshaw/Easybike saves ~${formatCurrency(savings, 'en')} compared to Pathao/Uber bike for short hops.`;
+        } else {
+          resUberTipText.textContent = lang === 'bn'
+            ? `রাস্তার সিএনজিতে দরকষাকষিতে অ্যাপের চেয়ে প্রায় ৳৩০-৫০ সাশ্রয় হয়। বৃষ্টিতে উবার/পাঠাও-এ সার্জ ২ গুণ পর্যন্ত হতে পারে।`
+            : `Street bargaining saves ~৳30-50 compared to app rates. Surge on apps can reach 1.8x+ in rain/peak hours.`;
+        }
+      }
+
+      resNegotiationScript.textContent = result.script;
+
+      // Check Multimodal Dhaka Metro Rail recommendation
+      checkMultimodalMetroRecommendation(state.startPoint, state.endPoint, result);
+
+      resultCard.classList.remove('hidden');
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function renderCommunityFeed() {
+      const feedList = document.getElementById('communityFeedList');
+      const lang = state.language;
+      const filter = state.activeCommunityFilter;
+
+      const filteredTrips = state.communityTrips.filter(item => {
+        if (filter === 'all') return true;
+        return item.vehicle === filter;
+      });
+
+      const badge = document.getElementById('navCommunityBadge');
+      if (badge) {
+        badge.textContent = lang === 'bn' ? toBengaliNumber(state.communityTrips.length) : state.communityTrips.length;
+      }
+
+      if (filteredTrips.length === 0) {
+        feedList.innerHTML = `
+          <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center space-y-2">
+            <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xl mx-auto">
+              <i class="fa-solid fa-inbox"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-800">${translations[lang].emptyFeedTitle}</p>
+            <p class="text-[11px] text-slate-500 max-w-xs mx-auto">${translations[lang].emptyFeedSubtitle}</p>
+          </div>
+        `;
+        return;
+      }
+
+      feedList.innerHTML = filteredTrips.map(trip => {
+        const fareEval = calculateFareEngine(trip.vehicle, trip.distanceKm, estimateMinutes(trip.distanceKm, trip.vehicle), { rain: false, peak: false, night: false });
+        let badgeHtml = '';
+        const paid = trip.farePaid;
+
+        if (fareEval) {
+          if (paid > fareEval.maxFare) {
+            const diff = paid - fareEval.maxFare;
+            badgeHtml = `
+              <span class="bg-red-50 text-red-700 border border-red-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                <i class="fa-solid fa-arrow-trend-up text-[9px]"></i>
+                <span>${translations[lang].badgeOvercharge} (+${formatCurrency(diff, lang)})</span>
+              </span>
+            `;
+          } else if (paid < fareEval.minFare) {
+            const diff = fareEval.minFare - paid;
+            badgeHtml = `
+              <span class="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                <i class="fa-solid fa-arrow-trend-down text-[9px]"></i>
+                <span>${translations[lang].badgeDiscount} (-${formatCurrency(diff, lang)})</span>
+              </span>
+            `;
+          } else {
+            badgeHtml = `
+              <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1 shrink-0">
+                <i class="fa-solid fa-check text-[9px]"></i>
+                <span>${translations[lang].badgeFair}</span>
+              </span>
+            `;
+          }
+        }
+
+        const vName = trip.vehicle === 'cng'
+          ? (lang === 'bn' ? 'সিএনজি' : 'CNG')
+          : (trip.vehicle === 'rickshaw' ? (lang === 'bn' ? 'রিকশা' : 'Rickshaw') : (lang === 'bn' ? 'ইজিবাইক' : 'Battery'));
+
+        const timeAgo = formatTimeAgo(trip.timestamp, lang);
+        const distText = lang === 'bn' ? `${toBengaliNumber(trip.distanceKm)} কিমি` : `${trip.distanceKm} km`;
+
+        const rh = calculateRideHailingEstimates(trip.distanceKm, estimateMinutes(trip.distanceKm, trip.vehicle), { rain: false, peak: false, night: false });
+
+        return `
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-2 transition hover:border-slate-300 dark:hover:border-slate-600">
+            <div class="flex items-start justify-between">
+              <div class="space-y-0.5">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-bold text-slate-900 dark:text-slate-100">${trip.start} ➔ ${trip.end}</span>
+                  <span class="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded font-medium">${vName}</span>
+                </div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                  <span>${distText}</span> • <span>${timeAgo}</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-base font-extrabold text-slate-900 dark:text-slate-100 num-font">${formatCurrency(paid, lang)}</span>
+              </div>
+            </div>
+
+            <!-- Uber / Pathao Comparison Row in Ledger Card -->
+            <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-700/50 text-[10px]">
+              <span class="text-slate-500 dark:text-slate-400 font-medium flex items-center space-x-1">
+                <i class="fa-solid fa-mobile-screen-button text-amber-500 mr-1"></i>
+                <span>${translations[lang].uberCompareInCard}</span>
+              </span>
+              <div class="flex items-center space-x-2 num-font text-slate-700 dark:text-slate-300 font-semibold">
+                <span title="Pathao / Uber Moto">🏍️ ${formatCurrency(rh.motoMin, lang)}-${formatCurrency(rh.motoMax, lang)}</span>
+                <span class="text-slate-300 dark:text-slate-600">•</span>
+                <span title="Uber / Pathao CNG">🛺 ${formatCurrency(rh.cngMin, lang)}-${formatCurrency(rh.cngMax, lang)}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60 text-xs">
+              <div class="text-[11px] text-slate-600 dark:text-slate-400 italic truncate max-w-[200px]">
+                ${trip.note ? '"' + trip.note + '"' : (lang === 'bn' ? 'নিয়মিত ট্রিপ' : 'Regular ride')}
+              </div>
+              <div>${badgeHtml}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatTimeAgo(timestamp, lang) {
+      const seconds = Math.floor((Date.now() - timestamp) / 1000);
+      if (seconds < 60) return lang === 'bn' ? 'এইমাত্র' : 'just now';
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return lang === 'bn' ? `${toBengaliNumber(minutes)} মিনিট আগে` : `${minutes}m ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return lang === 'bn' ? `${toBengaliNumber(hours)} ঘণ্টা আগে` : `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      return lang === 'bn' ? `${toBengaliNumber(days)} দিন আগে` : `${days}d ago`;
+    }
+
+    function renderSosContacts() {
+      const container = document.getElementById('sosContactsList');
+      if (!container) return;
+
+      container.innerHTML = state.sosContacts.map((c, index) => {
+        return `
+          <div class="flex items-center justify-between py-1 border-b border-slate-100 dark:border-slate-800 last:border-none">
+            <div class="flex items-center space-x-2">
+              <span class="w-5 h-5 rounded-full ${c.isFixed ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'} flex items-center justify-center text-[10px]">
+                <i class="fa-solid fa-phone"></i>
+              </span>
+              <span class="font-semibold text-slate-800">${c.name}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="font-mono text-slate-600">${c.phone}</span>
+              ${!c.isFixed ? `
+                <button type="button" onclick="removeSosContact(${index})" aria-label="Remove contact" class="text-slate-400 hover:text-red-600 px-1">
+                  <i class="fa-solid fa-trash-can text-[10px]"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'bg-slate-900/95 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold backdrop-blur border border-slate-700/50 flex items-center space-x-2 fade-slide-up pointer-events-auto';
+      toast.innerHTML = `
+        <i class="fa-solid fa-circle-info text-emerald-400"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    // ===== EVENT LISTENERS & ACTIONS =====
+
+    function selectVehicle(vehicleId) {
+      state.selectedVehicle = vehicleId;
+
+      const vehicles = ['cng', 'rickshaw', 'battery'];
+      vehicles.forEach(v => {
+        const btn = document.getElementById(`btnVehicle${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        const badge = btn.querySelector('.check-badge');
+        if (v === vehicleId) {
+          btn.className = 'vehicle-card p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center relative bg-white border-emerald-600 shadow-sm';
+          btn.setAttribute('aria-checked', 'true');
+          badge.classList.remove('hidden');
+        } else {
+          btn.className = 'vehicle-card p-2.5 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center relative bg-white border-slate-200 hover:border-slate-300';
+          btn.setAttribute('aria-checked', 'false');
+          badge.classList.add('hidden');
+        }
+      });
+
+      updateVehicleRatePreview();
+
+      if (state.lastResult) {
+        requestRouteAndCalculate();
+      }
+    }
+
+    function updateVehicleRatePreview() {
+      const preview = document.getElementById('vehicleRatePreview');
+      const v = state.selectedVehicle;
+      const lang = state.language;
+
+      if (v === 'cng') {
+        preview.textContent = lang === 'bn' ? '৳৫০ প্রথম ২ কিমি + ৳১৬/কিমি' : '৳50 1st 2km + ৳16/km';
+      } else if (v === 'rickshaw') {
+        preview.textContent = lang === 'bn' ? '৳২৫ প্রথম ১ কিমি + ৳২২/কিমি' : '৳25 1st 1km + ৳22/km';
+      } else {
+        preview.textContent = lang === 'bn' ? '৳২০ প্রথম ১ কিমি + ৳১৪/কিমি' : '৳20 1st 1km + ৳14/km';
+      }
+    }
+
+    function onLandmarkSelect(type, landmarkId) {
+      const landmark = DHAKA_LANDMARKS.find(l => l.id === landmarkId);
+      if (!landmark) return;
+
+      const pointData = {
+        landmarkId: landmark.id,
+        name: state.language === 'bn' ? landmark.nameBn : landmark.nameEn,
+        lat: landmark.coords[0],
+        lng: landmark.coords[1]
+      };
+
+      if (type === 'start') {
+        state.startPoint = pointData;
+      } else {
+        state.endPoint = pointData;
+      }
+
+      updateMapMarkers();
+      validateRouteInputs();
+
+      if (state.startPoint && state.endPoint) {
+        requestRouteAndCalculate();
+      }
+    }
+
+    function swapLocations() {
+      if (!state.startPoint && !state.endPoint) return;
+
+      const temp = state.startPoint;
+      state.startPoint = state.endPoint;
+      state.endPoint = temp;
+
+      updateDropdownSelections();
+      updateMapMarkers();
+      validateRouteInputs();
+
+      if (state.startPoint && state.endPoint) {
+        requestRouteAndCalculate();
+      }
+    }
+
+    function updateDropdownSelections() {
+      const startSelect = document.getElementById('startSelect');
+      const endSelect = document.getElementById('endSelect');
+
+      if (state.startPoint) {
+        startSelect.value = state.startPoint.landmarkId || '';
+      } else {
+        startSelect.value = '';
+      }
+
+      if (state.endPoint) {
+        endSelect.value = state.endPoint.landmarkId || '';
+      } else {
+        endSelect.value = '';
+      }
+    }
+
+    function applyPresetRoute(startId, endId) {
+      const startLandmark = DHAKA_LANDMARKS.find(l => l.id === startId);
+      const endLandmark = DHAKA_LANDMARKS.find(l => l.id === endId);
+
+      if (!startLandmark || !endLandmark) return;
+
+      state.startPoint = {
+        landmarkId: startLandmark.id,
+        name: state.language === 'bn' ? startLandmark.nameBn : startLandmark.nameEn,
+        lat: startLandmark.coords[0],
+        lng: startLandmark.coords[1]
+      };
+
+      state.endPoint = {
+        landmarkId: endLandmark.id,
+        name: state.language === 'bn' ? endLandmark.nameBn : endLandmark.nameEn,
+        lat: endLandmark.coords[0],
+        lng: endLandmark.coords[1]
+      };
+
+      updateDropdownSelections();
+      updateMapMarkers();
+      validateRouteInputs();
+      requestRouteAndCalculate();
+    }
+
+    function validateRouteInputs() {
+      const btn = document.getElementById('btnCalculateFare');
+      const noticeBox = document.getElementById('routeValidationNotice');
+      const noticeText = document.getElementById('routeValidationText');
+      const statusBadge = document.getElementById('mapRouteStatusBadge');
+      const lang = state.language;
+
+      noticeBox.classList.add('hidden');
+
+      if (!state.startPoint || !state.endPoint) {
+        btn.disabled = true;
+        statusBadge.textContent = translations[lang].mapRouteStatusBadge;
+        return false;
+      }
+
+      const straightDistKm = calculateHaversine(state.startPoint.lat, state.startPoint.lng, state.endPoint.lat, state.endPoint.lng) / 1.38;
+      if (straightDistKm < 0.05) {
+        noticeBox.classList.remove('hidden');
+        noticeText.textContent = translations[lang].samePointError;
+        btn.disabled = true;
+        return false;
+      }
+
+      if (straightDistKm > 40) {
+        noticeBox.classList.remove('hidden');
+        noticeText.textContent = translations[lang].tooLongError;
+        btn.disabled = true;
+        return false;
+      }
+
+      btn.disabled = false;
+      statusBadge.textContent = lang === 'bn' ? 'রুট প্রস্তুত' : 'Route Ready';
+      return true;
+    }
+
+    function toggleCondition(type) {
+      state.conditions[type] = !state.conditions[type];
+      const chip = document.getElementById(`chip${type.charAt(0).toUpperCase() + type.slice(1)}`);
+      const isPressed = state.conditions[type];
+
+      chip.setAttribute('aria-pressed', isPressed ? 'true' : 'false');
+      if (isPressed) {
+        chip.className = 'condition-chip p-2 rounded-xl border-2 border-emerald-600 bg-emerald-50 dark:bg-emerald-950 text-center transition flex flex-col items-center justify-center shadow-sm';
+      } else {
+        chip.className = 'condition-chip p-2 rounded-xl border border-slate-200 text-center transition flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100';
+      }
+
+      if (state.lastResult) {
+        const fare = calculateFareEngine(
+          state.selectedVehicle,
+          state.lastResult.distanceKm,
+          state.lastResult.travelMinutes,
+          state.conditions
+        );
+        state.lastResult = { ...fare, mode: state.lastResult.mode };
+        renderCalculationResult(state.lastResult);
+      }
+    }
+
+    async function calculateFareAction() {
+      if (!validateRouteInputs()) return;
+      await requestRouteAndCalculate();
+    }
+
+    async function requestRouteAndCalculate() {
+      if (!validateRouteInputs()) return;
+
+      const btn = document.getElementById('btnCalculateFare');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> ${state.language === 'bn' ? 'গণনা হচ্ছে...' : 'Calculating...'}`;
+
+      try {
+        const routeData = await fetchRoute(state.startPoint, state.endPoint);
+
+        if (!routeData) {
+          throw new Error('Failed to resolve route');
+        }
+
+        if (routeData.isSamePoint) {
+          validateRouteInputs();
+          return;
+        }
+
+        renderRouteOnMap(routeData);
+
+        const fareResult = calculateFareEngine(
+          state.selectedVehicle,
+          routeData.distanceKm,
+          routeData.durationMinutes,
+          state.conditions
+        );
+
+        state.lastResult = {
+          ...fareResult,
+          mode: routeData.mode
+        };
+
+        renderCalculationResult(state.lastResult);
+      } catch (err) {
+        console.error('Calculation error:', err);
+        showToast(state.language === 'bn' ? 'রুট গণনায় সমস্যা হয়েছে, অফলাইন মোড ব্যবহার করা হচ্ছে' : 'Calculation error, using offline estimate');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    function openQuickReportModal() {
+      if (!state.lastResult) return;
+
+      const modal = document.getElementById('quickReportModal');
+      const summary = document.getElementById('modalRouteSummary');
+      const uberBench = document.getElementById('modalUberBenchmark');
+      const fareInput = document.getElementById('modalFarePaid');
+      const lang = state.language;
+
+      const vName = state.selectedVehicle === 'cng'
+        ? (lang === 'bn' ? 'সিএনজি' : 'CNG')
+        : (state.selectedVehicle === 'rickshaw' ? (lang === 'bn' ? 'রিকশা' : 'Rickshaw') : (lang === 'bn' ? 'ইজিবাইক' : 'Battery'));
+
+      const distText = lang === 'bn' ? `${toBengaliNumber(state.lastResult.distanceKm)} কিমি` : `${state.lastResult.distanceKm} km`;
+      const startName = state.startPoint ? state.startPoint.name : '';
+      const endName = state.endPoint ? state.endPoint.name : '';
+
+      summary.textContent = `${startName} ➔ ${endName} (${distText} • ${vName})`;
+
+      if (uberBench) {
+        const rh = calculateRideHailingEstimates(state.lastResult.distanceKm, state.lastResult.travelMinutes, state.conditions);
+        uberBench.innerHTML = `
+          <span>${translations[lang].uberCompareInCard}</span>
+          <span class="font-bold text-slate-700 dark:text-slate-300">🏍️ ${formatCurrency(rh.motoMin, lang)}-${formatCurrency(rh.motoMax, lang)} • 🛺 ${formatCurrency(rh.cngMin, lang)}-${formatCurrency(rh.cngMax, lang)}</span>
+        `;
+      }
+
+      fareInput.value = Math.round(((state.lastResult.minFare + state.lastResult.maxFare) / 2) / 5) * 5;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeQuickReportModal() {
+      document.getElementById('quickReportModal').classList.add('hidden');
+    }
+
+    function handleQuickReportSubmit(e) {
+      e.preventDefault();
+
+      const farePaid = parseFloat(document.getElementById('modalFarePaid').value);
+      const note = document.getElementById('modalTripNote').value.trim();
+
+      if (isNaN(farePaid) || farePaid <= 0 || !state.lastResult) {
+        showToast(state.language === 'bn' ? 'সঠিক ভাড়া লিখুন' : 'Please enter valid fare');
+        return;
+      }
+
+      const newTrip = {
+        id: Date.now(),
+        vehicle: state.selectedVehicle,
+        distanceKm: state.lastResult.distanceKm,
+        start: state.startPoint ? state.startPoint.name : 'ঢাকা',
+        end: state.endPoint ? state.endPoint.name : 'ঢাকা',
+        farePaid,
+        note,
+        timestamp: Date.now()
+      };
+
+      appendCommunityTrip(newTrip);
+      closeQuickReportModal();
+      showToast(translations[state.language].toastAdded);
+      switchTab('community');
+    }
+
+    function appendCommunityTrip(newTrip) {
+      state.communityTrips.unshift(newTrip);
+      try {
+        localStorage.setItem(STORAGE_KEY_COMMUNITY, JSON.stringify(state.communityTrips));
+        localStorage.setItem('nj_community_trips', JSON.stringify(state.communityTrips));
+      } catch (err) {
+        console.warn('localStorage error:', err);
+      }
+      renderCommunityFeed();
+    }
+
+    function toggleContributionForm() {
+      const form = document.getElementById('communityForm');
+      const chevron = document.getElementById('contribChevron');
+      const isHidden = form.classList.toggle('hidden');
+      if (isHidden) {
+        chevron.classList.remove('rotate-180');
+      } else {
+        chevron.classList.add('rotate-180');
+      }
+    }
+
+    function handleCommunitySubmit(e) {
+      e.preventDefault();
+
+      const vehicle = document.getElementById('comVehicle').value;
+      const distanceKm = parseFloat(document.getElementById('comDistance').value);
+      const start = document.getElementById('comStart').value.trim();
+      const end = document.getElementById('comEnd').value.trim();
+      const farePaid = parseFloat(document.getElementById('comFare').value);
+      const note = document.getElementById('comNote').value.trim();
+
+      if (!vehicle || isNaN(distanceKm) || distanceKm <= 0 || !start || !end || isNaN(farePaid) || farePaid <= 0) {
+        showToast(state.language === 'bn' ? 'সঠিক তথ্য প্রদান করুন' : 'Please provide valid trip information');
+        return;
+      }
+
+      const newTrip = {
+        id: Date.now(),
+        vehicle,
+        distanceKm,
+        start,
+        end,
+        farePaid,
+        note,
+        timestamp: Date.now()
+      };
+
+      appendCommunityTrip(newTrip);
+      document.getElementById('communityForm').reset();
+      showToast(translations[state.language].toastAdded);
+    }
+
+    function filterCommunityFeed(filterType) {
+      state.activeCommunityFilter = filterType;
+
+      const filters = ['all', 'cng', 'rickshaw', 'battery'];
+      filters.forEach(f => {
+        const btn = document.getElementById(`comFilter${f.charAt(0).toUpperCase() + f.slice(1)}`);
+        if (f === filterType) {
+          btn.className = 'px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-white shadow-sm shrink-0';
+        } else {
+          btn.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0';
+        }
+      });
+
+      renderCommunityFeed();
+    }
+
+    function verifyDriverPlate() {
+      const input = document.getElementById('plateNumberInput');
+      const plate = input.value.trim();
+      const container = document.getElementById('verifyResultContainer');
+      const lang = state.language;
+
+      if (!plate) {
+        showToast(lang === 'bn' ? 'দয়া করে প্লেট নম্বর লিখুন' : 'Please enter plate number');
+        return;
+      }
+
+      const record = MOCK_DRIVERS_DB.find(d => d.plate.replace(/\s+/g, '') === plate.replace(/\s+/g, ''));
+
+      container.classList.remove('hidden');
+
+      if (record) {
+        const name = lang === 'bn' ? record.driverNameBn : record.driverNameEn;
+        const initials = name.split(' ').map(p => p.charAt(0)).slice(0, 2).join('');
+
+        container.innerHTML = `
+          <div class="bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 space-y-3 fade-slide-up">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 rounded-full bg-emerald-700 text-white font-extrabold flex items-center justify-center text-sm shadow-md shrink-0">
+                ${initials}
+              </div>
+              <div class="space-y-0.5 flex-1 min-w-0">
+                <div class="flex items-center space-x-1.5">
+                  <h4 class="text-sm font-bold text-slate-900 truncate">${name}</h4>
+                  <span class="text-emerald-600 text-xs shrink-0" title="যাচাইকৃত">
+                    <i class="fa-solid fa-circle-check"></i>
+                  </span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-mono">${record.plate}</div>
+                <span class="inline-block text-[10px] bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 font-bold px-2 py-0.5 rounded-full mt-0.5">
+                  ${translations[lang].verifiedStatus}
+                </span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 text-center pt-1 border-t border-emerald-100/80 dark:border-emerald-900/60">
+              <div class="bg-white p-2 rounded-xl border border-emerald-100">
+                <span class="text-[10px] text-slate-400 block">${translations[lang].ratingLabel}</span>
+                <span class="text-xs font-extrabold text-slate-800 num-font">⭐ ${record.rating}</span>
+              </div>
+              <div class="bg-white p-2 rounded-xl border border-emerald-100">
+                <span class="text-[10px] text-slate-400 block">${translations[lang].tripsLabel}</span>
+                <span class="text-xs font-extrabold text-slate-800 num-font">${lang === 'bn' ? toBengaliNumber(record.activeYears) : record.activeYears} yr</span>
+              </div>
+              <div class="bg-white p-2 rounded-xl border border-emerald-100">
+                <span class="text-[10px] text-slate-400 block">${translations[lang].safetyScoreLabel}</span>
+                <span class="text-xs font-extrabold text-emerald-700 dark:text-emerald-400 num-font">${record.safetyScore}%</span>
+              </div>
+              <div class="bg-white p-2 rounded-xl border border-emerald-100">
+                <span class="text-[10px] text-slate-400 block">${translations[lang].reportsLabel}</span>
+                <span class="text-xs font-extrabold text-slate-800 num-font">${record.reportsCount}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-2xl p-4 text-center space-y-2 fade-slide-up">
+            <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg mx-auto">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h4 class="text-xs font-bold text-amber-900 dark:text-amber-300">${translations[lang].unverifiedStatus}</h4>
+            <p class="text-[11px] text-amber-800 dark:text-amber-400 max-w-xs mx-auto leading-relaxed">
+              ${lang === 'bn'
+                ? 'এই নম্বরটি এখনো আমাদের ডেটাবেজে তালিকাভুক্ত হয়নি — যাত্রা করার সময় সতর্ক থাকুন এবং রাইড শেষে রেটিং দিন।'
+                : 'This vehicle is not yet verified in our database — please exercise caution and rate your ride afterwards.'}
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function fillAndVerifyPlate(plate) {
+      document.getElementById('plateNumberInput').value = plate;
+      verifyDriverPlate();
+    }
+
+    function simulateQrScan() {
+      showToast(state.language === 'bn' ? 'স্ক্যান সম্পন্ন হয়েছে!' : 'Scan successful!');
+      fillAndVerifyPlate('ঢাকা মেট্রো-গ ৩৩-৯০১২');
+    }
+
+    function triggerEmergencySos() {
+      openSosConfirmModal();
+    }
+
+    function openSosConfirmModal() {
+      document.getElementById('sosConfirmModal').classList.remove('hidden');
+    }
+
+    function closeSosConfirmModal() {
+      document.getElementById('sosConfirmModal').classList.add('hidden');
+    }
+
+    function executeSosTrigger() {
+      closeSosConfirmModal();
+
+      const receiptModal = document.getElementById('sosReceiptModal');
+      const coordsVal = document.getElementById('sosReceiptCoords');
+      const timeVal = document.getElementById('sosReceiptTimeVal');
+
+      const now = new Date();
+      timeVal.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const lat = pos.coords.latitude.toFixed(4);
+            const lng = pos.coords.longitude.toFixed(4);
+            coordsVal.textContent = `${lat}° N, ${lng}° E`;
+          },
+          err => {
+            console.warn('Geolocation denied or unavailable:', err);
+            coordsVal.textContent = '23.7561° N, 90.3872° E (ফার্মগেট)';
+          },
+          { timeout: 3000 }
+        );
+      } else {
+        coordsVal.textContent = '23.7561° N, 90.3872° E (ঢাকা)';
+      }
+
+      receiptModal.classList.remove('hidden');
+    }
+
+    function closeSosReceiptModal() {
+      document.getElementById('sosReceiptModal').classList.add('hidden');
+    }
+
+    function openAddContactPrompt() {
+      if (state.sosContacts.length >= 4) {
+        showToast(state.language === 'bn' ? 'সর্বোচ্চ ৪টি কন্টাক্ট রাখা যাবে' : 'Maximum 4 contacts reached');
+        return;
+      }
+
+      const name = prompt(state.language === 'bn' ? 'কন্টাক্টের নাম লিখুন:' : 'Enter contact name:');
+      if (!name) return;
+
+      const phone = prompt(state.language === 'bn' ? 'ফোন নম্বর লিখুন:' : 'Enter phone number:');
+      if (!phone) return;
+
+      state.sosContacts.push({ name, phone, isFixed: false });
+
+      try {
+        localStorage.setItem(STORAGE_KEY_CONTACTS, JSON.stringify(state.sosContacts));
+      } catch (e) {
+        console.warn('localStorage error:', e);
+      }
+
+      renderSosContacts();
+      showToast(state.language === 'bn' ? 'নতুন কন্টাক্ট যুক্ত হয়েছে' : 'New contact saved');
+    }
+
+    function removeSosContact(index) {
+      if (state.sosContacts[index].isFixed) return;
+      state.sosContacts.splice(index, 1);
+      try {
+        localStorage.setItem(STORAGE_KEY_CONTACTS, JSON.stringify(state.sosContacts));
+      } catch (e) {
+        console.warn('localStorage error:', e);
+      }
+      renderSosContacts();
+    }
+
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+
+      const tabs = ['fare', 'community', 'safety'];
+      tabs.forEach(t => {
+        const sec = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        const navBtn = document.getElementById(`navBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          navBtn.classList.remove('text-slate-400');
+          navBtn.classList.add('text-emerald-600');
+        } else {
+          sec.classList.add('hidden');
+          navBtn.classList.remove('text-emerald-600');
+          navBtn.classList.add('text-slate-400');
+        }
+      });
+
+      if (tabId === 'fare' && state.map) {
+        setTimeout(() => {
+          state.map.invalidateSize();
+        }, 100);
+      }
+    }
+
+    // ===== INIT =====
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Theme (Light / Dark)
+      initTheme();
+
+      // 2. Load language from localStorage
+      try {
+        const savedLang = localStorage.getItem(STORAGE_KEY_LANG) || localStorage.getItem('nj_language');
+        if (savedLang === 'en' || savedLang === 'bn') {
+          state.language = savedLang;
+        }
+      } catch (e) {
+        console.warn('Could not read saved language:', e);
+      }
+
+      // 3. Load or seed community trips
+      try {
+        const savedTrips = localStorage.getItem(STORAGE_KEY_COMMUNITY) || localStorage.getItem('nj_community_trips');
+        if (savedTrips) {
+          state.communityTrips = JSON.parse(savedTrips);
+        } else {
+          state.communityTrips = [...SEED_COMMUNITY_TRIPS];
+          localStorage.setItem(STORAGE_KEY_COMMUNITY, JSON.stringify(state.communityTrips));
+        }
+      } catch (e) {
+        console.warn('Could not read/write community trips:', e);
+        state.communityTrips = [...SEED_COMMUNITY_TRIPS];
+      }
+
+      // 4. Load or seed SOS contacts
+      try {
+        const savedContacts = localStorage.getItem(STORAGE_KEY_CONTACTS) || localStorage.getItem('nj_sos_contacts');
+        if (savedContacts) {
+          state.sosContacts = JSON.parse(savedContacts);
+        } else {
+          state.sosContacts = [...DEFAULT_SOS_CONTACTS];
+          localStorage.setItem(STORAGE_KEY_CONTACTS, JSON.stringify(state.sosContacts));
+        }
+      } catch (e) {
+        console.warn('Could not read/write SOS contacts:', e);
+        state.sosContacts = [...DEFAULT_SOS_CONTACTS];
+      }
+
+      // 5. Initialize Map
+      initMap();
+
+      // 6. Setup Language toggle event
+      const langBtn = document.getElementById('langToggleBtn');
+      if (langBtn) {
+        langBtn.addEventListener('click', toggleLanguage);
+      }
+
+      // 7. Set initial language & render all components
+      setLanguage(state.language);
+
+      // 8. Pre-set default route (Farmgate to Gulshan 1)
+      applyPresetRoute('farmgate', 'gulshan1');
+
+      // 9. Fetch Live Dhaka Weather (Open-Meteo API)
+      fetchLiveDhakaWeather();
+    });
+  </script>
+</body>
+</html>
