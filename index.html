@@ -701,7 +701,7 @@
               <!-- Distance -->
               <div>
                 <label for="comDistance" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comDistanceLabel">দূরত্ব (কিমি)</label>
-                <input type="number" id="comDistance" step="0.1" min="0.1" max="100" required placeholder="যেমন: ৪.৫" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800 num-font">
+                <input type="number" id="comDistance" step="0.1" min="0.1" max="50" required placeholder="যেমন: ৪.৫" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800 num-font">
               </div>
             </div>
 
@@ -709,11 +709,11 @@
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label for="comStart" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comStartLabel">শুরুর স্থান</label>
-                <input type="text" id="comStart" required placeholder="ফার্মগেট" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
+                <input type="text" id="comStart" minlength="2" maxlength="60" required placeholder="ফার্মগেট" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
               </div>
               <div>
                 <label for="comEnd" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comEndLabel">গন্তব্য</label>
-                <input type="text" id="comEnd" required placeholder="গুলশান ১" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
+                <input type="text" id="comEnd" minlength="2" maxlength="60" required placeholder="গুলশান ১" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800">
               </div>
             </div>
 
@@ -721,16 +721,16 @@
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label for="comFare" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comFareLabel">পরিশোধিত ভাড়া (৳)</label>
-                <input type="number" id="comFare" min="5" step="5" required placeholder="যেমন: ১২০" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800 num-font">
+                <input type="number" id="comFare" min="10" max="5000" step="5" required placeholder="যেমন: ১২০" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs font-semibold text-slate-800 num-font">
               </div>
               <div>
                 <label for="comNote" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comNoteLabel">মন্তব্য (ঐচ্ছিক)</label>
-                <input type="text" id="comNote" placeholder="বৃষ্টি বা জ্যাম ছিল" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800">
+                <input type="text" id="comNote" maxlength="120" placeholder="যেমন: মোড়ে জ্যাম ছিল" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800">
               </div>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-md transition active:scale-95 text-xs flex items-center justify-center space-x-1.5">
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-md transition active:scale-95 text-xs flex items-center justify-center space-x-1.5 min-h-[44px]">
               <i class="fa-solid fa-paper-plane"></i>
               <span data-i18n="btnSubmitRate">রেট যুক্ত করুন</span>
             </button>
@@ -1019,20 +1019,20 @@
 
     <!-- ===== MODAL: QUICK-REPORT TRIP (From Fare Result) ===== -->
     <div id="quickReportModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 space-y-3 fade-slide-up">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-          <span class="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
-            <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 dark:border-emerald-800 space-y-3 fade-slide-up max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <span class="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center space-x-1.5">
+            <i class="fa-solid fa-hand-holding-dollar text-emerald-600 dark:text-emerald-400"></i>
             <span data-i18n="modalQuickReportTitle">আপনার ট্রিপের ভাড়া জানান</span>
           </span>
-          <button type="button" onclick="closeQuickReportModal()" class="text-slate-400 hover:text-slate-600 text-xs">
+          <button type="button" onclick="closeQuickReportModal()" aria-label="Close modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs p-1">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
         <form onsubmit="handleQuickReportSubmit(event)" class="space-y-2.5 text-xs">
           <div>
-            <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comRouteLabel">রুট ও বাহন</label>
+            <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase mb-1" data-i18n="comRouteLabel">রুট ও বাহন</label>
             <div id="modalRouteSummary" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2 font-semibold text-slate-800 dark:text-slate-100">
               ফার্মগেট ➔ গুলশান ১ (৫.২ কিমি • সিএনজি)
             </div>
@@ -1041,18 +1041,18 @@
           </div>
 
           <div>
-            <label for="modalFarePaid" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comFareLabel">আপনি কত দিয়েছেন? (৳)</label>
-            <input type="number" id="modalFarePaid" required min="5" step="5" placeholder="যেমন: ১৬০" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-bold text-slate-900 num-font">
+            <label for="modalFarePaid" class="block text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase mb-1" data-i18n="comFareLabel">আপনি কত দিয়েছেন? (৳)</label>
+            <input type="number" id="modalFarePaid" required min="10" max="5000" step="5" placeholder="যেমন: ১৬০" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-sm font-bold text-slate-900 dark:text-slate-100 num-font">
           </div>
 
           <div>
-            <label for="modalTripNote" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comNoteLabel">মন্তব্য (ঐচ্ছিক)</label>
-            <input type="text" id="modalTripNote" placeholder="যেমন: মোড়ে জ্যাম ছিল" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-800">
+            <label for="modalTripNote" class="block text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase mb-1" data-i18n="comNoteLabel">মন্তব্য (ঐচ্ছিক)</label>
+            <input type="text" id="modalTripNote" maxlength="120" placeholder="যেমন: মোড়ে জ্যাম ছিল" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2 text-slate-800 dark:text-slate-100">
           </div>
 
           <div class="grid grid-cols-2 gap-2 pt-1">
-            <button type="button" onclick="closeQuickReportModal()" class="py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition" data-i18n="btnCancel">বাতিল</button>
-            <button type="submit" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition" data-i18n="btnSubmitRate">যোগ করুন</button>
+            <button type="button" onclick="closeQuickReportModal()" class="py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition min-h-[44px]" data-i18n="btnCancel">বাতিল</button>
+            <button type="submit" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition min-h-[44px]" data-i18n="btnSubmitRate">যোগ করুন</button>
           </div>
         </form>
       </div>
@@ -1060,7 +1060,7 @@
 
     <!-- ===== MODAL: SOS CONFIRMATION ===== -->
     <div id="sosConfirmModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xs w-full p-5 shadow-2xl border border-red-200 dark:border-red-900/60 text-center space-y-3 fade-slide-up">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xs w-full p-5 shadow-2xl border border-red-200 dark:border-red-900/60 text-center space-y-3 fade-slide-up max-h-[90vh] overflow-y-auto">
         <div class="w-14 h-14 rounded-full bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 flex items-center justify-center text-2xl mx-auto">
           <i class="fa-solid fa-triangle-exclamation animate-bounce"></i>
         </div>
@@ -1069,21 +1069,21 @@
           প্রোটোটাইপ সতর্কবার্তা: এই বাটন চাপলে আপনার ফোন থেকে সরাসরি কল বা মেসেজ স্বয়ংক্রিয়ভাবে যাবে না। আপনার সুবিধার জন্য সরাসরি ৯৯৯ ডায়াল বা কন্টাক্টদের এসএমএস ড্রাফট অপশন চালু হবে।
         </p>
         <div class="grid grid-cols-2 gap-2 pt-2">
-          <button type="button" onclick="closeSosConfirmModal()" class="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition">বাতিল</button>
-          <button type="button" onclick="executeSosTrigger()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition">জরুরি মেনু খুলুন</button>
+          <button type="button" onclick="closeSosConfirmModal()" class="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition min-h-[44px]">বাতিল</button>
+          <button type="button" onclick="executeSosTrigger()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition min-h-[44px]">জরুরি মেনু খুলুন</button>
         </div>
       </div>
     </div>
 
     <!-- ===== MODAL: SOS RECEIPT / ACTIVE ALERT ===== -->
     <div id="sosReceiptModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-red-300 dark:border-red-900/60 space-y-3.5 fade-slide-up">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-red-300 dark:border-red-900/60 space-y-3.5 fade-slide-up max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
           <span class="text-xs font-bold text-red-600 dark:text-red-400 flex items-center space-x-1.5">
             <i class="fa-solid fa-shield-halved"></i>
             <span>জরুরি সহায়তা বিকল্প (প্রোটোটাইপ)</span>
           </span>
-          <button type="button" onclick="closeSosReceiptModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs">
+          <button type="button" onclick="closeSosReceiptModal()" aria-label="Close modal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs p-1">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -1102,13 +1102,13 @@
         <!-- Real Direct Emergency Actions -->
         <div class="space-y-2">
           <!-- 1. Direct 999 Police Call -->
-          <a href="tel:999" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-2 shadow-md transition active:scale-95">
+          <a href="tel:999" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-2 shadow-md transition active:scale-95 min-h-[44px]">
             <i class="fa-solid fa-phone-volume text-sm"></i>
             <span>সরাসরি জাতীয় হেল্পলাইন ৯৯৯-এ কল করুন</span>
           </a>
 
           <!-- 2. Draft SMS to Trusted Contacts -->
-          <button type="button" onclick="launchPrefilledSosSms()" class="w-full py-2.5 bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-2 transition active:scale-95">
+          <button type="button" onclick="launchPrefilledSosSms()" class="w-full py-2.5 bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs rounded-xl flex items-center justify-center space-x-2 transition active:scale-95 min-h-[44px]">
             <i class="fa-solid fa-comment-sms text-amber-300"></i>
             <span>বিশ্বস্ত নম্বরে জরুরি এসএমএস ড্রাফট করুন</span>
           </button>
@@ -1118,7 +1118,7 @@
           * প্রোটোটাইপ নোটিশ: কন্টাক্ট বা জরুরি সার্ভিসে কিছু স্বয়ংক্রিয়ভাবে পাঠানো হয়নি। তাৎক্ষণিক বিপদে উপরের বাটনে ট্যাপ করে সরাসরি ৯৯৯-এ কল দিন।
         </p>
 
-        <button type="button" onclick="closeSosReceiptModal()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition">বন্ধ করুন</button>
+        <button type="button" onclick="closeSosReceiptModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition min-h-[44px]">বন্ধ করুন</button>
       </div>
     </div>
 
@@ -1745,6 +1745,17 @@
       return lang === 'bn'
         ? `প্রথমে ${formatCurrency(minFare, lang)} বলুন। ড্রাইভার ${formatCurrency(askFare, lang)} চাইতে পারে। শেষ পর্যন্ত ${formatCurrency(midFare, lang)} এর মধ্যে রফা করার চেষ্টা করুন।`
         : `Start by offering ${formatCurrency(minFare, lang)}. Driver might ask ${formatCurrency(askFare, lang)}. Settle near ${formatCurrency(midFare, lang)}.`;
+    }
+
+    // Neutralizes HTML entities to prevent Stored & Reflected Cross-Site Scripting (XSS)
+    function escapeHtml(unsafe) {
+      if (unsafe === null || unsafe === undefined) return '';
+      return String(unsafe)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     // Straight-line distance between two coordinates with Dhaka road winding factor 1.38
@@ -3446,7 +3457,7 @@ ${stepsText}
             <div class="flex items-start justify-between">
               <div class="space-y-0.5">
                 <div class="flex items-center space-x-2">
-                  <span class="text-xs font-bold text-slate-900 dark:text-slate-100">${trip.start} ➔ ${trip.end}</span>
+                  <span class="text-xs font-bold text-slate-900 dark:text-slate-100">${escapeHtml(trip.start)} ➔ ${escapeHtml(trip.end)}</span>
                   <span class="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded font-medium">${vName}</span>
                 </div>
                 <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
@@ -3473,7 +3484,7 @@ ${stepsText}
 
             <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60 text-xs">
               <div class="text-[11px] text-slate-600 dark:text-slate-400 italic truncate max-w-[200px]">
-                ${trip.note ? '"' + trip.note + '"' : (lang === 'bn' ? 'নিয়মিত ট্রিপ' : 'Regular ride')}
+                ${trip.note ? '"' + escapeHtml(trip.note) + '"' : (lang === 'bn' ? 'নিয়মিত ট্রিপ' : 'Regular ride')}
               </div>
               <div>${badgeHtml}</div>
             </div>
@@ -3504,12 +3515,12 @@ ${stepsText}
               <span class="w-5 h-5 rounded-full ${c.isFixed ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'} flex items-center justify-center text-[10px]">
                 <i class="fa-solid fa-phone"></i>
               </span>
-              <span class="font-semibold text-slate-800">${c.name}</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-100">${escapeHtml(c.name)}</span>
             </div>
             <div class="flex items-center space-x-2">
-              <span class="font-mono text-slate-600">${c.phone}</span>
+              <span class="font-mono text-slate-600 dark:text-slate-300">${escapeHtml(c.phone)}</span>
               ${!c.isFixed ? `
-                <button type="button" onclick="removeSosContact(${index})" aria-label="Remove contact" class="text-slate-400 hover:text-red-600 px-1">
+                <button type="button" onclick="removeSosContact(${index})" aria-label="Remove contact" class="text-slate-400 hover:text-red-600 px-1 p-1 min-w-[24px] min-h-[24px]">
                   <i class="fa-solid fa-trash-can text-[10px]"></i>
                 </button>
               ` : ''}
@@ -3525,7 +3536,7 @@ ${stepsText}
       toast.className = 'bg-slate-900/95 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold backdrop-blur border border-slate-700/50 flex items-center space-x-2 fade-slide-up pointer-events-auto';
       toast.innerHTML = `
         <i class="fa-solid fa-circle-info text-emerald-400"></i>
-        <span>${message}</span>
+        <span>${escapeHtml(message)}</span>
       `;
       container.appendChild(toast);
       setTimeout(() => {
@@ -3897,10 +3908,11 @@ ${stepsText}
       e.preventDefault();
 
       const farePaid = parseFloat(document.getElementById('modalFarePaid').value);
-      const note = document.getElementById('modalTripNote').value.trim();
+      const rawNote = document.getElementById('modalTripNote').value;
+      const note = rawNote ? rawNote.trim().slice(0, 120) : '';
 
-      if (isNaN(farePaid) || farePaid <= 0 || !state.lastResult) {
-        showToast(state.language === 'bn' ? 'সঠিক ভাড়া লিখুন' : 'Please enter valid fare');
+      if (isNaN(farePaid) || farePaid < 10 || farePaid > 5000 || !state.lastResult) {
+        showToast(state.language === 'bn' ? 'সঠিক ভাড়া লিখুন (১০-৫০০০ টাকা)' : 'Please enter valid fare (৳10-5000)');
         return;
       }
 
@@ -3908,9 +3920,9 @@ ${stepsText}
         id: Date.now(),
         vehicle: state.selectedVehicle,
         distanceKm: state.lastResult.distanceKm,
-        start: state.startPoint ? state.startPoint.name : 'ঢাকা',
-        end: state.endPoint ? state.endPoint.name : 'ঢাকা',
-        farePaid,
+        start: state.startPoint ? state.startPoint.name.slice(0, 60) : 'ঢাকা',
+        end: state.endPoint ? state.endPoint.name.slice(0, 60) : 'ঢাকা',
+        farePaid: Math.round(farePaid),
         note,
         timestamp: Date.now()
       };
@@ -3930,6 +3942,28 @@ ${stepsText}
         console.warn('localStorage error:', err);
       }
       renderCommunityFeed();
+
+      // Layer 1: Sync to server backend for persistent validation & ledger storage
+      fetch('/api/trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vehicle: newTrip.vehicle,
+          distanceKm: newTrip.distanceKm,
+          start: newTrip.start,
+          end: newTrip.end,
+          farePaid: newTrip.farePaid,
+          note: newTrip.note
+        })
+      }).then(res => {
+        if (!res.ok) {
+          return res.json().then(errData => {
+            console.warn('[Server Ledger Note]', errData.error);
+          });
+        }
+      }).catch(() => {
+        // Offline / GitHub Pages fallback: preserved safely in localStorage
+      });
     }
 
     function toggleContributionForm() {
@@ -3951,20 +3985,22 @@ ${stepsText}
       const start = document.getElementById('comStart').value.trim();
       const end = document.getElementById('comEnd').value.trim();
       const farePaid = parseFloat(document.getElementById('comFare').value);
-      const note = document.getElementById('comNote').value.trim();
+      const rawNote = document.getElementById('comNote').value;
+      const note = rawNote ? rawNote.trim().slice(0, 120) : '';
 
-      if (!vehicle || isNaN(distanceKm) || distanceKm <= 0 || !start || !end || isNaN(farePaid) || farePaid <= 0) {
-        showToast(state.language === 'bn' ? 'সঠিক তথ্য প্রদান করুন' : 'Please provide valid trip information');
+      const validVehicles = ['cng', 'rickshaw', 'battery'];
+      if (!validVehicles.includes(vehicle) || isNaN(distanceKm) || distanceKm < 0.1 || distanceKm > 50.0 || !start || start.length < 2 || !end || end.length < 2 || isNaN(farePaid) || farePaid < 10 || farePaid > 5000) {
+        showToast(state.language === 'bn' ? 'সঠিক তথ্য প্রদান করুন (দূরত্ব ০.১-৫০ কিমি, ভাড়া ১০-৫০০০ টাকা)' : 'Please provide valid trip info (dist: 0.1-50km, fare: ৳10-5000)');
         return;
       }
 
       const newTrip = {
         id: Date.now(),
         vehicle,
-        distanceKm,
-        start,
-        end,
-        farePaid,
+        distanceKm: Math.round(distanceKm * 10) / 10,
+        start: start.slice(0, 60),
+        end: end.slice(0, 60),
+        farePaid: Math.round(farePaid),
         note,
         timestamp: Date.now()
       };
@@ -3990,7 +4026,7 @@ ${stepsText}
       renderCommunityFeed();
     }
 
-    function verifyDriverPlate() {
+    async function verifyDriverPlate() {
       const input = document.getElementById('plateNumberInput');
       const plate = input.value.trim();
       const container = document.getElementById('verifyResultContainer');
@@ -4001,9 +4037,31 @@ ${stepsText}
         return;
       }
 
-      const record = MOCK_DRIVERS_DB.find(d => d.plate.replace(/\s+/g, '') === plate.replace(/\s+/g, ''));
-
       container.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="p-4 text-center text-xs text-slate-500 font-medium">
+          <i class="fa-solid fa-spinner fa-spin mr-1.5 text-emerald-600"></i>
+          <span>${lang === 'bn' ? 'যাচাই করা হচ্ছে...' : 'Verifying driver record...'}</span>
+        </div>
+      `;
+
+      let record = null;
+      try {
+        const res = await fetch(`/api/drivers/verify?plate=${encodeURIComponent(plate)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.verified && data.driver) {
+            record = data.driver;
+          }
+        }
+      } catch (err) {
+        // Offline / GitHub Pages fallback
+      }
+
+      if (!record) {
+        // Fallback to local verified registry
+        record = MOCK_DRIVERS_DB.find(d => d.plate.replace(/\s+/g, '') === plate.replace(/\s+/g, ''));
+      }
 
       if (record) {
         const name = lang === 'bn' ? record.driverNameBn : record.driverNameEn;
@@ -4013,16 +4071,16 @@ ${stepsText}
           <div class="bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 space-y-3 fade-slide-up">
             <div class="flex items-center space-x-3">
               <div class="w-12 h-12 rounded-full bg-emerald-700 text-white font-extrabold flex items-center justify-center text-sm shadow-md shrink-0">
-                ${initials}
+                ${escapeHtml(initials)}
               </div>
               <div class="space-y-0.5 flex-1 min-w-0">
                 <div class="flex items-center space-x-1.5">
-                  <h4 class="text-sm font-bold text-slate-900 truncate">${name}</h4>
+                  <h4 class="text-sm font-bold text-slate-900 truncate">${escapeHtml(name)}</h4>
                   <span class="text-emerald-600 text-xs shrink-0" title="যাচাইকৃত">
                     <i class="fa-solid fa-circle-check"></i>
                   </span>
                 </div>
-                <div class="text-[11px] text-slate-500 font-mono">${record.plate}</div>
+                <div class="text-[11px] text-slate-500 font-mono">${escapeHtml(record.plate)}</div>
                 <span class="inline-block text-[10px] bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 font-bold px-2 py-0.5 rounded-full mt-0.5">
                   ${translations[lang].verifiedStatus}
                 </span>
@@ -4128,11 +4186,21 @@ ${stepsText}
         return;
       }
 
-      const name = prompt(state.language === 'bn' ? 'কন্টাক্টের নাম লিখুন:' : 'Enter contact name:');
-      if (!name) return;
+      const rawName = prompt(state.language === 'bn' ? 'কন্টাক্টের নাম লিখুন:' : 'Enter contact name:');
+      if (!rawName) return;
+      const name = rawName.trim().slice(0, 40);
+      if (name.length < 2) {
+        showToast(state.language === 'bn' ? 'সঠিক নাম লিখুন (কমপক্ষে ২ অক্ষর)' : 'Enter valid name (min 2 characters)');
+        return;
+      }
 
-      const phone = prompt(state.language === 'bn' ? 'ফোন নম্বর লিখুন:' : 'Enter phone number:');
-      if (!phone) return;
+      const rawPhone = prompt(state.language === 'bn' ? 'ফোন নম্বর লিখুন:' : 'Enter phone number:');
+      if (!rawPhone) return;
+      const phone = rawPhone.trim().replace(/[^0-9\+\-\s]/g, '').slice(0, 20);
+      if (phone.length < 3) {
+        showToast(state.language === 'bn' ? 'সঠিক ফোন নম্বর লিখুন' : 'Enter valid phone number');
+        return;
+      }
 
       state.sosContacts.push({ name, phone, isFixed: false });
 
@@ -4212,6 +4280,26 @@ ${stepsText}
         console.warn('Could not read/write community trips:', e);
         state.communityTrips = [...SEED_COMMUNITY_TRIPS];
       }
+
+      // Attempt server sync for community trips (if running with server.js)
+      fetch('/api/trips')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && Array.isArray(data.trips) && data.trips.length > 0) {
+            const existingIds = new Set(state.communityTrips.map(t => t.id));
+            let addedCount = 0;
+            data.trips.forEach(serverTrip => {
+              if (!existingIds.has(serverTrip.id)) {
+                state.communityTrips.push(serverTrip);
+                addedCount++;
+              }
+            });
+            if (addedCount > 0) {
+              renderCommunityFeed();
+            }
+          }
+        })
+        .catch(() => {});
 
       // 4. Load or seed SOS contacts
       try {

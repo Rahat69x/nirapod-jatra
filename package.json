@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node test/fare-engine.test.js && node test/journey-companion.test.js"
+    "test": "node test/fare-engine.test.js && node test/journey-companion.test.js && node test/security.test.js"
   },
   "keywords": [
     "dhaka",
