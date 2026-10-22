@@ -9,6 +9,12 @@ function toBengaliNumber(input) {
   return String(input).replace(/[0-9]/g, d => map[d]);
 }
 
+// 1b. English Numeral Conversion
+function toEnglishNumber(input) {
+  const bnToEnMap = { '০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9' };
+  return String(input).replace(/[০-৯]/g, d => bnToEnMap[d]);
+}
+
 // 2. Haversine with Dhaka 1.38 Winding Factor
 function calculateHaversine(lat1, lon1, lat2, lon2) {
   const R = 6371; // km
@@ -265,11 +271,14 @@ function runTest(desc, fn) {
   }
 }
 
-// Test 1: Bengali Numeral Formatting
-runTest('Bengali numeral conversion matches correctly', () => {
+// Test 1: Bengali & English Numeral Formatting
+runTest('Bengali and English numeral conversion matches correctly', () => {
   assert.strictEqual(toBengaliNumber('12345'), '১২৩৪৫');
   assert.strictEqual(toBengaliNumber('0'), '০');
   assert.strictEqual(toBengaliNumber('5.2 কিমি'), '৫.২ কিমি');
+  assert.strictEqual(toEnglishNumber('১২৩৪৫'), '12345');
+  assert.strictEqual(toEnglishNumber('০'), '0');
+  assert.strictEqual(toEnglishNumber('৫.২ কিমি'), '5.2 কিমি');
 });
 
 // Test 2: CNG Fare Formula

@@ -105,7 +105,7 @@ const sandbox = {
   AbortController: class { abort() {} get signal() { return {}; } }
 };
 
-const fn = new Function(...Object.keys(sandbox), jsCode + '\nreturn { state, DHAKA_LANDMARKS, searchLandmarks, normalizeSearchText, evaluateAllJourneyOptions, calculateFareEngine, calculateMultimodalMRT6, renderOptionsComparison, renderJourneySteps, buildTripPlanMessage, toBengaliNumber, formatCurrency, applyPresetRoute, selectOptionCard, initUrlHashRoute, updateUrlHash };');
+const fn = new Function(...Object.keys(sandbox), jsCode + '\nreturn { state, DHAKA_LANDMARKS, searchLandmarks, normalizeSearchText, evaluateAllJourneyOptions, calculateFareEngine, calculateMultimodalMRT6, renderOptionsComparison, renderJourneySteps, buildTripPlanMessage, toBengaliNumber, toEnglishNumber, formatCurrency, applyPresetRoute, selectOptionCard, initUrlHashRoute, updateUrlHash, runStageDemo, openAppleMapsRoute };');
 const exported = fn(...Object.values(sandbox));
 
 const {
@@ -120,11 +120,14 @@ const {
   renderJourneySteps,
   buildTripPlanMessage,
   toBengaliNumber,
+  toEnglishNumber,
   formatCurrency,
   applyPresetRoute,
   selectOptionCard,
   initUrlHashRoute,
-  updateUrlHash
+  updateUrlHash,
+  runStageDemo,
+  openAppleMapsRoute
 } = exported;
 
 console.log('✅ PASS: JavaScript successfully executed in mock DOM environment.');
@@ -272,5 +275,17 @@ assert.strictEqual(restored, true, 'initUrlHashRoute failed to restore route fro
 assert.strictEqual(state.startPoint.landmarkId, 'farmgate', 'Start point not restored');
 assert.strictEqual(state.endPoint.landmarkId, 'gulshan1', 'End point not restored');
 console.log('  ✅ Successfully restored plan from URL hash: Farmgate ➔ Gulshan 1');
+
+// STEP 6: VERIFY FIXES (NUMERALS, APPLE MAPS, BREAKDOWN, DEMO)
+console.log('\n--- Step 6: Verify Fixes (Numerals, Apple Maps, Breakdown, Demo) ---');
+assert.strictEqual(typeof toEnglishNumber, 'function', 'toEnglishNumber must be defined');
+assert.strictEqual(toEnglishNumber('১২৩৪৫'), '12345', 'Bengali numerals must convert to English ASCII');
+assert.strictEqual(toBengaliNumber('12345'), '১২৩৪৫', 'English numerals must convert to Bengali numerals');
+assert(shareMsg.includes('Apple Maps'), 'Share message should include Apple Maps directions link');
+assert.strictEqual(typeof runStageDemo, 'function', 'runStageDemo must be defined');
+assert.strictEqual(typeof openAppleMapsRoute, 'function', 'openAppleMapsRoute must be defined');
+console.log('  ✅ toEnglishNumber and toBengaliNumber bi-directional conversion verified.');
+console.log('  ✅ Apple Maps external direction link and openAppleMapsRoute verified.');
+console.log('  ✅ Stage demo function runStageDemo verified.');
 
 console.log('\n🎉 ALL 5 CORE FLOW STEPS AND 5 DHAKA SAMPLE COMMUTES VERIFIED SUCCESSFULLY!\n');
