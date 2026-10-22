@@ -19,6 +19,12 @@
   <!-- Font Awesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
 
+  <!-- Impeccable Design System Tokens -->
+  <link rel="stylesheet" href="./tokens.css">
+
+  <!-- Apple MapKit JS CDN (Tier 1 Map Provider) -->
+  <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js" async defer></script>
+
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
@@ -290,10 +296,16 @@
                   <span class="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold text-xs flex items-center justify-center shrink-0">১</span>
                   <h2 class="text-sm font-bold text-slate-900 dark:text-slate-100">যাত্রা শুরু ও গন্তব্য লিখুন (বাংলায়)</h2>
                 </div>
-                <button type="button" onclick="focusMapForPinDrop()" class="text-[11px] text-emerald-700 dark:text-emerald-400 hover:underline flex items-center space-x-1 font-semibold">
-                  <i class="fa-solid fa-map-pin text-[10px]"></i>
-                  <span data-i18n="mapTapNotice">বা ম্যাপে ট্যাপ করুন</span>
-                </button>
+                <div class="flex items-center space-x-2">
+                  <button id="btnRunStageDemo" type="button" onclick="runStageDemo()" class="text-[11px] bg-amber-500 hover:bg-amber-600 text-white font-bold px-2.5 py-1 rounded-lg shadow-xs flex items-center space-x-1 active:scale-95 transition" title="ফার্মগেট ➔ গুলশান ১ এক-ক্লিকে ডেমো চালান">
+                    <i class="fa-solid fa-play text-[9px]"></i>
+                    <span data-i18n="runDemoBtn">ডেমো চালান</span>
+                  </button>
+                  <button type="button" onclick="focusMapForPinDrop()" class="text-[11px] text-emerald-700 dark:text-emerald-400 hover:underline flex items-center space-x-1 font-semibold">
+                    <i class="fa-solid fa-map-pin text-[10px]"></i>
+                    <span data-i18n="mapTapNotice">বা ম্যাপে ট্যাপ করুন</span>
+                  </button>
+                </div>
               </div>
 
               <!-- Free-form Bangla Autocomplete Search Inputs with Floating Swap -->
@@ -495,7 +507,7 @@
                   <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
                       <i class="fa-solid fa-comments text-emerald-600"></i>
-                      <span>দরকষাকষির পরামর্শ:</span>
+                      <span data-i18n="bargainingTitle">দরকষাকষির নমুনা স্ক্রিপ্ট (উদাহরণ):</span>
                     </span>
                     <button type="button" id="btnPlayNegotiationAudio" onclick="toggleNegotiationAudio()" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 rounded-lg text-[10px] font-bold flex items-center space-x-1 transition">
                       <i id="audioSpeakerIcon" class="fa-solid fa-volume-high text-[10px]"></i>
@@ -608,10 +620,23 @@
               </div>
 
               <!-- Responsive Map Viewport -->
-              <div id="routeMap" class="w-full h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] rounded-xl border border-slate-200 dark:border-slate-700/80 relative z-0" aria-label="ঢাকা শহরের রুট ম্যাপ"></div>
+              <div id="routeMap" class="w-full h-[280px] sm:h-[340px] md:h-[400px] lg:h-[460px] rounded-xl border border-slate-200 dark:border-slate-700/80 relative z-0 overflow-hidden" aria-label="ঢাকা শহরের রুট ম্যাপ">
+                <!-- Text-Only Map Fallback (Tier 3) -->
+                <div id="mapTextFallback" class="hidden absolute inset-0 bg-slate-100 dark:bg-slate-800 p-5 rounded-xl flex flex-col justify-center items-center text-center z-20 space-y-2">
+                  <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                  </div>
+                  <h3 class="text-xs font-bold text-slate-800 dark:text-slate-100" data-i18n="textMapTitle">টেক্সট ভিত্তিক রুট নির্দেশনা (ম্যাপ অফলাইন)</h3>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-300 max-w-xs" data-i18n="textMapDesc">ম্যাপ লোড না হলেও আপনার ভাড়া নির্ধারণ ও ট্রিপ প্ল্যান সম্পূর্ণ সক্রিয়। নিচে বিস্তারিত ধাপগুলো অনুসরণ করুন।</p>
+                </div>
+              </div>
 
-              <!-- Reset / Recenter Button on Map -->
-              <div class="absolute bottom-5 right-5 z-[400] flex space-x-2">
+              <!-- Map Action Buttons (Apple Maps & Recenter) -->
+              <div class="absolute bottom-5 right-5 z-[400] flex items-center space-x-2">
+                <button id="btnOpenAppleMaps" type="button" onclick="openAppleMapsRoute()" aria-label="Open route in Apple Maps" class="px-3 py-1.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 shadow-md border border-slate-200 dark:border-slate-700 hover:bg-white active:scale-95 flex items-center space-x-1.5 transition">
+                  <i class="fa-brands fa-apple text-slate-900 dark:text-white text-xs"></i>
+                  <span data-i18n="openAppleMaps">Apple Maps-এ খুলুন</span>
+                </button>
                 <button type="button" onclick="centerDhakaMap()" aria-label="Center map to Dhaka" class="px-3 py-1.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 shadow-md border border-slate-200 dark:border-slate-700 hover:bg-white active:scale-95 flex items-center space-x-1.5 transition">
                   <i class="fa-solid fa-crosshairs text-emerald-600 text-xs"></i>
                   <span data-i18n="centerDhaka">ঢাকা কেন্দ্র</span>
@@ -879,8 +904,8 @@
                 <div class="flex items-start space-x-2">
                   <span class="w-5 h-5 rounded-full bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">৫</span>
                   <div>
-                    <strong class="block text-[11px]" data-i18n="rm5Title">ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ দাখিল</strong>
-                    <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm5Desc">আইনশৃঙ্খলা রক্ষাকারী বাহিনী ও বিআরটিএ-এর সাথে অফিশিয়াল পার্টনারশিপে ডিজিটাল কেস রেজিস্ট্রি।</p>
+                    <strong class="block text-[11px]" data-i18n="rm5Title">ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ সমন্বয়</strong>
+                    <p class="text-[10px] text-indigo-700 dark:text-indigo-300" data-i18n="rm5Desc">ভবিষ্যৎ ধারণা — কোনো অংশীদারিত্ব নেই। ভবিষ্যতে আইনানুগ কর্তৃপক্ষ বা বিআরটিএ-এর মাধ্যমে অভিযোগ সমন্বয়ের প্রযুক্তিগত ধারণা।</p>
                   </div>
                 </div>
               </div>
@@ -1504,6 +1529,11 @@
         uberCompareInCard: 'উবার/পাঠাও অ্যাপ রেট:',
         roadmapTitle: 'পরবর্তী রোডম্যাপ (Future Vision)',
         phase2Badge: 'ফেজ ২ প্ল্যান',
+        runDemoBtn: 'ডেমো চালান',
+        openAppleMaps: 'Apple Maps-এ খুলুন',
+        textMapTitle: 'টেক্সট ভিত্তিক রুট নির্দেশনা (ম্যাপ অফলাইন)',
+        textMapDesc: 'ম্যাপ লোড না হলেও আপনার ভাড়া নির্ধারণ ও ট্রিপ প্ল্যান সম্পূর্ণ সক্রিয়। নিচে বিস্তারিত ধাপগুলো অনুসরণ করুন।',
+        bargainingTitle: 'দরকষাকষির নমুনা স্ক্রিপ্ট (উদাহরণ):',
         rm1Title: 'ড্রাইভার অনবোর্ডিং ও লাইভ জিপিএস ডিজিটাল মিটার',
         rm1Desc: 'ড্রাইভারদের কিউআর স্টিকার ও লাইটওয়েট ওয়েব অ্যাপ দিয়ে রিয়েল-টাইম দূরত্ব ট্র্যাকিং।',
         rm2Title: 'ঢাকার বাইরে সম্প্রসারণ (চট্টগ্রাম, সিলেট, রাজশাহী)',
@@ -1512,8 +1542,8 @@
         rm3Desc: 'স্মার্টফোন বা ইন্টারনেট বিহীন প্রবীণ ও সাধারণ যাত্রীদের জন্য সরাসরি এসএমএসে ন্যায্য ভাড়া প্রাপ্তি।',
         rm4Title: 'কমিউনিটি রেটিং ভিত্তিক ভেরিফায়েড ড্রাইভার ট্রাস্ট স্কোর',
         rm4Desc: 'যাত্রীদের রেটিং ও ফিডব্যাকের ভিত্তিতে চালকদের ট্রাস্ট স্কোর এবং নিরাপত্তা ব্যাজ প্রদান।',
-        rm5Title: 'ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ দাখিল',
-        rm5Desc: 'আইনশৃঙ্খলা রক্ষাকারী বাহিনী ও বিআরটিএ-এর সাথে অফিশিয়াল পার্টনারশিপে ডিজিটাল কেস রেজিস্ট্রি।'
+        rm5Title: 'ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ সমন্বয়',
+        rm5Desc: 'ভবিষ্যৎ ধারণা — কোনো অংশীদারিত্ব নেই। ভবিষ্যতে আইনানুগ কর্তৃপক্ষ বা বিআরটিএ-এর মাধ্যমে অভিযোগ সমন্বয়ের প্রযুক্তিগত ধারণা।'
       },
       en: {
         appTitle: 'Nirapod Jatra',
@@ -1630,6 +1660,11 @@
         uberCompareInCard: 'Uber/Pathao App Fare:',
         roadmapTitle: 'Post-Hackathon Roadmap (Future Vision)',
         phase2Badge: 'Phase 2 Plan',
+        runDemoBtn: 'Run Demo',
+        openAppleMaps: 'Open in Apple Maps',
+        textMapTitle: 'Text Route Guidance (Map Offline)',
+        textMapDesc: 'Fare engine and step-by-step guidance remain fully operational without map tiles. Follow numbered steps below.',
+        bargainingTitle: 'Negotiation Script (Sample):',
         rm1Title: 'Driver Onboarding & Live GPS Digital Meter Mode',
         rm1Desc: 'Driver QR stickers and lightweight web companion for real-time GPS tracking without vehicle hardware.',
         rm2Title: 'City-Wide Expansion Beyond Dhaka (CTG, Sylhet, Rajshahi)',
@@ -1638,8 +1673,8 @@
         rm3Desc: 'Direct non-smartphone fare queries to reach low-income, elderly, and rural riders.',
         rm4Title: 'Verified-Driver Trust Score Fed by Real Community Ratings',
         rm4Desc: 'Machine-learning score system driven by passenger feedback with anti-spoof detection.',
-        rm5Title: 'Direct Law-Enforcement (DMP) & BRTA Incident Reporting',
-        rm5Desc: 'Official reporting escalation pipeline for passenger safety and fare abuse.'
+        rm5Title: 'DMP & BRTA Grievance Coordination Concept',
+        rm5Desc: 'Future concept — no official partnership. Conceptual architecture for incident reporting with transport authorities.'
       }
     };
 
@@ -1799,6 +1834,12 @@
     function toBengaliNumber(input) {
       const map = { '0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯' };
       return String(input).replace(/[0-9]/g, d => map[d]);
+    }
+
+    // Converts Bengali numerals in a string/number to standard English ASCII digits
+    function toEnglishNumber(input) {
+      const bnToEnMap = { '০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9' };
+      return String(input).replace(/[০-৯]/g, d => bnToEnMap[d]);
     }
 
     // Rough travel-time estimate in minutes from distance and vehicle type
@@ -2763,16 +2804,35 @@
         } else {
           const cfg = VEHICLE_CONFIGS[option.vehicleId];
           const activeSurge = option.details ? option.details.activeSurgeMultiplier : 1.0;
+          const distKm = routeData ? routeData.distanceKm : 5;
+          const extraKm = Math.max(0, distKm - cfg.coveredKm);
+          const distCost = extraKm * cfg.perKmRate;
+          const congestionMinutes = option.travelMinutes || 15;
+          const congestionCost = cfg.congestionRate > 0 ? (congestionMinutes * cfg.congestionRate) : 0;
+
           breakdownBox.innerHTML = `
             <div class="font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-1">
               <span>ভাড়া নির্ধারণ স্বচ্ছতা (${option.nameBn}):</span>
               <span class="text-emerald-600 font-mono">সার্জ ক্যাপ ১.৯০x সক্রিয়</span>
             </div>
-            <div class="space-y-0.5 pt-1 text-[10px] text-slate-500 dark:text-slate-400">
-              <div class="flex justify-between"><span>বেস ফেয়ার (প্রথম ${cfg.coveredKm} কিমি অন্তর্ভুক্ত):</span><span class="font-bold text-slate-700 dark:text-slate-300">৳${cfg.baseFare}</span></div>
-              <div class="flex justify-between"><span>প্রতি কিমি রেট:</span><span class="font-bold text-slate-700 dark:text-slate-300">৳${cfg.perKmRate}/কিমি</span></div>
-              ${cfg.congestionRate > 0 ? `<div class="flex justify-between"><span>ট্রাফিক জ্যাম বাফার:</span><span class="font-bold text-slate-700 dark:text-slate-300">৳${cfg.congestionRate}/মিনিট</span></div>` : ''}
-              <div class="flex justify-between"><span>বর্তমান সার্জ গুণিতক:</span><span class="font-bold text-emerald-600">${toBengaliNumber(activeSurge.toFixed(2))}x</span></div>
+            <div class="space-y-1 pt-1.5 text-[10px] text-slate-500 dark:text-slate-400">
+              <div class="flex justify-between">
+                <span>১. বেস ফেয়ার (প্রথম ${toBengaliNumber(cfg.coveredKm)} কিমি অন্তর্ভুক্ত):</span>
+                <span class="font-bold text-slate-700 dark:text-slate-300">৳${toBengaliNumber(cfg.baseFare)}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>২. দূরত্বের চার্জ (${toBengaliNumber(extraKm.toFixed(1))} কিমি @ ৳${toBengaliNumber(cfg.perKmRate)}/কিমি):</span>
+                <span class="font-bold text-slate-700 dark:text-slate-300">৳${toBengaliNumber(distCost.toFixed(1))}</span>
+              </div>
+              ${cfg.congestionRate > 0 ? `
+              <div class="flex justify-between">
+                <span>৩. ট্রাফিক জ্যাম বাফার (~${toBengaliNumber(congestionMinutes)} মিনিট @ ৳${toBengaliNumber(cfg.congestionRate)}/মিনিট):</span>
+                <span class="font-bold text-slate-700 dark:text-slate-300">৳${toBengaliNumber(congestionCost.toFixed(1))}</span>
+              </div>` : ''}
+              <div class="flex justify-between border-t border-slate-100 dark:border-slate-800/80 pt-1">
+                <span>৪. বর্তমান সক্রিয় সার্জ গুণিতক:</span>
+                <span class="font-bold text-emerald-600">${toBengaliNumber(activeSurge.toFixed(2))}x (ক্যাপ ১.৯০x)</span>
+              </div>
             </div>
           `;
         }
@@ -2803,6 +2863,15 @@
       const eId = state.endPoint ? (state.endPoint.landmarkId || state.endPoint.id || '') : '';
       const appUrl = `${window.location.origin}${window.location.pathname}#from=${encodeURIComponent(sId)}&to=${encodeURIComponent(eId)}&mode=${encodeURIComponent(opt.id)}`;
 
+      let appleMapsUrl = '';
+      const sLat = state.startPoint ? (state.startPoint.lat || (state.startPoint.coords && state.startPoint.coords[0])) : null;
+      const sLng = state.startPoint ? (state.startPoint.lng || (state.startPoint.coords && state.startPoint.coords[1])) : null;
+      const eLat = state.endPoint ? (state.endPoint.lat || (state.endPoint.coords && state.endPoint.coords[0])) : null;
+      const eLng = state.endPoint ? (state.endPoint.lng || (state.endPoint.coords && state.endPoint.coords[1])) : null;
+      if (sLat && eLat) {
+        appleMapsUrl = `https://maps.apple.com/?saddr=${sLat},${sLng}&daddr=${eLat},${eLng}&dirflg=d`;
+      }
+
       let stepsText = '';
       if (opt.id === 'multimodal') {
         const m = opt.details || {};
@@ -2822,7 +2891,7 @@ ${stepsText}
 
 ⚠️ সকল ভাড়া আনুমানিক (রাস্তায় ওঠার আগে যাচাই করুন)।
 🚨 জাতীয় জরুরি হেল্পলাইন: ৯৯৯
-🗺️ লাইভ ম্যাপ ও প্ল্যান দেখুন: ${appUrl}`;
+🗺️ লাইভ ম্যাপ ও প্ল্যান দেখুন: ${appUrl}${appleMapsUrl ? `\n🍎 Apple Maps ডিরেকশন: ${appleMapsUrl}` : ''}`;
     }
 
     async function shareJourneyPlan() {
@@ -2939,12 +3008,13 @@ ${stepsText}
 
     function launchPrefilledSosSms() {
       const phone = (state.sosContacts && state.sosContacts.length > 0 && state.sosContacts[0].phone) ? state.sosContacts[0].phone : '999';
-      let coordsStr = '23.7561, 90.3872';
+      let coordsStr = '';
       const receiptCoords = document.getElementById('sosReceiptCoords');
-      if (receiptCoords && receiptCoords.textContent && !receiptCoords.textContent.includes('যাচাই')) {
-        coordsStr = receiptCoords.textContent.replace('° N, ', ',').replace('° E', '');
+      if (receiptCoords && receiptCoords.textContent && !receiptCoords.textContent.includes('যাচাই') && !receiptCoords.textContent.includes('অনুমতি নেই') && !receiptCoords.textContent.includes('বন্ধ') && !receiptCoords.textContent.includes('denied')) {
+        coordsStr = receiptCoords.textContent.replace('° N, ', ',').replace('° E', '').trim();
       }
-      const msg = `জরুরি সাহায্য প্রয়োজন! আমি বিপদে আছি। সম্ভাব্য অবস্থান: https://maps.google.com/?q=${encodeURIComponent(coordsStr.trim())} (জাতীয় হেল্পলাইন: ৯৯৯)`;
+      const locPart = coordsStr ? `সম্ভাব্য অবস্থান: https://maps.google.com/?q=${encodeURIComponent(coordsStr)}` : 'অবস্থান: জিপিএস তথ্য পাওয়া যায়নি';
+      const msg = `জরুরি সাহায্য প্রয়োজন! আমি বিপদে আছি। ${locPart} (জাতীয় হেল্পলাইন: ৯৯৯)`;
       window.location.href = `sms:${phone}?body=${encodeURIComponent(msg)}`;
     }
 
@@ -3076,22 +3146,79 @@ ${stepsText}
       setLanguage(nextLang);
     }
 
-    // ===== MAP LOGIC =====
+    // ===== MAP LOGIC & MULTI-TIER ENGINE FALLBACK CHAIN =====
 
     function initMap() {
-      if (state.map) return;
+      if (state.map || state.appleMap) return;
 
-      const dhakaCenter = [23.7561, 90.3872];
-      state.map = L.map('routeMap', {
-        zoomControl: true,
-        attributionControl: false
-      }).setView(dhakaCenter, 12);
+      // Tier 1: Apple MapKit JS (if token is available and valid)
+      if (typeof mapkit !== 'undefined' && window.APPLE_MAPKIT_TOKEN && window.APPLE_MAPKIT_TOKEN !== 'PLACEHOLDER_TOKEN') {
+        try {
+          mapkit.init({
+            authorizationCallback: function(done) {
+              done(window.APPLE_MAPKIT_TOKEN);
+            }
+          });
+          const dhakaCoord = new mapkit.Coordinate(23.7561, 90.3872);
+          const mapRegion = new mapkit.CoordinateRegion(
+            dhakaCoord,
+            new mapkit.CoordinateSpan(0.12, 0.12)
+          );
+          state.appleMap = new mapkit.Map('routeMap', {
+            region: mapRegion,
+            showsUserLocationControl: true
+          });
+          state.mapType = 'apple';
+          const badge = document.getElementById('mapRouteStatusBadge');
+          if (badge) {
+            badge.textContent = state.language === 'bn' ? 'অ্যাপল ম্যাপস (MapKit JS)' : 'Apple Maps (MapKit JS)';
+          }
+          return;
+        } catch (err) {
+          console.warn('MapKit JS init failed, falling back to Leaflet + OSM:', err);
+        }
+      }
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18
-      }).addTo(state.map);
+      // Tier 2: Leaflet + OpenStreetMap
+      initLeafletMap();
+    }
 
-      state.map.on('click', handleMapClick);
+    function initLeafletMap() {
+      try {
+        if (state.map) return;
+        const dhakaCenter = [23.7561, 90.3872];
+        state.map = L.map('routeMap', {
+          zoomControl: true,
+          attributionControl: false
+        }).setView(dhakaCenter, 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 18
+        }).addTo(state.map);
+
+        state.map.on('click', handleMapClick);
+        state.mapType = 'leaflet';
+
+        const badge = document.getElementById('mapRouteStatusBadge');
+        if (badge && (badge.textContent === 'পয়েন্ট নির্ধারণ করুন' || badge.textContent === 'Select route points')) {
+          badge.textContent = state.language === 'bn' ? 'ওপেনস্ট্রিটম্যাপ (অ্যাপল ম্যাপস ফলব্যাক)' : 'OpenStreetMap (Apple Maps Fallback)';
+        }
+      } catch (leafletErr) {
+        console.warn('Leaflet map init failed, falling back to Tier 3 text mode:', leafletErr);
+        initTextFallbackMap();
+      }
+    }
+
+    function initTextFallbackMap() {
+      state.mapType = 'text';
+      const fallbackBox = document.getElementById('mapTextFallback');
+      if (fallbackBox) {
+        fallbackBox.classList.remove('hidden');
+      }
+      const badge = document.getElementById('mapRouteStatusBadge');
+      if (badge) {
+        badge.textContent = state.language === 'bn' ? 'টেক্সট মোড (ম্যাপ অফলাইন)' : 'Text Mode (Map Offline)';
+      }
     }
 
     function handleMapClick(e) {
@@ -3125,8 +3252,55 @@ ${stepsText}
     }
 
     function centerDhakaMap() {
-      if (!state.map) return;
-      state.map.setView([23.7561, 90.3872], 12);
+      if (state.mapType === 'apple' && state.appleMap && typeof mapkit !== 'undefined') {
+        state.appleMap.region = new mapkit.CoordinateRegion(
+          new mapkit.Coordinate(23.7561, 90.3872),
+          new mapkit.CoordinateSpan(0.12, 0.12)
+        );
+      } else if (state.map) {
+        state.map.setView([23.7561, 90.3872], 12);
+      }
+    }
+
+    function openAppleMapsRoute() {
+      if (!state.startPoint || !state.endPoint) {
+        showToast(state.language === 'bn' ? 'প্রথমে শুরু ও গন্তব্য নির্ধারণ করুন' : 'Please select origin and destination first');
+        return;
+      }
+      const sLat = state.startPoint.lat || (state.startPoint.coords && state.startPoint.coords[0]);
+      const sLng = state.startPoint.lng || (state.startPoint.coords && state.startPoint.coords[1]);
+      const dLat = state.endPoint.lat || (state.endPoint.coords && state.endPoint.coords[0]);
+      const dLng = state.endPoint.lng || (state.endPoint.coords && state.endPoint.coords[1]);
+      if (!sLat || !dLat) {
+        showToast(state.language === 'bn' ? 'ম্যাপ স্থানাঙ্ক পাওয়া যায়নি' : 'Map coordinates unavailable');
+        return;
+      }
+      const appleUrl = `https://maps.apple.com/?saddr=${sLat},${sLng}&daddr=${dLat},${dLng}&dirflg=d`;
+      window.open(appleUrl, '_blank');
+    }
+
+    function runStageDemo() {
+      const startLandmark = DHAKA_LANDMARKS.find(l => l.id === 'mrt_farmgate' || l.id === 'farmgate');
+      const endLandmark = DHAKA_LANDMARKS.find(l => l.id === 'gulshan1');
+
+      if (!startLandmark || !endLandmark) {
+        showToast('ডেমো রুট লোড করতে সমস্যা হয়েছে');
+        return;
+      }
+
+      selectLandmarkOption('start', startLandmark);
+      selectLandmarkOption('dest', endLandmark);
+
+      requestRouteAndCalculate();
+
+      showToast(state.language === 'bn' ? 'ফার্মগেট ➔ গুলশান ১ ডেমো ট্রিপ এক ক্লিকে প্রদর্শিত হচ্ছে' : 'Running Farmgate ➔ Gulshan 1 instant demo trip');
+
+      setTimeout(() => {
+        const results = document.getElementById('step3Results');
+        if (results) {
+          results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 400);
     }
 
     function updateMapMarkers() {
@@ -4188,12 +4362,12 @@ ${stepsText}
           },
           err => {
             console.warn('Geolocation denied or unavailable:', err);
-            coordsVal.textContent = '23.7561° N, 90.3872° E (ফার্মগেট)';
+            coordsVal.textContent = state.language === 'bn' ? 'জিপিএস অনুমতি নেই / জিপিএস বন্ধ' : 'GPS permission denied / off';
           },
           { timeout: 3000 }
         );
       } else {
-        coordsVal.textContent = '23.7561° N, 90.3872° E (ঢাকা)';
+        coordsVal.textContent = state.language === 'bn' ? 'জিপিএস অনুমতি নেই / জিপিএস বন্ধ' : 'GPS permission denied / off';
       }
 
       receiptModal.classList.remove('hidden');
