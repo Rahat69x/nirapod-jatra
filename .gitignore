@@ -4,8 +4,10 @@ package-lock.json
 
 # Environment and sensitive variables
 .env
+.env.*
 .env.local
 .env.*.local
+*.p8
 *.pem
 *.key
 
