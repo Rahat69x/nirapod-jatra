@@ -39,38 +39,87 @@ In Dhaka, Bangladesh, millions of commuters rely daily on informal transport (CN
 
 ### 🚨 Enhanced Commuter Safety Toolkit
 - **Audible Distress Siren (Web Audio API):** Piercing alternating dual-tone emergency siren (750 Hz – 1150 Hz) synthesized directly in browser audio without external audio downloads—100% functional offline!
-- **One-Tap WhatsApp & SMS Ride Sharing:** Generates instant trip alerts containing pickup, dropoff, vehicle type, fair fare range, emergency helpline (999), and a direct clickable Google Maps GPS link (`https://maps.google.com/?q=lat,lng`).
-- **Driver Plate & Vehicle Verification:** Searchable mock database (including female CNG pioneer driver Rina Begum) displaying safety scores, ratings, and active years, with an animated laser QR scanner simulation.
+- **One-Tap WhatsApp & SMS Ride Sharing:** Generates instant trip alerts containing pickup, dropoff, vehicle type, fair fare range, emergency helpline (999), live web hash route link, and external Apple Maps directions.
+- **Driver Plate & Vehicle Verification:** Searchable demonstration mock database of fictional driver profiles (with explicit demo disclaimer notice) displaying safety scores, ratings, and active years, with an animated laser QR scanner simulation.
 - **5 Essential Commuter Safety Tips:** Collapsible guidance checklist covering door locks, route tracking, fare fixing, and night commuting practices.
-- **Emergency SOS Prototype:** High-alert pulsing trigger modal with live GPS coordinates, 999 Police Helpline integration, and an editable trusted contacts manager (up to 4 contacts).
+- **Emergency SOS Prototype:** High-alert pulsing trigger modal with live GPS coordinates (or graceful "জিপিএস অনুমতি নেই / জিপিএস বন্ধ" indicator on denial), 999 Police Helpline integration, and an editable trusted contacts manager (up to 4 contacts).
+
+### 🗺️ Multi-Tier Map Architecture (Apple Maps MapKit JS & Fallbacks)
+- **Tier 1 (Apple Maps):** MapKit JS integration with authorization callback token support for high-fidelity vector tiles.
+- **Tier 2 (Leaflet + OpenStreetMap):** Seamless fallback with custom markers and dark mode tile inversion when Apple Maps credentials are omitted.
+- **Tier 3 (Text-Only Mode):** Offline text guidance fallback when WebGL or map canvas is unavailable.
+- **Direct Apple Maps Navigation Links:** External link button ("Apple Maps-এ খুলুন") opening `https://maps.apple.com/?saddr={lat},{lon}&daddr={lat},{lon}&dirflg=d` on iOS, macOS, Android, and web.
+
+#### Apple Maps Coverage Test (2026-10-23)
+| Landmark | Coordinates | Query Aliases | Apple Maps Result | Fallback Status |
+| :--- | :--- | :--- | :---: | :---: |
+| Farmgate (ফার্মগেট) | 23.7561° N, 90.3872° E | "ফার্মগেইট", "farmgate" | MATCH | Leaflet + OSM Active |
+| Gulshan 1 (গুলশান ১) | 23.7785° N, 90.4182° E | "গুলশান 1", "gulshan1" | MATCH | Leaflet + OSM Active |
+| Motijheel (মতিঝিল) | 23.7290° N, 90.4176° E | "শাপলা চত্বর", "motijheel" | MATCH | Leaflet + OSM Active |
+| Mirpur 10 (মিরপুর ১০) | 23.8069° N, 90.3687° E | "মিরপুর 10", "mirpur10" | MATCH | Leaflet + OSM Active |
+| Uttara Sector 3 | 23.8683° N, 90.3986° E | "uttara 3", "উত্তরা ৩" | MATCH | Leaflet + OSM Active |
+| Dhaka Airport (বিমানবন্দর) | 23.8434° N, 90.4030° E | "airport", "বিমানবন্দর" | MATCH | Leaflet + OSM Active |
 
 ### 🌙 AMOLED Night Ride Dark Mode
 - **Sleek Night Theme Toggle:** Instant header switcher between Light Mode and AMOLED Slate-950 Dark Mode.
 - **Night-Vision Map Styling:** Custom CSS filter applied to Leaflet OpenStreetMap tiles for reduced eye strain during late-night rides.
 - **Auto Night-Time Detection:** Automatically recommends dark mode if accessed between 8:00 PM and 6:00 AM.
-- **Bilingual Engine:** Zero-reload toggling between Bangla (`বাং`) and English (`ENG`) with Bengali numeral conversion (`১২৩৪৫৬৭৮৯০`).
+- **Bilingual Engine:** Zero-reload toggling between Bangla (`বাং`) and English (`ENG`) with bi-directional Bengali numeral conversion (`১২৩৪৫৬৭৮৯০` ⮂ `0123456789`).
 
 ---
 
 ## 3. Technology Stack
-- **Architecture:** Zero-build, single-file HTML5 web application ([`index.html`](file:///c:/project%2003/jatra/index.html)).
-- **Styling:** Tailwind CSS CDN (with Dark Mode class support), Font Awesome 6.5.1 icons, Google Fonts (*Hind Siliguri* & *Inter*).
-- **APIs & Web Standards:** Leaflet.js 1.9.4, OpenStreetMap, OSRM Routing Machine, Open-Meteo Weather API, Web Speech Synthesis API, Web Audio API (`AudioContext`).
+- **Architecture:** Zero-build, single-file HTML5 web application ([`index.html`](file:///c:/New%20folder/nirapod-jatra/index.html)).
+- **Styling:** Tailwind CSS CDN (with Dark Mode class support), Impeccable Design System ([`tokens.css`](file:///c:/New%20folder/nirapod-jatra/tokens.css)), Font Awesome 6.5.1 icons, Google Fonts (*Hind Siliguri* & *Inter*).
+- **APIs & Web Standards:** Apple MapKit JS, Leaflet.js 1.9.4, OpenStreetMap, OSRM Routing Machine, Open-Meteo Weather API, Web Speech Synthesis API, Web Audio API (`AudioContext`).
 - **Algorithms:** Haversine distance with Dhaka urban winding coefficient (`1.38`), deterministic congestion modeling.
 - **Storage:** Client-side HTML5 `localStorage` persistence (`nirapod_theme`, `nirapod_lang`, `nirapod_trips`, `nirapod_contacts`).
 
 ---
 
-## 4. How to Run Locally
-1. Double-click [`index.html`](file:///c:/project%2003/jatra/index.html) to open it in any modern browser (`file:///...`).
-2. Or serve it via any static local HTTP server:
+## 4. How to Run Locally & Build Android APK
+
+### Web Application Run
+1. Double-click [`index.html`](file:///c:/New%20folder/nirapod-jatra/index.html) to open it in any modern browser (`file:///...`).
+2. Or serve it via the production security-hardened server:
    ```bash
-   # Using Node.js
-   npx serve .
-   # or Python
-   python -m http.server 8000
+   node server.js
    ```
 3. Open `http://localhost:3000` in your desktop or mobile browser.
+
+### 📱 Android APK Build Guide (Capacitor / TWA)
+To package Nirapod Jatra as an Android APK:
+1. Initialize Capacitor in the project root:
+   ```bash
+   npm install @capacitor/core @capacitor/cli @capacitor/android
+   npx cap init "Nirapod Jatra" "com.nirapodjatra.app" --web-dir "."
+   npx cap add android
+   ```
+2. Configure `capacitor.config.json` with strict origin allowances:
+   ```json
+   {
+     "appId": "com.nirapodjatra.app",
+     "appName": "Nirapod Jatra",
+     "webDir": ".",
+     "server": {
+       "androidScheme": "https",
+       "allowNavigation": [
+         "https://rahat69x.github.io",
+         "https://*.apple-mapkit.com",
+         "https://*.apple.com",
+         "https://*.tile.openstreetmap.org",
+         "https://api.open-meteo.com",
+         "https://router.project-osrm.org"
+       ]
+     }
+   }
+   ```
+3. Build and package APK:
+   ```bash
+   npx cap sync android
+   npx cap open android
+   # Build -> Build Bundle(s) / APK(s) -> Build APK(s) in Android Studio
+   ```
 
 ---
 
@@ -80,4 +129,4 @@ In Dhaka, Bangladesh, millions of commuters rely daily on informal transport (CN
 2. **City-Wide Expansion Beyond Dhaka:** Expand the fare matrix, landmarks, and congestion modeling to Chittagong, Sylhet, and Rajshahi by enabling local route captains to seed municipal pricing tables.
 3. **SMS / USSD Fallback for Feature-Phone Users:** Dedicated `*XXX#` USSD or plain SMS gateway (*"Send pickup & dropoff, receive fair fare range"*) reaching elderly, low-income, and rural commuters without smartphones or mobile data.
 4. **Verified-Driver Trust Score Fed by Real Community Ratings:** Machine-learning audit layer aggregating real rider ratings and trip reports over time, featuring spoof detection and driver safety tier badges.
-5. **Integration with Law-Enforcement / BRTA Incident Reporting:** Direct escalation pipeline connecting severe commuter safety reports with Dhaka Metropolitan Police and Bangladesh Road Transport Authority (BRTA).
+5. **DMP & BRTA Grievance Coordination (Future Concept — No Official Partnership):** Conceptual architecture for incident reporting with transport authorities and law enforcement.
