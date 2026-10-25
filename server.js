@@ -20,8 +20,10 @@ const server = http.createServer((req, res) => {
   let filePath = path.join(__dirname, safePath === '/' ? 'index.html' : safePath);
 
   fs.stat(filePath, (err, stats) => {
+    let statusCode = 200;
     if (err || !stats.isFile()) {
-      filePath = path.join(__dirname, 'index.html');
+      filePath = path.join(__dirname, '404.html');
+      statusCode = 404;
     }
 
     fs.readFile(filePath, (readErr, content) => {
@@ -34,7 +36,7 @@ const server = http.createServer((req, res) => {
       const ext = path.extname(filePath).toLowerCase();
       const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-      res.writeHead(200, {
+      res.writeHead(statusCode, {
         'Content-Type': contentType,
         'Cache-Control': 'no-cache',
         'Access-Control-Allow-Origin': '*'
