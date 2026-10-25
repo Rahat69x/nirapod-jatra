@@ -491,6 +491,10 @@
                 <!-- Populated via JS with optgroups (Metro, Hubs, Landmarks) -->
               </select>
             </div>
+            <p id="startSelectError" class="hidden text-[11px] font-semibold text-rose-600 dark:text-rose-400 flex items-center space-x-1 pl-1" role="alert" aria-live="assertive">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              <span id="startSelectErrorText" data-i18n="startPointRequired">অনুগ্রহ করে যাত্রা শুরুর স্থান নির্বাচন করুন</span>
+            </p>
 
             <!-- Floating Swap Button -->
             <div class="absolute right-3 top-[36px] z-10">
@@ -509,6 +513,10 @@
                 <!-- Populated via JS with optgroups -->
               </select>
             </div>
+            <p id="endSelectError" class="hidden text-[11px] font-semibold text-rose-600 dark:text-rose-400 flex items-center space-x-1 pl-1" role="alert" aria-live="assertive">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              <span id="endSelectErrorText" data-i18n="destPointRequired">অনুগ্রহ করে গন্তব্যের স্থান নির্বাচন করুন</span>
+            </p>
           </div>
 
           <!-- Quick Tap Route Pills (Popular Routes) -->
@@ -520,7 +528,7 @@
           </div>
 
           <!-- Inline Validation / Error Notice Container -->
-          <div id="routeValidationNotice" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-center space-x-2">
+          <div id="routeValidationNotice" role="alert" aria-live="assertive" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-center space-x-2">
             <i class="fa-solid fa-triangle-exclamation text-amber-600 shrink-0"></i>
             <span id="routeValidationText">শুরু এবং গন্তব্য একই জায়গা মনে হচ্ছে</span>
           </div>
@@ -711,14 +719,18 @@
           </div>
 
           <!-- Trip Sharing Action Buttons (WhatsApp & SMS) -->
-          <div class="grid grid-cols-2 gap-2 pt-0.5">
-            <button type="button" onclick="shareTripViaWhatsApp()" class="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95">
-              <i class="fa-brands fa-whatsapp text-sm"></i>
-              <span data-i18n="shareWhatsapp">হোয়াটসঅ্যাপ শেয়ার</span>
+          <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+            <button type="button" onclick="shareTripViaWhatsApp()" class="py-2.5 px-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm active:scale-95">
+              <i class="fa-brands fa-whatsapp text-xs"></i>
+              <span data-i18n="shareWhatsapp">হোয়াটসঅ্যাপ</span>
             </button>
-            <button type="button" onclick="shareTripViaSms()" class="py-2.5 px-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm active:scale-95">
-              <i class="fa-solid fa-comment-sms text-sm text-amber-300"></i>
-              <span data-i18n="shareSms">এসএমএস ট্র্যাকিং</span>
+            <button type="button" onclick="shareTripViaSms()" class="py-2.5 px-1 bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm active:scale-95">
+              <i class="fa-solid fa-comment-sms text-xs text-amber-300"></i>
+              <span data-i18n="shareSms">এসএমএস</span>
+            </button>
+            <button type="button" onclick="copyTripShareText()" class="py-2.5 px-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm active:scale-95 border border-slate-200 dark:border-slate-700">
+              <i class="fa-solid fa-copy text-xs text-emerald-600"></i>
+              <span data-i18n="shareCopy">কপি</span>
             </button>
           </div>
 
@@ -1132,6 +1144,10 @@
           <div>
             <label for="modalFarePaid" class="block text-[10px] font-bold text-slate-600 uppercase mb-1" data-i18n="comFareLabel">আপনি কত দিয়েছেন? (৳)</label>
             <input type="number" id="modalFarePaid" required min="5" step="5" placeholder="যেমন: ১৬০" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm font-bold text-slate-900 num-font">
+            <p id="modalFarePaidError" class="hidden text-[11px] font-semibold text-rose-600 dark:text-rose-400 mt-1 flex items-center space-x-1" role="alert" aria-live="assertive">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              <span data-i18n="fareAmountRequired">অনুগ্রহ করে পরিশোধিত ভাড়ার সঠিক পরিমাণ লিখুন (টাকায়)</span>
+            </p>
           </div>
 
           <div>
@@ -1443,7 +1459,21 @@
         pickupPlaceholder: 'যাত্রা শুরুর স্থান নির্বাচন করুন...',
         destPlaceholder: 'গন্তব্যের স্থান নির্বাচন করুন...',
         quickRoutesLabel: 'জনপ্রিয় রুট:',
-        samePointError: 'শুরু এবং গন্তব্য একই জায়গা মনে হচ্ছে',
+        samePointError: 'শুরু এবং গন্তব্য একই স্থান। অনুগ্রহ করে একটি ভিন্ন গন্তব্য নির্বাচন করুন।',
+        shareCopy: 'কপি করুন',
+        startPointRequired: 'অনুগ্রহ করে যাত্রা শুরুর স্থান নির্বাচন করুন',
+        destPointRequired: 'অনুগ্রহ করে গন্তব্যের স্থান নির্বাচন করুন',
+        fareAmountRequired: 'অনুগ্রহ করে পরিশোধিত ভাড়ার সঠিক পরিমাণ লিখুন (টাকায়)',
+        placeNotFound: 'স্থানটি তালিকায় পাওয়া যায়নি। ড্রপডাউন থেকে নিকটস্থ কোনো স্থান বেছে নিন।',
+        locDenied: 'লোকেশন ব্যবহারের অনুমতি মেলেনি। ব্রাউজার সেটিংসে গিয়ে লোকেশন পারমিশন চালু করুন।',
+        locUnavailable: 'জিপিএস অবস্থান শনাক্ত করা যায়নি। ড্রপডাউন থেকে নিকটস্থ স্থান বেছে নিন।',
+        routeFailed: 'ম্যাপ সার্ভার থেকে রুট আনা যায়নি। আনুমানিক দূরত্বের অফলাইন হিসাব দেখানো হচ্ছে।',
+        weatherFailed: 'লাইভ আবহাওয়া তথ্য আনা যায়নি। ডিফল্ট স্বাভাবিক আবহাওয়া হিসাব প্রযোজ্য।',
+        offlineMode: 'আপনি বর্তমানে অফলাইনে আছেন। সংরক্ষিত ডাটা ও অফলাইন ক্যালকুলেশন কাজ করছে।',
+        clipboardFailed: 'ক্লিপবোর্ডে কপি করা যায়নি। অনুগ্রহ করে লেখাটি ম্যানুয়ালি কপি করুন।',
+        clipboardSuccess: 'ট্রিপের তথ্য সফলভাবে ক্লিপবোর্ডে কপি করা হয়েছে!',
+        ttsNotSupported: 'আপনার ব্রাউজারে ভয়েস অ্যাসিস্ট্যান্ট সমর্থিত নয়। ক্রোম বা এজ ব্রাউজার ব্যবহার করুন।',
+        storageFailed: 'ব্রাউজার মেমোরি পূর্ণ বা প্রাইভেট ব্রাউজিংয়ে ডেটা সংরক্ষণ সম্ভব হয়নি।',
         tooLongError: 'এই দূরত্বের জন্য অ্যাপটি ডিজাইন করা হয়নি — বাস/মেট্রো বিবেচনা করুন।',
         mapTitle: 'লাইভ রুট ম্যাপ',
         mapRouteStatusBadge: 'পয়েন্ট নির্ধারণ করুন',
@@ -1577,8 +1607,22 @@
         pickupPlaceholder: 'Choose pickup location...',
         destPlaceholder: 'Choose destination...',
         quickRoutesLabel: 'Popular Routes:',
-        samePointError: 'Pickup and destination appear to be the same location',
-        tooLongError: 'This app is not designed for this distance — please consider bus/metro.',
+        samePointError: 'Start and destination cannot be the same. Please choose a different destination.',
+        shareCopy: 'Copy Text',
+        startPointRequired: 'Please select a starting pickup location',
+        destPointRequired: 'Please select a destination',
+        fareAmountRequired: 'Please enter a valid fare amount in Taka',
+        placeNotFound: 'Place not found. Please choose a nearby landmark from the list.',
+        locDenied: 'Location access denied. Please enable location permissions in browser settings.',
+        locUnavailable: 'GPS position unavailable. Please choose your location from the dropdown.',
+        routeFailed: 'Map server unreachable. Showing offline distance estimate.',
+        weatherFailed: 'Could not fetch live weather. Default normal weather applies.',
+        offlineMode: 'You are currently offline. Using offline estimation mode.',
+        clipboardFailed: 'Could not copy to clipboard. Please copy text manually.',
+        clipboardSuccess: 'Trip details copied to clipboard!',
+        ttsNotSupported: 'Voice assistance is not supported in this browser. Please use Chrome or Edge.',
+        storageFailed: 'Storage is full or blocked. Could not save changes.',
+        tooLongError: 'Distance exceeds 40km, outside standard city service. Please select points within Dhaka.',
         mapTitle: 'Live Route Map',
         mapRouteStatusBadge: 'Select route points',
         centerDhaka: 'Dhaka Center',
@@ -2774,8 +2818,13 @@
     function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.setAttribute('role', 'status');
-      toast.setAttribute('aria-live', 'polite');
+      if (type === 'error' || type === 'warning') {
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+      } else {
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+      }
 
       let iconClass = 'fa-solid fa-circle-info text-emerald-400';
       let borderClass = 'border-slate-700/50';
@@ -2812,6 +2861,25 @@
         setTimeout(() => toast.remove(), 300);
       }, 4000);
     }
+
+    
+    function safeSetStorage(key, value) {
+      try {
+        localStorage.setItem(key, value);
+        return true;
+      } catch (err) {
+        console.warn('Storage operation failed:', err);
+        showToast(translations[state.language].storageFailed, 'error');
+        return false;
+      }
+    }
+
+    window.addEventListener('offline', () => {
+      showToast(translations[state.language].offlineMode, 'warning');
+    });
+    window.addEventListener('online', () => {
+      showToast(state.language === 'bn' ? 'ইন্টারনেট সংযোগ পুনঃস্থাপিত হয়েছে' : 'Internet connection restored', 'success');
+    });
 
     // ===== EVENT LISTENERS & ACTIONS =====
 
@@ -2938,16 +3006,41 @@
       requestRouteAndCalculate();
     }
 
-    function validateRouteInputs() {
+    function validateRouteInputs(showErrors = false) {
       const btn = document.getElementById('btnCalculateFare');
       const noticeBox = document.getElementById('routeValidationNotice');
       const noticeText = document.getElementById('routeValidationText');
       const statusBadge = document.getElementById('mapRouteStatusBadge');
+      const startErr = document.getElementById('startSelectError');
+      const endErr = document.getElementById('endSelectError');
+      const startSelect = document.getElementById('startSelect');
+      const endSelect = document.getElementById('endSelect');
       const lang = state.language;
 
       noticeBox.classList.add('hidden');
+      if (startErr) startErr.classList.add('hidden');
+      if (endErr) endErr.classList.add('hidden');
+      if (startSelect) startSelect.classList.remove('border-rose-500', 'bg-rose-50/40');
+      if (endSelect) endSelect.classList.remove('border-rose-500', 'bg-rose-50/40');
 
-      if (!state.startPoint || !state.endPoint) {
+      let hasMissing = false;
+      if (!state.startPoint) {
+        if (showErrors && startErr) {
+          startErr.classList.remove('hidden');
+          if (startSelect) startSelect.classList.add('border-rose-500', 'bg-rose-50/40');
+        }
+        hasMissing = true;
+      }
+
+      if (!state.endPoint) {
+        if (showErrors && endErr) {
+          endErr.classList.remove('hidden');
+          if (endSelect) endSelect.classList.add('border-rose-500', 'bg-rose-50/40');
+        }
+        hasMissing = true;
+      }
+
+      if (hasMissing) {
         btn.disabled = true;
         statusBadge.textContent = translations[lang].mapRouteStatusBadge;
         return false;
@@ -2955,6 +3048,7 @@
 
       const straightDistKm = calculateHaversine(state.startPoint.lat, state.startPoint.lng, state.endPoint.lat, state.endPoint.lng) / 1.38;
       if (straightDistKm < 0.05) {
+        noticeBox.className = 'bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800/60 rounded-xl p-2.5 text-xs text-rose-800 dark:text-rose-300 flex items-center space-x-2';
         noticeBox.classList.remove('hidden');
         noticeText.textContent = translations[lang].samePointError;
         btn.disabled = true;
@@ -2962,6 +3056,7 @@
       }
 
       if (straightDistKm > 40) {
+        noticeBox.className = 'bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-center space-x-2';
         noticeBox.classList.remove('hidden');
         noticeText.textContent = translations[lang].tooLongError;
         btn.disabled = true;
@@ -2998,7 +3093,10 @@
     }
 
     async function calculateFareAction() {
-      if (!validateRouteInputs()) return;
+      if (!validateRouteInputs(true)) {
+        showToast(state.language === 'bn' ? 'অনুগ্রহ করে যাত্রা শুরুর স্থান ও গন্তব্য নির্ধারণ করুন' : 'Please select both pickup and destination locations', 'error');
+        return;
+      }
       await requestRouteAndCalculate();
     }
 
@@ -3314,11 +3412,17 @@
           err => {
             console.warn('Geolocation denied or unavailable:', err);
             coordsVal.textContent = '23.7561° N, 90.3872° E (ফার্মগেট)';
+            if (err.code === 1) {
+              showToast(translations[state.language].locDenied, 'error');
+            } else {
+              showToast(translations[state.language].locUnavailable, 'warning');
+            }
           },
           { timeout: 3000 }
         );
       } else {
         coordsVal.textContent = '23.7561° N, 90.3872° E (ঢাকা)';
+        showToast(translations[state.language].locUnavailable, 'warning');
       }
 
       receiptModal.classList.remove('hidden');
