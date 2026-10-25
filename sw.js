@@ -3,7 +3,7 @@
  * Caches app shell, deterministic fare engine, MRT-6 data, and fonts for offline commute
  */
 
-const CACHE_NAME = 'nirapod-jatra-v1.2.0';
+const CACHE_NAME = 'nirapod-jatra-v1.2.1';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -56,12 +56,29 @@ self.addEventListener('fetch', (event) => {
   if (url.hostname.includes('project-osrm.org') || url.hostname.includes('open-meteo.com')) {
     event.respondWith(
       fetch(req).catch(() => {
-        // Return 503 or empty json so client-side fallback handles it smoothly
         return new Response(JSON.stringify({ error: 'offline_mode' }), {
           status: 503,
           headers: { 'Content-Type': 'application/json' }
         });
       })
+    );
+    return;
+  }
+
+  // Network-first for navigation / HTML documents to prevent stale code lock
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    event.respondWith(
+      fetch(req)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, responseToCache));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match('./index.html') || caches.match('./');
+        })
     );
     return;
   }
@@ -81,11 +98,6 @@ self.addEventListener('fetch', (event) => {
           cache.put(req, responseToCache);
         });
         return networkResponse;
-      }).catch(() => {
-        // Offline fallback to index.html if navigating
-        if (req.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
       });
     })
   );
