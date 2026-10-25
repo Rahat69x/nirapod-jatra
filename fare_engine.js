@@ -297,6 +297,11 @@ function findMultimodalRoute(startPoint, endPoint) {
     return null; // Too far from metro corridor
   }
 
+  const metroDistanceKm = Math.abs(nearestEndStation.kmFromNorth - nearestStartStation.kmFromNorth);
+  if (metroDistanceKm < 3.0) {
+    return null; // Metro journey too trivial or off-direction to justify multi-modal transfers
+  }
+
   const metroFare = getStationToStationMetroFare(nearestStartStation.id, nearestEndStation.id);
   const feeder1Dist = parseFloat(minStartDist.toFixed(1));
   const feeder2Dist = parseFloat(minEndDist.toFixed(1));
@@ -306,7 +311,6 @@ function findMultimodalRoute(startPoint, endPoint) {
   const totalMin = metroFare + feeder1Cost + feeder2Cost;
   const totalMax = totalMin + 15;
 
-  const metroDistanceKm = Math.abs(nearestEndStation.kmFromNorth - nearestStartStation.kmFromNorth);
   const metroMinutes = Math.round(metroDistanceKm * 2.0); // ~2 min per station avg
   const feeder1Minutes = Math.round(feeder1Dist * 6);
   const feeder2Minutes = Math.round(feeder2Dist * 6);

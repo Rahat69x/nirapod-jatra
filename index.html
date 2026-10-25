@@ -2558,8 +2558,8 @@
       renderPopularRoutePills();
       updateVehicleRatePreview();
 
-      if (state.lastResult) {
-        renderCalculationResult(state.lastResult);
+      if (state.lastResult && state.calculatedOptions) {
+        renderMultiOptionUI();
       }
 
       renderCommunityFeed();
@@ -3895,14 +3895,11 @@
       }
 
       if (state.lastResult) {
-        const fare = calculateFareEngine(
-          state.selectedVehicle,
-          state.lastResult.distanceKm,
-          state.lastResult.travelMinutes,
-          state.conditions
-        );
-        state.lastResult = { ...fare, mode: state.lastResult.mode };
-        renderCalculationResult(state.lastResult);
+        executeMultiOptionCalculation({
+          distanceKm: state.lastResult.distanceKm,
+          durationMinutes: state.lastResult.durationMinutes,
+          mode: state.lastResult.mode
+        });
       }
     }
 
@@ -4048,8 +4045,8 @@
       state.language = 'bn';
       state.theme = 'light';
 
-      applyTheme('light');
-      applyTranslations('bn');
+      setTheme('light');
+      setLanguage('bn');
       renderCommunityFeed();
       renderSosContacts();
 
