@@ -1155,11 +1155,11 @@
         </div>
         <h3 class="text-base font-bold text-slate-900" data-i18n="sosConfirmTitle">আপনি কি নিশ্চিত?</h3>
         <p class="text-xs text-slate-600 leading-relaxed" data-i18n="sosConfirmDesc">
-          জরুরি সংকেত নিশ্চিত করলে আপনার বর্তমান জিপিএস লোকেশন ও যাত্রার বিবরণ আপনার বিশ্বস্ত নম্বরসমূহ এবং ৯৯৯ পুলিশ হেল্পলাইনে এসএমএস পাঠানোর প্রোটোটাইপ কার্যকর হবে।
+          জরুরি সংকেত প্রোটোটাইপ: আপনার বর্তমান জিপিএস লোকেশন ও যাত্রার বিবরণ প্রস্তুত করা হবে। জরুরি মুহূর্তে সরাসরি ৯৯৯ নম্বরে ডায়াল করুন।
         </p>
         <div class="grid grid-cols-2 gap-2 pt-2">
           <button type="button" onclick="closeSosConfirmModal()" class="py-2.5 px-3 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition" data-i18n="btnCancel">বাতিল</button>
-          <button type="button" onclick="executeSosTrigger()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition" data-i18n="btnConfirmSos">হ্যাঁ, পাঠান</button>
+          <button type="button" onclick="executeSosTrigger()" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition" data-i18n="btnConfirmSos">প্রস্তুত করুন</button>
         </div>
       </div>
     </div>
@@ -1170,7 +1170,7 @@
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
           <span class="text-xs font-bold text-emerald-800 flex items-center space-x-1.5">
             <i class="fa-solid fa-circle-check text-emerald-600"></i>
-            <span data-i18n="sosSentTitle">জরুরি সংকেত পাঠানো হয়েছে (সিমুলেশন)</span>
+            <span data-i18n="sosSentTitle">জরুরি সংকেত প্রস্তুত (প্রোটোটাইপ)</span>
           </span>
           <button type="button" onclick="closeSosReceiptModal()" class="text-slate-400 hover:text-slate-600 text-xs">
             <i class="fa-solid fa-xmark"></i>
@@ -1507,10 +1507,10 @@
         trustedContactsTitle: 'বিশ্বস্ত যোগাযোগ নম্বর (সর্বোচ্চ ৪টি)',
         btnAddContact: '+ নতুন নম্বর',
         sosConfirmTitle: 'আপনি কি নিশ্চিত?',
-        sosConfirmDesc: 'জরুরি সংকেত নিশ্চিত করলে আপনার বর্তমান জিপিএস লোকেশন ও যাত্রার বিবরণ আপনার বিশ্বস্ত নম্বরসমূহ এবং ৯৯৯ পুলিশ হেল্পলাইনে এসএমএস পাঠানোর প্রোটোটাইপ কার্যকর হবে।',
+        sosConfirmDesc: 'জরুরি সংকেত প্রোটোটাইপ: আপনার বর্তমান জিপিএস লোকেশন ও যাত্রার বিবরণ প্রস্তুত করা হবে। জরুরি মুহূর্তে সরাসরি ৯৯৯ নম্বরে ডায়াল করুন।',
         btnCancel: 'বাতিল',
-        btnConfirmSos: 'হ্যাঁ, পাঠান',
-        sosSentTitle: 'জরুরি সংকেত পাঠানো হয়েছে (সিমুলেশন)',
+        btnConfirmSos: 'প্রস্তুত করুন',
+        sosSentTitle: 'জরুরি সংকেত প্রস্তুত (প্রোটোটাইপ)',
         sosReceiptGps: 'শনাক্তকৃত জিপিএস:',
         sosReceiptTime: 'সময়:',
         sosReceiptPolice: 'জাতীয় হেল্পলাইন:',
@@ -1641,10 +1641,10 @@
         trustedContactsTitle: 'Trusted Contacts (Up to 4)',
         btnAddContact: '+ Add Contact',
         sosConfirmTitle: 'Are you sure?',
-        sosConfirmDesc: 'Confirming SOS will trigger a prototype dispatch of your GPS coordinates and ride details to your trusted contacts and National Police 999.',
+        sosConfirmDesc: 'Emergency SOS Prototype: Prepares your live GPS coordinates and transit details. In an immediate emergency, please dial 999 directly.',
         btnCancel: 'Cancel',
-        btnConfirmSos: 'Yes, Send SOS',
-        sosSentTitle: 'Emergency SOS Dispatched (Simulation)',
+        btnConfirmSos: 'Prepare Alert',
+        sosSentTitle: 'Emergency SOS Alert Ready (Prototype)',
         sosReceiptGps: 'Detected GPS:',
         sosReceiptTime: 'Timestamp:',
         sosReceiptPolice: 'Police Helpline:',
@@ -2771,20 +2771,46 @@
       }).join('');
     }
 
-    function showToast(message) {
+    function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = 'bg-slate-900/95 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold backdrop-blur border border-slate-700/50 flex items-center space-x-2 fade-slide-up pointer-events-auto';
-      toast.innerHTML = `
-        <i class="fa-solid fa-circle-info text-emerald-400"></i>
-        <span>${message}</span>
-      `;
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+
+      let iconClass = 'fa-solid fa-circle-info text-emerald-400';
+      let borderClass = 'border-slate-700/50';
+      if (type === 'success') {
+        iconClass = 'fa-solid fa-circle-check text-emerald-400';
+        borderClass = 'border-emerald-600/40';
+      } else if (type === 'error') {
+        iconClass = 'fa-solid fa-circle-exclamation text-rose-400';
+        borderClass = 'border-rose-600/40';
+      } else if (type === 'warning') {
+        iconClass = 'fa-solid fa-triangle-exclamation text-amber-400';
+        borderClass = 'border-amber-600/40';
+      }
+
+      toast.className = `bg-slate-900/95 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-semibold backdrop-blur border ${borderClass} flex items-center justify-between space-x-2 fade-slide-up pointer-events-auto`;
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'flex items-center space-x-2';
+      contentDiv.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
+      toast.appendChild(contentDiv);
+
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.setAttribute('aria-label', 'বিজ্ঞপ্তি বন্ধ করুন / Dismiss message');
+      closeBtn.className = 'ml-2 text-slate-400 hover:text-white transition p-1 shrink-0';
+      closeBtn.innerHTML = '<i class="fa-solid fa-xmark text-xs"></i>';
+      closeBtn.addEventListener('click', () => toast.remove());
+      toast.appendChild(closeBtn);
+
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-      }, 2600);
+      }, 4000);
     }
 
     // ===== EVENT LISTENERS & ACTIONS =====
@@ -3011,6 +3037,7 @@
         };
 
         renderCalculationResult(state.lastResult);
+        showToast(state.language === 'bn' ? 'ন্যায্য ভাড়া সফলভাবে গণনা করা হয়েছে' : 'Fair fare calculated successfully!', 'success');
       } catch (err) {
         console.error('Calculation error:', err);
         showToast(state.language === 'bn' ? 'রুট গণনায় সমস্যা হয়েছে, অফলাইন মোড ব্যবহার করা হচ্ছে' : 'Calculation error, using offline estimate');
