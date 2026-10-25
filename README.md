@@ -53,7 +53,7 @@ In Dhaka, Bangladesh, millions of commuters rely daily on informal transport (CN
 ---
 
 ## 3. Technology Stack
-- **Architecture:** Zero-build, single-file HTML5 web application ([`index.html`](file:///c:/project%2003/jatra/index.html)).
+- **Architecture:** Zero-build, single-file HTML5 web application ([`index.html`](index.html)).
 - **Styling:** Tailwind CSS CDN (with Dark Mode class support), Font Awesome 6.5.1 icons, Google Fonts (*Hind Siliguri* & *Inter*).
 - **APIs & Web Standards:** Leaflet.js 1.9.4, OpenStreetMap, OSRM Routing Machine, Open-Meteo Weather API, Web Speech Synthesis API, Web Audio API (`AudioContext`).
 - **Algorithms:** Haversine distance with Dhaka urban winding coefficient (`1.38`), deterministic congestion modeling.
@@ -62,7 +62,7 @@ In Dhaka, Bangladesh, millions of commuters rely daily on informal transport (CN
 ---
 
 ## 4. How to Run Locally
-1. Double-click [`index.html`](file:///c:/project%2003/jatra/index.html) to open it in any modern browser (`file:///...`).
+1. Double-click [`index.html`](index.html) to open it in any modern browser (`file:///...`).
 2. Or serve it via any static local HTTP server:
    ```bash
    # Using Node.js
