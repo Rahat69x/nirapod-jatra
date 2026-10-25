@@ -1,32 +1,44 @@
-// Nirapod Jatra (নিরাপদ যাত্রা) Service Worker
-const CACHE_NAME = 'nirapod-jatra-v1.1';
+/**
+ * sw.js - Service Worker for Nirapod Jatra (নিরাপদ যাত্রা) PWA
+ * Caches app shell, deterministic fare engine, MRT-6 data, and fonts for offline commute
+ */
+
+const CACHE_NAME = 'nirapod-jatra-v1.2.1';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './fare_engine.js',
   './manifest.json',
+  './favicon.ico',
+  './favicon.svg',
+  './apple-touch-icon.png',
+  './icon-192.png',
+  './icon-512.png',
   'https://cdn.tailwindcss.com',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
 ];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(STATIC_ASSETS).catch(err => {
-        console.warn('Pre-cache error during install:', err);
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('[SW] Pre-caching offline app shell & transit data');
+      return cache.addAll(STATIC_ASSETS).catch((err) => {
+        console.warn('[SW] Pre-cache item failed, continuing anyway:', err);
       });
     })
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(keys => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        keys.map(key => {
+        keys.map((key) => {
           if (key !== CACHE_NAME) {
+            console.log('[SW] Purging old cache:', key);
             return caches.delete(key);
           }
         })
@@ -36,32 +48,57 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
-  // Pass through non-GET and dynamic API requests
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
 
-  // For external live APIs like OSRM and Open-Meteo, use Network First with cache fallback
+  // For external dynamic APIs (OSRM router, Open-Meteo), try network first then fallback
   if (url.hostname.includes('project-osrm.org') || url.hostname.includes('open-meteo.com')) {
     event.respondWith(
-      fetch(event.request)
-        .catch(() => caches.match(event.request))
+      fetch(req).catch(() => {
+        return new Response(JSON.stringify({ error: 'offline_mode' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      })
     );
     return;
   }
 
-  // App shell & static assets: Stale While Revalidate
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      const fetchPromise = fetch(event.request).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
-        }
-        return networkResponse;
-      }).catch(() => cachedResponse);
+  // Network-first for navigation / HTML documents to prevent stale code lock
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    event.respondWith(
+      fetch(req)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, responseToCache));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match('./index.html') || caches.match('./');
+        })
+    );
+    return;
+  }
 
-      return cachedResponse || fetchPromise;
+  // Cache-first strategy for local assets and CDN resources
+  event.respondWith(
+    caches.match(req).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(req).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
+        }
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(req, responseToCache);
+        });
+        return networkResponse;
+      });
     })
   );
 });
