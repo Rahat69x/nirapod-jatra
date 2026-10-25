@@ -287,10 +287,10 @@
           </div>
         </div>
 
-        <!-- Right Side: Dark Mode Toggle + Language Switcher -->
+        <!-- Right Side: Dark Mode Toggle + Language Switcher + Accessible Mobile Menu -->
         <div class="flex items-center space-x-1.5">
           <!-- Dark Mode Toggle Button -->
-          <button id="themeToggleBtn" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="নাইট মোড / ডার্ক মোড" class="w-7 h-7 rounded-full bg-black/20 hover:bg-black/35 backdrop-blur border border-white/25 flex items-center justify-center text-amber-300 text-xs transition active:scale-90">
+          <button id="themeToggleBtn" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="নাইট মোড / ডার্ক মোড" class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/35 backdrop-blur border border-white/25 flex items-center justify-center text-amber-300 text-xs transition active:scale-90">
             <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
           </button>
 
@@ -298,6 +298,11 @@
           <button id="langToggleBtn" type="button" aria-label="Toggle language between Bangla and English" class="flex items-center bg-black/20 hover:bg-black/30 backdrop-blur border border-white/25 rounded-full p-0.5 text-xs font-semibold transition active:scale-95">
             <span id="langPillBn" class="px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition">বাং</span>
             <span id="langPillEn" class="px-2 py-0.5 rounded-full text-white/80 transition">ENG</span>
+          </button>
+
+          <!-- Accessible Mobile Hamburger Menu Button (Min 44px tap target) -->
+          <button id="mobileMenuBtn" type="button" onclick="toggleMobileMenu()" aria-expanded="false" aria-controls="mobileMenuDrawer" aria-label="মেনু খুলুন / Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-black/20 hover:bg-black/35 backdrop-blur border border-white/25 flex items-center justify-center text-white text-base transition active:scale-95">
+            <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
           </button>
         </div>
       </div>
@@ -314,6 +319,82 @@
         </div>
       </div>
     </header>
+
+    <!-- ===== ACCESSIBLE MOBILE MENU DRAWER ===== -->
+    <div id="mobileMenuDrawer" role="dialog" aria-modal="true" aria-label="প্রধান মেনু" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+      <div id="mobileMenuPanel" class="w-72 max-w-[85vw] h-full bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between p-5 text-slate-800 dark:text-slate-100 transform transition-transform duration-300">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white" data-i18n="appTitle">নিরাপদ যাত্রা</span>
+            </div>
+            <button id="mobileMenuCloseBtn" type="button" onclick="closeMobileMenu()" aria-label="মেনু বন্ধ করুন / Close navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 text-lg transition">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Navigation Section Links (Min 44px tap targets) -->
+          <nav class="space-y-1.5" aria-label="মোবাইল নেভিগেশন">
+            <button type="button" onclick="navigateFromMenu('fare')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center space-x-3 text-left font-semibold text-sm hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-300 transition text-slate-700 dark:text-slate-200">
+              <i class="fa-solid fa-calculator text-emerald-600 dark:text-emerald-400 w-5 text-center text-base"></i>
+              <span data-i18n="navFare">ন্যায্য ভাড়া ক্যালকুলেটর</span>
+            </button>
+
+            <button type="button" onclick="navigateFromMenu('community')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center space-x-3 text-left font-semibold text-sm hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-300 transition text-slate-700 dark:text-slate-200">
+              <i class="fa-solid fa-users text-emerald-600 dark:text-emerald-400 w-5 text-center text-base"></i>
+              <span data-i18n="navCommunity">কমিউনিটি লেজার ও রিপোর্ট</span>
+            </button>
+
+            <button type="button" onclick="navigateFromMenu('safety')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center space-x-3 text-left font-semibold text-sm hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-300 transition text-slate-700 dark:text-slate-200">
+              <i class="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400 w-5 text-center text-base"></i>
+              <span data-i18n="navSafety">সেফটি টুলস ও পরামর্শ</span>
+            </button>
+
+            <button type="button" onclick="navigateFromMenu('roadmap')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center space-x-3 text-left font-semibold text-sm hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-300 transition text-slate-700 dark:text-slate-200">
+              <i class="fa-solid fa-compass-drafting text-indigo-600 dark:text-indigo-400 w-5 text-center text-base"></i>
+              <span data-i18n="roadmapTitle">পরবর্তী রোডম্যাপ (Future Vision)</span>
+            </button>
+          </nav>
+
+          <!-- Quick Actions: Theme & Language -->
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+            <label class="text-[11px] font-bold uppercase tracking-wider text-slate-400" data-i18n="menuSettingsTitle">সেটিংস ও পছন্দ</label>
+            
+            <div class="flex items-center justify-between min-h-[44px] px-3 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
+              <span class="text-xs font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-moon text-amber-500"></i>
+                <span data-i18n="menuThemeLabel">ডার্ক মোড</span>
+              </span>
+              <button type="button" onclick="toggleTheme()" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold px-3 py-1 bg-white dark:bg-slate-700 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200">
+                <span id="menuThemeStatus">টগল</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between min-h-[44px] px-3 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
+              <span class="text-xs font-semibold flex items-center space-x-2">
+                <i class="fa-solid fa-language text-emerald-600"></i>
+                <span data-i18n="menuLangLabel">ভাষা পরিবর্তন</span>
+              </span>
+              <button type="button" onclick="toggleLanguage()" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-xs font-bold px-3 py-1 bg-emerald-600 text-white rounded-lg shadow-sm">
+                <span id="menuLangStatus">বাং / ENG</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Helpline in Mobile Menu -->
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+          <a href="tel:999" class="w-full min-h-[44px] bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 font-bold rounded-xl flex items-center justify-center space-x-2 text-xs">
+            <i class="fa-solid fa-phone-volume"></i>
+            <span data-i18n="menuHelpline">জরুরি পুলিশ হেল্পলাইন: ৯৯৯</span>
+          </a>
+          <p class="text-[10px] text-center text-slate-400">© <span class="footerYear">2026</span> Nirapod Jatra</p>
+        </div>
+      </div>
+    </div>
 
     <!-- ===== MAIN CONTENT TABS CONTAINER (Scrollable) ===== -->
     <main class="flex-1 overflow-y-auto px-4 py-3 space-y-3 pb-24 relative" id="mainContainer">
@@ -1422,7 +1503,13 @@
         rm4Title: 'কমিউনিটি রেটিং ভিত্তিক ভেরিফায়েড ড্রাইভার ট্রাস্ট স্কোর',
         rm4Desc: 'যাত্রীদের রেটিং ও ফিডব্যাকের ভিত্তিতে চালকদের ট্রাস্ট স্কোর এবং নিরাপত্তা ব্যাজ প্রদান।',
         rm5Title: 'ডিএমপি ও বিআরটিএ-তে সরাসরি অভিযোগ দাখিল',
-        rm5Desc: 'আইনশৃঙ্খলা রক্ষাকারী বাহিনী ও বিআরটিএ-এর সাথে অফিশিয়াল পার্টনারশিপে ডিজিটাল কেস রেজিস্ট্রি।'
+        rm5Desc: 'আইনশৃঙ্খলা রক্ষাকারী বাহিনী ও বিআরটিএ-এর সাথে অফিশিয়াল পার্টনারশিপে ডিজিটাল কেস রেজিস্ট্রি।',
+        menuTitle: 'প্রধান মেনু',
+        menuClose: 'মেনু বন্ধ করুন',
+        menuSettingsTitle: 'সেটিংস ও পছন্দ',
+        menuThemeLabel: 'ডার্ক মোড',
+        menuLangLabel: 'ভাষা পরিবর্তন',
+        menuHelpline: 'জরুরি পুলিশ হেল্পলাইন: ৯৯৯'
       },
       en: {
         appTitle: 'Nirapod Jatra',
@@ -1548,7 +1635,13 @@
         rm4Title: 'Verified-Driver Trust Score Fed by Real Community Ratings',
         rm4Desc: 'Machine-learning score system driven by passenger feedback with anti-spoof detection.',
         rm5Title: 'Direct Law-Enforcement (DMP) & BRTA Incident Reporting',
-        rm5Desc: 'Official reporting escalation pipeline for passenger safety and fare abuse.'
+        rm5Desc: 'Official reporting escalation pipeline for passenger safety and fare abuse.',
+        menuTitle: 'Main Menu',
+        menuClose: 'Close Menu',
+        menuSettingsTitle: 'Settings & Preferences',
+        menuThemeLabel: 'Dark Mode',
+        menuLangLabel: 'Switch Language',
+        menuHelpline: 'Emergency Police Helpline: 999'
       }
     };
 
@@ -3174,6 +3267,80 @@
       renderSosContacts();
     }
 
+    // ===== ACCESSIBLE MOBILE MENU HANDLERS =====
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileMenuDrawer');
+      if (drawer.classList.contains('hidden')) {
+        openMobileMenu();
+      } else {
+        closeMobileMenu();
+      }
+    }
+
+    function openMobileMenu() {
+      const drawer = document.getElementById('mobileMenuDrawer');
+      const btn = document.getElementById('mobileMenuBtn');
+      drawer.classList.remove('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      updateMenuStatusLabels();
+      // Accessibility: focus close button when menu opens
+      setTimeout(() => {
+        const closeBtn = document.getElementById('mobileMenuCloseBtn');
+        if (closeBtn) closeBtn.focus();
+      }, 50);
+    }
+
+    function closeMobileMenu() {
+      const drawer = document.getElementById('mobileMenuDrawer');
+      const btn = document.getElementById('mobileMenuBtn');
+      drawer.classList.add('hidden');
+      if (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+        btn.focus();
+      }
+    }
+
+    function updateMenuStatusLabels() {
+      const themeStatus = document.getElementById('menuThemeStatus');
+      const langStatus = document.getElementById('menuLangStatus');
+      const isDark = document.documentElement.classList.contains('dark');
+      if (themeStatus) {
+        themeStatus.textContent = state.language === 'bn' 
+          ? (isDark ? 'চালু (Dark)' : 'বন্ধ (Light)')
+          : (isDark ? 'On (Dark)' : 'Off (Light)');
+      }
+      if (langStatus) {
+        langStatus.textContent = state.language === 'bn' ? 'বাংলা' : 'English';
+      }
+    }
+
+    function navigateFromMenu(section) {
+      closeMobileMenu();
+      if (section === 'fare') {
+        switchTab('fare');
+        const el = document.getElementById('tabFare');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (section === 'community') {
+        switchTab('community');
+        const el = document.getElementById('tabCommunity');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (section === 'safety') {
+        switchTab('safety');
+        const el = document.getElementById('tabSafety');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (section === 'roadmap') {
+        switchTab('safety');
+        const rm = document.getElementById('roadmapContent');
+        if (rm && rm.classList.contains('hidden')) {
+          toggleRoadmap();
+        }
+        setTimeout(() => {
+          const rmContainer = document.getElementById('roadmapContent');
+          if (rmContainer) rmContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 120);
+      }
+    }
+
     function switchTab(tabId) {
       state.activeTab = tabId;
 
@@ -3261,6 +3428,22 @@
 
       // 9. Fetch Live Dhaka Weather (Open-Meteo API)
       fetchLiveDhakaWeather();
+
+      // 10. Mobile menu backdrop click & keyboard ESC listener
+      const drawer = document.getElementById('mobileMenuDrawer');
+      if (drawer) {
+        drawer.addEventListener('click', (e) => {
+          if (e.target === drawer) closeMobileMenu();
+        });
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const mDrawer = document.getElementById('mobileMenuDrawer');
+          if (mDrawer && !mDrawer.classList.contains('hidden')) {
+            closeMobileMenu();
+          }
+        }
+      });
     });
   </script>
 </body>
