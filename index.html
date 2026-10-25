@@ -3584,10 +3584,12 @@
           sec.classList.remove('hidden');
           navBtn.classList.remove('text-slate-400');
           navBtn.classList.add('text-emerald-600');
+          navBtn.setAttribute('aria-current', 'page');
         } else {
           sec.classList.add('hidden');
           navBtn.classList.remove('text-emerald-600');
           navBtn.classList.add('text-slate-400');
+          navBtn.removeAttribute('aria-current');
         }
       });
 
