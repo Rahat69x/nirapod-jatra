@@ -4,7 +4,8 @@
   "description": "Fair Fare Companion & Transparency Engine for Dhaka Transit Ecosystem",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node scratch/run_full_test_suite.js"
   },
   "keywords": [
     "dhaka",
