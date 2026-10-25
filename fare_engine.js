@@ -8,6 +8,14 @@
  * - Rickshaw / Battery Easybike: Informal market norms (No municipal fixed rate; ~৳18-22/km for human, ~৳14-16/km for battery).
  */
 
+(function (root, factory) {
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.FareEngine = factory();
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+
 const VEHICLE_CONFIGS = {
   cng: {
     id: 'cng',
@@ -254,6 +262,13 @@ function calculateRideHailingEstimates(distanceKm, travelMinutes, conditions) {
 function findMultimodalRoute(startPoint, endPoint) {
   if (!startPoint || !endPoint) return null;
 
+  const sLat = startPoint.lat !== undefined ? startPoint.lat : (startPoint.coords ? startPoint.coords[0] : 0);
+  const sLng = startPoint.lng !== undefined ? startPoint.lng : (startPoint.coords ? startPoint.coords[1] : 0);
+  const eLat = endPoint.lat !== undefined ? endPoint.lat : (endPoint.coords ? endPoint.coords[0] : 0);
+  const eLng = endPoint.lng !== undefined ? endPoint.lng : (endPoint.coords ? endPoint.coords[1] : 0);
+
+  if (!sLat || !sLng || !eLat || !eLng) return null;
+
   // Find nearest MRT stations
   let nearestStartStation = null;
   let minStartDist = 999;
@@ -261,12 +276,12 @@ function findMultimodalRoute(startPoint, endPoint) {
   let minEndDist = 999;
 
   MRT6_STATIONS.forEach(st => {
-    const dStart = calculateHaversine(startPoint.lat, startPoint.lng, st.coords[0], st.coords[1]);
+    const dStart = calculateHaversine(sLat, sLng, st.coords[0], st.coords[1]);
     if (dStart < minStartDist) {
       minStartDist = dStart;
       nearestStartStation = st;
     }
-    const dEnd = calculateHaversine(endPoint.lat, endPoint.lng, st.coords[0], st.coords[1]);
+    const dEnd = calculateHaversine(eLat, eLng, st.coords[0], st.coords[1]);
     if (dEnd < minEndDist) {
       minEndDist = dEnd;
       nearestEndStation = st;
@@ -366,9 +381,7 @@ function fuzzyMatchPlace(query, landmarksList) {
   });
 }
 
-// CommonJS export for Node testing; browser fallback
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
+  return {
     VEHICLE_CONFIGS,
     MRT6_STATIONS,
     calculateHaversine,
@@ -382,4 +395,4 @@ if (typeof module !== 'undefined' && module.exports) {
     parseBengaliNumber,
     fuzzyMatchPlace
   };
-}
+});
