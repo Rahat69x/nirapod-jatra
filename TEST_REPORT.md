@@ -1,6 +1,6 @@
 # Nirapod Jatra (নিরাপদ যাত্রা) - Test Report & Launch Verification
 
-**Generated:** 2026-10-25T19:17:45.432Z  
+**Generated:** 2026-10-25T21:31:45.420Z  
 **Environment:** Headless Edge (CDP), Node.js v24.18.0, Windows, Local Static Server (Port 3000)  
 **Test Summary:** Total: 27 | **PASS: 27** | **FAIL: 0** | **NOT TESTED: 0**
 
@@ -53,7 +53,7 @@
 | **T6.2** | Accessibility | Check viewport meta tag for pinch-to-zoom accessibility (200% zoom) | Viewport allows pinch-zoom (no user-scalable=no or maximum-scale=1.0) | Viewport content: "width=device-width, initial-scale=1.0" | **PASS** | Major | `viewportMeta="width=device-width, initial-scale=1.0"` |
 | **T7.1** | Assets & 404 | Verify existence of favicon.ico, favicon.svg, and bilingual 404.html with noindex | All favicons present and 404.html is bilingual and contains noindex meta tag | Favicons exist: true, 404 valid: true | **PASS** | Major | `fav404=true, p404Valid=true` |
 | **T8.1** | PWA Compliance | Verify manifest.json schema and sw.js service worker implementation | Valid PWA manifest with Bangla name, standalone display, 192/512 icons, and active sw.js | Manifest Valid: true, sw.js exists: true | **PASS** | Major | `manifestValid=true, swExists=true` |
-| **T10.1** | Demo Rehearsal | Execute complete 3-minute demo script end-to-end with cold start and automated interactions | All demo stages execute flawlessly and complete in under 3 minutes (cold start < 15s automated) | Automated demo run completed in 1.02 seconds. All stages verified. | **PASS** | Critical | `elapsedSeconds=1.02s, demoCheapest="সবচেয়ে সাশ্রয়ী"` |
+| **T10.1** | Demo Rehearsal | Execute complete 3-minute demo script end-to-end with cold start and automated interactions | All demo stages execute flawlessly and complete in under 3 minutes (cold start < 15s automated) | Automated demo run completed in 0.99 seconds. All stages verified. | **PASS** | Critical | `elapsedSeconds=0.99s, demoCheapest="সবচেয়ে সাশ্রয়ী"` |
 
 ---
 

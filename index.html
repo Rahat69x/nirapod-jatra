@@ -27,10 +27,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
 
-  <!-- Google Fonts: Hind Siliguri for Bangla, Inter for English/Numbers -->
+  <!-- Google Fonts: Hind Siliguri & Noto Sans Bengali for Bangla, Inter for English/Numbers -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Font Awesome 6 Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -62,7 +62,7 @@
             surface: '#F8FAF9'
           },
           fontFamily: {
-            bangla: ['"Hind Siliguri"', 'sans-serif'],
+            bangla: ['"Hind Siliguri"', '"Noto Sans Bengali"', 'sans-serif'],
             english: ['"Inter"', 'sans-serif']
           }
         }
@@ -94,8 +94,14 @@
       overscroll-behavior: contain;
     }
 
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
     body {
-      font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
       background-color: #0b1120;
       color: #111827;
       -webkit-tap-highlight-color: transparent;
@@ -182,6 +188,7 @@
     .leaflet-container {
       font-family: 'Hind Siliguri', 'Inter', sans-serif !important;
       border-radius: 1rem;
+      overflow: hidden !important;
     }
 
     .custom-map-pin {
@@ -299,54 +306,56 @@
   </div>
 
   <!-- Main Mobile-First Shell (max-w-md, centered with shadow) -->
-  <div id="appShell" class="w-full max-w-md bg-surface min-h-screen sm:min-h-[860px] sm:max-h-[940px] flex flex-col relative z-10 sm:rounded-3xl shadow-2xl border-x sm:border border-slate-700/30 overflow-hidden text-slate-800 transition-colors duration-200">
+  <div id="appShell" class="w-full max-w-md bg-surface min-h-screen sm:min-h-[860px] sm:max-h-[940px] flex flex-col relative z-10 sm:rounded-3xl shadow-2xl border-0 sm:border border-slate-700/30 overflow-x-hidden text-slate-800 transition-colors duration-200">
 
     <!-- ===== TOP HEADER ===== -->
-    <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 text-white px-4 pt-3.5 pb-3.5 shadow-md relative z-20 flex-shrink-0">
-      <!-- Top Row: Status Indicator, Title, Theme Toggle & Language Switcher -->
-      <div class="flex items-center justify-between mb-2">
-        <!-- Brand Info Link (Clickable Logo) -->
-        <a id="brandLogoLink" href="#top" onclick="scrollToAppTop(event)" aria-label="নিরাপদ যাত্রা — হোম পেজ" class="flex items-center space-x-2.5 rounded-2xl p-1 -m-1 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/70 transition cursor-pointer">
-          <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-inner text-amber-300 text-xl shrink-0">
+    <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-800 text-white px-2.5 sm:px-4 pt-3 pb-3 shadow-md relative z-20 flex-shrink-0">
+      <!-- Top Row: Brand on Left, Uniform Controls on Right -->
+      <div class="flex items-center justify-between gap-1 mb-2">
+        <!-- Brand Info Link (Logo + Title + Dhaka Badge) -->
+        <a id="brandLogoLink" href="#top" onclick="scrollToAppTop(event)" aria-label="নিরাপদ যাত্রা — হোম পেজ" class="flex items-center space-x-1 sm:space-x-2 rounded-xl p-0.5 sm:p-1 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/70 transition cursor-pointer shrink min-w-0">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 min-w-[32px] min-h-[32px] sm:min-w-[40px] sm:min-h-[40px] rounded-xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center shadow-inner text-amber-300 text-sm sm:text-lg shrink-0">
             <i class="fa-solid fa-shield-halved"></i>
           </div>
-          <div>
-            <div class="flex items-center space-x-1.5">
-              <h1 class="text-xl font-bold tracking-tight text-white leading-none font-bangla" data-i18n="appTitle">নিরাপদ যাত্রা</h1>
-              <span class="bg-amber-400/20 text-amber-300 text-[10px] font-semibold px-1.5 py-0.5 rounded border border-amber-300/30 num-font">ঢাকা</span>
-            </div>
-            <p class="text-[11px] text-emerald-100 font-medium tracking-wide mt-0.5 truncate max-w-[190px] sm:max-w-none" data-i18n="appSubtitle">ঢাকা শহরের রিকশা, সিএনজি ও মেট্রোর বিশ্বস্ত সঙ্গী</p>
+          <div class="flex items-center space-x-1 sm:space-x-1.5 shrink min-w-0">
+            <h1 class="text-sm sm:text-lg md:text-xl font-bold tracking-tight text-white leading-none font-bangla whitespace-nowrap" data-i18n="appTitle">নিরাপদ যাত্রা</h1>
+            <span class="bg-amber-400/25 text-amber-300 text-[9px] sm:text-[11px] font-bold px-1 sm:px-1.5 py-0.5 rounded border border-amber-300/40 num-font whitespace-nowrap">ঢাকা</span>
           </div>
         </a>
 
-        <!-- Right Side: Dark Mode Toggle + Language Switcher + Accessible Mobile Menu -->
-        <div class="flex items-center space-x-1.5">
-          <!-- Dark Mode Toggle Button -->
-          <button id="themeToggleBtn" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="নাইট মোড / ডার্ক মোড" class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/35 backdrop-blur border border-white/25 flex items-center justify-center text-amber-300 text-xs transition active:scale-90">
+        <!-- Controls: Theme Button + Segmented Language Switcher + Hamburger Menu (Uniform 32-40px Height & Radius) -->
+        <div class="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+          <!-- Dark Mode Toggle Button (32-40px) -->
+          <button id="themeToggleBtn" type="button" onclick="toggleTheme()" aria-label="Toggle dark mode" title="নাইট মোড / ডার্ক মোড" class="w-8 h-8 sm:w-10 sm:h-10 min-w-[32px] min-h-[32px] sm:min-w-[40px] sm:min-h-[40px] rounded-xl bg-black/25 hover:bg-black/35 backdrop-blur border border-white/20 flex items-center justify-center text-amber-300 text-xs sm:text-sm transition active:scale-95 shrink-0">
             <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
           </button>
 
-          <!-- Language Switcher -->
-          <button id="langToggleBtn" type="button" aria-label="Toggle language between Bangla and English" class="flex items-center bg-black/20 hover:bg-black/30 backdrop-blur border border-white/25 rounded-full p-0.5 text-xs font-semibold transition active:scale-95">
-            <span id="langPillBn" class="px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition">বাং</span>
-            <span id="langPillEn" class="px-2 py-0.5 rounded-full text-white/80 transition">ENG</span>
+          <!-- Compact Horizontal Segmented Language Toggle [ বাং | EN ] (32-40px) -->
+          <button id="langToggleBtn" type="button" aria-label="Toggle language between Bangla and English" class="h-8 sm:h-10 min-h-[32px] sm:min-h-[40px] px-0.5 sm:px-1 bg-black/25 hover:bg-black/35 backdrop-blur border border-white/20 rounded-xl inline-flex items-center space-x-0.5 transition active:scale-95 shrink-0 whitespace-nowrap">
+            <span id="langPillBn" class="px-1.5 sm:px-2.5 py-1 rounded-lg bg-white text-emerald-800 font-bold shadow-xs transition-all whitespace-nowrap text-[11px] sm:text-xs leading-none">বাং</span>
+            <span id="langPillEn" class="px-1.5 sm:px-2.5 py-1 rounded-lg text-white/75 hover:text-white transition-all whitespace-nowrap text-[11px] sm:text-xs leading-none">EN</span>
           </button>
 
-          <!-- Accessible Mobile Hamburger Menu Button (Min 44px tap target) -->
-          <button id="mobileMenuBtn" type="button" onclick="toggleMobileMenu()" aria-expanded="false" aria-controls="mobileMenuDrawer" aria-label="মেনু খুলুন / Open navigation menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-black/20 hover:bg-black/35 backdrop-blur border border-white/25 flex items-center justify-center text-white text-base transition active:scale-95">
+          <!-- Accessible Mobile Hamburger Menu Button (32-40px Touch Target) -->
+          <button id="mobileMenuBtn" type="button" onclick="toggleMobileMenu()" aria-expanded="false" aria-controls="mobileMenuDrawer" aria-label="মেনু খুলুন / Open navigation menu" class="w-8 h-8 sm:w-10 sm:h-10 min-w-[32px] min-h-[32px] sm:min-w-[40px] sm:min-h-[40px] rounded-xl bg-black/25 hover:bg-black/35 backdrop-blur border border-white/20 flex items-center justify-center text-white text-xs sm:text-base transition active:scale-95 shrink-0">
             <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
           </button>
         </div>
       </div>
 
-      <!-- Problem Context Banner & Real-Time Weather Badge -->
-      <div class="bg-white/10 rounded-xl px-3 py-1.5 border border-white/10 flex items-center justify-between text-xs text-emerald-50">
-        <div class="flex items-center space-x-1.5 truncate">
-          <i class="fa-solid fa-bullhorn text-amber-300 text-[11px] shrink-0"></i>
-          <span class="truncate font-medium text-[11px]" data-i18n="bannerProblem">মিটারহীন অতিরিক্ত ভাড়া থেকে বাঁচুন — আগে জানুন, পরে উঠুন</span>
+      <!-- Second Row: Readable Subtitle (min 12px, wrap-safe, Bengali matra safe) -->
+      <div class="mb-2 px-0.5">
+        <p class="text-xs sm:text-[13px] text-emerald-100 font-medium leading-relaxed font-bangla" data-i18n="appSubtitle">ঢাকা শহরের রিকশা, সিএনজি ও মেট্রোর বিশ্বস্ত সঙ্গী</p>
+      </div>
+
+      <!-- Problem Context Banner & Real-Time Weather Badge (High Contrast WCAG AA) -->
+      <div class="bg-emerald-950/70 dark:bg-black/50 rounded-xl px-3 py-2 border border-emerald-400/30 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 shadow-xs">
+        <div class="flex items-center space-x-2 min-w-0 flex-1">
+          <i class="fa-solid fa-bullhorn text-amber-300 text-xs shrink-0"></i>
+          <span class="font-semibold text-xs sm:text-[13px] text-white leading-snug break-words" data-i18n="bannerProblem">মিটারহীন অতিরিক্ত ভাড়া থেকে বাঁচুন — আগে জানুন, পরে উঠুন</span>
         </div>
         <!-- Live Weather Auto-Badge (Open-Meteo) -->
-        <div id="liveWeatherBadge" class="hidden text-[10px] bg-white/15 text-emerald-100 px-2 py-0.5 rounded-full border border-white/20 flex items-center shrink-0 font-medium ml-1">
+        <div id="liveWeatherBadge" class="hidden text-xs sm:text-[13px] bg-emerald-900/90 text-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-400/40 flex items-center shrink-0 font-bold whitespace-nowrap shadow-xs">
           <!-- Injected via JS -->
         </div>
       </div>
@@ -2323,10 +2332,10 @@
           badge.classList.remove('hidden');
           if (isRaining) {
             badge.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy text-amber-300 mr-1 animate-pulse"></i><span>${lang === 'bn' ? 'বৃষ্টি (' + tempStr + ')' : 'Rain (' + tempStr + ')'}</span>`;
-            badge.className = 'text-[10px] bg-amber-400/25 text-amber-200 px-2 py-0.5 rounded-full border border-amber-300/40 flex items-center shrink-0 font-semibold';
+            badge.className = 'text-xs sm:text-[13px] bg-amber-950/80 text-amber-200 px-2.5 py-1 rounded-lg border border-amber-400/40 flex items-center shrink-0 font-bold shadow-xs whitespace-nowrap';
           } else {
             badge.innerHTML = `<i class="fa-solid fa-cloud-sun text-emerald-300 mr-1"></i><span>${lang === 'bn' ? 'ঢাকা ' + tempStr : 'Dhaka ' + tempStr}</span>`;
-            badge.className = 'text-[10px] bg-white/15 text-emerald-100 px-2 py-0.5 rounded-full border border-white/20 flex items-center shrink-0 font-medium';
+            badge.className = 'text-xs sm:text-[13px] bg-emerald-900/90 text-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-400/40 flex items-center shrink-0 font-bold shadow-xs whitespace-nowrap';
           }
         }
 
@@ -2526,14 +2535,16 @@
 
       const pillBn = document.getElementById('langPillBn');
       const pillEn = document.getElementById('langPillEn');
+      const activeClass = 'px-1.5 sm:px-2.5 py-1 rounded-lg bg-white text-emerald-800 font-bold shadow-xs transition-all whitespace-nowrap text-[11px] sm:text-xs leading-none';
+      const inactiveClass = 'px-1.5 sm:px-2.5 py-1 rounded-lg text-white/75 hover:text-white transition-all whitespace-nowrap text-[11px] sm:text-xs leading-none';
       if (state.language === 'bn') {
-        pillBn.className = 'px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition';
-        pillEn.className = 'px-2 py-0.5 rounded-full text-white/80 transition';
+        if (pillBn) pillBn.className = activeClass;
+        if (pillEn) pillEn.className = inactiveClass;
         document.documentElement.lang = 'bn';
         document.title = 'নিরাপদ যাত্রা — ঢাকার ন্যায্য ভাড়া গাইড | Nirapod Jatra';
       } else {
-        pillBn.className = 'px-2 py-0.5 rounded-full text-white/80 transition';
-        pillEn.className = 'px-2 py-0.5 rounded-full bg-white text-emerald-800 shadow-sm transition';
+        if (pillBn) pillBn.className = inactiveClass;
+        if (pillEn) pillEn.className = activeClass;
         document.documentElement.lang = 'en';
         document.title = 'Nirapod Jatra — Fair Transit Fare Guide for Dhaka';
       }

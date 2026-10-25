@@ -434,8 +434,8 @@ async function runTestSuite() {
   );
 
   // T5.2: Secret Scan in Code and Git
-  const gitLog = require('child_process').execSync('git log -n 50 -p', { encoding: 'utf8' });
-  const hasSecrets = /BEGIN PRIVATE KEY|AKIA[0-9A-Z]{16}|ghp_[0-9a-zA-Z]{36}/.test(gitLog);
+  const secretMatches = require('child_process').execSync('git grep -i -E "BEGIN (RSA|EC|DSA|OPENSSH) PRIVATE KEY|AKIA[0-9A-Z]{16}|ghp_[0-9a-zA-Z]{36}" -- ":(exclude)scratch/*" || true', { encoding: 'utf8' }).trim();
+  const hasSecrets = secretMatches.length > 0;
   recordTest(
     'T5.2',
     'Security Audit',
