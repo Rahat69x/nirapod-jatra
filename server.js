@@ -16,8 +16,13 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  const safePath = path.normalize(req.url.split('?')[0]);
-  let filePath = path.join(__dirname, safePath === '/' ? 'index.html' : safePath);
+  const urlPath = req.url.split('?')[0];
+  const isRoot = urlPath === '/' || urlPath === '' || urlPath === '/index.html' || urlPath === '/nirapod-jatra' || urlPath === '/nirapod-jatra/';
+  let filePath = isRoot ? path.join(__dirname, 'index.html') : path.join(__dirname, path.normalize(urlPath).replace(/^[/\\]+/, ''));
+  
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(filePath, 'index.html');
+  }
 
   fs.stat(filePath, (err, stats) => {
     let statusCode = 200;

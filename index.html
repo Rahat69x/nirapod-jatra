@@ -3504,6 +3504,12 @@
           }
         }
       });
+
+      // 11. Dynamic copyright year
+      const currentYear = new Date().getFullYear();
+      document.querySelectorAll('#copyrightYear, .footerYear').forEach(el => {
+        el.textContent = currentYear;
+      });
     });
   </script>
 </body>
