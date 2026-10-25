@@ -435,6 +435,26 @@
       <!-- TAB 1: FARE ESTIMATOR (ন্যায্য ভাড়া)      -->
       <!-- ========================================== -->
       <section id="tabFare" class="space-y-3.5 transition-all">
+        <!-- PWA Install Banner & Offline Version Notice -->
+        <div id="pwaInstallPromptCard" class="hidden bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 rounded-2xl p-3 text-xs text-emerald-900 dark:text-emerald-200 flex items-center justify-between shadow-sm">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-mobile-screen-button text-emerald-600 text-base"></i>
+            <div>
+              <strong class="block text-xs" data-i18n="pwaInstallTitle">হোম স্ক্রিনে ইনস্টল করুন</strong>
+              <span class="text-[10px] text-emerald-700 dark:text-emerald-300" data-i18n="pwaInstallDesc">অফলাইনে দ্রুত ব্যবহারের জন্য নিরাপদ যাত্রা ওয়েব অ্যাপ ইনস্টল করুন।</span>
+            </div>
+          </div>
+          <button type="button" onclick="installPwaApplication()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs shadow-xs transition active:scale-95 shrink-0" data-i18n="btnInstallPwa">
+            ইনস্টল
+          </button>
+        </div>
+
+        <!-- Outdated Data Version Notice -->
+        <div class="text-[10px] text-slate-500 dark:text-slate-400 text-center flex items-center justify-center space-x-1.5 pt-0.5">
+          <i class="fa-solid fa-clock-rotate-left text-slate-400"></i>
+          <span data-i18n="dataVersionNotice">অফলাইন ডেটা সংস্করণ: ২০২৪.১০ (শেষ আপডেট: ০১ অক্টোবর ২০২৪)</span>
+        </div>
+
 
         <!-- Vehicle Type Selector (3 Distinct Selectable Cards) -->
         <div>
@@ -481,6 +501,14 @@
           </div>
         </div>
 
+        <!-- ONE-TAP 3-MINUTE DEMO BUTTON (OFFLINE READY) -->
+        <div class="pt-1">
+          <button type="button" id="btnRunDemo" onclick="runFarmgateGulshanDemo()" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold py-3 px-4 rounded-2xl shadow-lg shadow-emerald-700/25 flex items-center justify-center space-x-2 text-xs transition active:scale-95 border border-emerald-400/30">
+            <i class="fa-solid fa-bolt text-amber-300 text-sm"></i>
+            <span data-i18n="btnRunDemo">⚡ ৩-মিনিট ডেমো চালান: ফার্মগেট ➔ গুলশান ১ (অফলাইন প্রস্তুত)</span>
+          </button>
+        </div>
+
         <!-- Route Selection Card (Categorized Inputs + Swap Button + Presets) -->
         <div class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm space-y-2.5">
           <div class="flex items-center justify-between">
@@ -494,17 +522,27 @@
             </span>
           </div>
 
-          <!-- Inputs Group with Swap Button -->
+          <!-- Inputs Group with Swap Button & Live Fuzzy Search -->
           <div class="relative space-y-2">
-            <!-- Pickup Point Input -->
-            <div class="relative flex items-center">
-              <span class="absolute left-3 text-emerald-600 text-sm">
-                <i class="fa-solid fa-location-dot"></i>
-              </span>
-              <select id="startSelect" aria-label="যাত্রা শুরু স্থান" onchange="onLandmarkSelect('start', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-8 text-xs font-semibold text-slate-800 focus:bg-white transition cursor-pointer">
-                <option value="" disabled selected data-i18n="pickupPlaceholder">যাত্রা শুরুর স্থান নির্বাচন করুন...</option>
-                <!-- Populated via JS with optgroups (Metro, Hubs, Landmarks) -->
-              </select>
+            <!-- Pickup Point Input & Search -->
+            <div class="relative">
+              <div class="relative flex items-center mb-1">
+                <span class="absolute left-3 text-emerald-600 text-sm">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="startSearchInput" oninput="handlePlaceInput('start', this.value)" onfocus="handlePlaceInput('start', this.value)" placeholder="যাত্রা শুরু টাইপ করুন (যেমন: ফার্মগেট, মিরপুর ১০)..." data-i18n-placeholder="phStartSearch" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs font-semibold text-slate-800 focus:bg-white focus:border-emerald-500 transition">
+              </div>
+              <div id="startSuggestions" class="hidden absolute left-0 right-0 top-[38px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-30 max-h-48 overflow-y-auto"></div>
+
+              <!-- Dropdown select fallback -->
+              <div class="relative flex items-center">
+                <span class="absolute left-3 text-emerald-600 text-sm">
+                  <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <select id="startSelect" aria-label="যাত্রা শুরু স্থান" onchange="onLandmarkSelect('start', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-slate-800 focus:bg-white transition cursor-pointer">
+                  <option value="" disabled selected data-i18n="pickupPlaceholder">বা তালিকা থেকে নির্বাচন করুন...</option>
+                </select>
+              </div>
             </div>
             <p id="startSelectError" class="hidden text-[11px] font-semibold text-rose-600 dark:text-rose-400 flex items-center space-x-1 pl-1" role="alert" aria-live="assertive">
               <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
@@ -512,21 +550,32 @@
             </p>
 
             <!-- Floating Swap Button -->
-            <div class="absolute right-3 top-[36px] z-10">
-              <button type="button" id="swapRouteBtn" onclick="swapLocations()" aria-label="Swap pickup and destination" class="w-7 h-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:border-emerald-500 active:scale-90 flex items-center justify-center transition">
-                <i class="fa-solid fa-arrow-down-up-across-line text-[11px]"></i>
+            <div class="flex justify-end pr-2 pt-0.5">
+              <button type="button" id="swapRouteBtn" onclick="swapLocations()" aria-label="Swap pickup and destination" class="h-6 px-2.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:border-emerald-500 text-[10px] font-bold flex items-center space-x-1 transition active:scale-95">
+                <i class="fa-solid fa-arrow-down-up-across-line text-[10px]"></i>
+                <span data-i18n="btnSwapRoute">স্থান অদলবদল (Swap)</span>
               </button>
             </div>
 
-            <!-- Destination Point Input -->
-            <div class="relative flex items-center">
-              <span class="absolute left-3 text-red-500 text-sm">
-                <i class="fa-solid fa-flag-checkered"></i>
-              </span>
-              <select id="endSelect" aria-label="গন্তব্যের স্থান" onchange="onLandmarkSelect('end', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-9 pr-8 text-xs font-semibold text-slate-800 focus:bg-white transition cursor-pointer">
-                <option value="" disabled selected data-i18n="destPlaceholder">গন্তব্যের স্থান নির্বাচন করুন...</option>
-                <!-- Populated via JS with optgroups -->
-              </select>
+            <!-- Destination Point Input & Search -->
+            <div class="relative">
+              <div class="relative flex items-center mb-1">
+                <span class="absolute left-3 text-red-500 text-sm">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="endSearchInput" oninput="handlePlaceInput('end', this.value)" onfocus="handlePlaceInput('end', this.value)" placeholder="গন্তব্য টাইপ করুন (যেমন: গুলশান ১, মতিঝিল)..." data-i18n-placeholder="phEndSearch" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs font-semibold text-slate-800 focus:bg-white focus:border-red-500 transition">
+              </div>
+              <div id="endSuggestions" class="hidden absolute left-0 right-0 top-[38px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-30 max-h-48 overflow-y-auto"></div>
+
+              <!-- Dropdown select fallback -->
+              <div class="relative flex items-center">
+                <span class="absolute left-3 text-red-500 text-sm">
+                  <i class="fa-solid fa-flag-checkered"></i>
+                </span>
+                <select id="endSelect" aria-label="গন্তব্যের স্থান" onchange="onLandmarkSelect('end', this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-9 pr-8 text-xs font-semibold text-slate-800 focus:bg-white transition cursor-pointer">
+                  <option value="" disabled selected data-i18n="destPlaceholder">বা তালিকা থেকে নির্বাচন করুন...</option>
+                </select>
+              </div>
             </div>
             <p id="endSelectError" class="hidden text-[11px] font-semibold text-rose-600 dark:text-rose-400 flex items-center space-x-1 pl-1" role="alert" aria-live="assertive">
               <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
@@ -617,8 +666,8 @@
         </button>
 
         <!-- Result Card (Animated Fade-In upon calculation) -->
-        <div id="resultCard" class="hidden fade-slide-up bg-white rounded-2xl border-2 border-emerald-500/50 shadow-xl overflow-hidden p-4 space-y-3">
-          <!-- Top Row: Route Badge, Distance, Time, and Fallback Notice -->
+        <div id="resultCard" class="hidden fade-slide-up bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-500/50 shadow-xl overflow-hidden p-4 space-y-4">
+          <!-- Top Row: Route Summary, Distance, Time, and Routing Mode Badge -->
           <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
             <div class="flex items-center space-x-2">
               <span id="resDistanceBadge" class="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold text-xs px-2.5 py-1 rounded-lg num-font flex items-center space-x-1">
@@ -636,29 +685,80 @@
             </span>
           </div>
 
-          <!-- Big Fare Display -->
-          <div class="text-center py-2.5 bg-gradient-to-b from-emerald-50/80 to-transparent dark:from-emerald-950/40 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
-            <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider block" data-i18n="fairFareRangeLabel">ন্যায্য ভাড়া</span>
-            <div class="flex items-baseline justify-center space-x-2 mt-1">
-              <span id="resFareAmount" class="text-3xl font-extrabold text-emerald-700 dark:text-emerald-400 tracking-tight num-font">৳ ১২০ - ৳ ১৪৫</span>
+          <!-- SECTION 1: SIDE-BY-SIDE TRANSIT OPTIONS COMPARISON (SORTED BY COST) -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center space-x-1.5">
+                <i class="fa-solid fa-scale-balanced text-emerald-600"></i>
+                <span data-i18n="optionsComparisonTitle">বাহন ও বিকল্পের তুলনা (কম খরচের ক্রমে সাজানো)</span>
+              </label>
+              <span class="text-[10px] text-slate-400 font-semibold" data-i18n="tapToSelect">ট্যাপ করে সিলেক্ট করুন</span>
             </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1" id="resFareSubtext">স্বাভাবিক ট্রাফিক ও দূরত্ব অনুযায়ী নির্ধারিত</p>
+            
+            <!-- Dynamic Grid of Transit Options -->
+            <div id="resOptionsComparisonList" class="space-y-2">
+              <!-- Dynamically populated via JS with CNG, Rickshaw, Battery, and Rickshaw+MRT6 -->
+            </div>
+
+            <!-- Time vs Cost Trade-off Notice (if cheapest option takes much longer) -->
+            <div id="timeTradeoffNotice" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl p-2.5 text-xs text-amber-900 dark:text-amber-200 flex items-start space-x-2">
+              <i class="fa-solid fa-hourglass-half text-amber-600 mt-0.5 shrink-0"></i>
+              <span id="timeTradeoffText" class="leading-snug"></span>
+            </div>
           </div>
 
-          <!-- Vehicle Specific Distance Warnings (if any) -->
-          <div id="resVehicleNotice" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-start space-x-2">
-            <i class="fa-solid fa-circle-exclamation text-amber-600 mt-0.5 shrink-0"></i>
-            <span id="resVehicleNoticeText"></span>
+          <!-- SECTION 2: NAMED LINE-ITEMS FARE BREAKDOWN (TRANSPARENCY & GAP EXPLANATION) -->
+          <div class="bg-slate-50 dark:bg-slate-800/80 rounded-xl p-3.5 border border-slate-200 dark:border-slate-700 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+                <i class="fa-solid fa-file-invoice-dollar text-emerald-600"></i>
+                <span data-i18n="fareBreakdownTitle">ভাড়ার বিস্তারিত হিসাব (স্বচ্ছতার জন্য)</span>
+              </span>
+              <span id="resFareSourceBadge" class="text-[10px] bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 font-bold px-2 py-0.5 rounded-full">
+                অনানুষ্ঠানিক দরকষাকষি রেট (আনুমানিক)
+              </span>
+            </div>
+
+            <!-- Line Items Table -->
+            <div class="space-y-1.5 text-xs border-t border-slate-200 dark:border-slate-700 pt-2" id="resLineItemsList">
+              <!-- Dynamically rendered via JS -->
+            </div>
+
+            <!-- Official vs Negotiation Context Notice -->
+            <div id="officialFareComparisonNote" class="text-[11px] text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 leading-snug space-y-1">
+              <!-- Dynamic note explaining ৳101 vs ৳120-145 and official meter -->
+            </div>
+
+            <!-- Source & Date line -->
+            <div class="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-200 dark:border-slate-700">
+              <span id="resFareSourceText">উৎস: BRTA গেজেট ২০১৫ (মিটার) ও ঢাকা স্ট্রিট সার্ভে ২০২৪</span>
+              <span id="resFareDateText" class="num-font">শেষ আপডেট: ২০২৪-১০-০১</span>
+            </div>
           </div>
 
-          <!-- Ride-Hailing Benchmarks (Uber & Pathao) -->
+          <!-- SECTION 3: NUMBERED BANGLA JOURNEY STEPS -->
+          <div class="bg-white dark:bg-slate-800/80 rounded-xl p-3.5 border border-slate-200 dark:border-slate-700 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+                <i class="fa-solid fa-shoe-prints text-emerald-600"></i>
+                <span data-i18n="journeyStepsTitle">যাত্রাপথের বাস্তবসম্মত ধাপসমূহ</span>
+              </span>
+              <span class="text-[10px] text-slate-400 font-semibold" data-i18n="stepsTotal">মোট ধাপ</span>
+            </div>
+            
+            <div id="resJourneyStepsList" class="space-y-2 text-xs pt-1">
+              <!-- Dynamically rendered numbered steps -->
+            </div>
+          </div>
+
+          <!-- SECTION 4: RIDE-HAILING BENCHMARKS (UBER & PATHAO REFERENCE ESTIMATES) -->
           <div class="bg-slate-50 dark:bg-slate-900/90 rounded-xl p-3 border border-slate-200 dark:border-slate-800 space-y-2">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
                 <i class="fa-solid fa-scale-balanced text-emerald-600"></i>
                 <span data-i18n="rideHailingTitle">উবার ও পাঠাও খরচ তুলনা (রেফারেন্স আনুমানিক, লাইভ দাম নয়)</span>
               </span>
-              <span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold px-2 py-0.5 rounded-full" data-i18n="appVsStreetBadge">অ্যাপ বনাম লোকাল</span>
+              <span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold px-2 py-0.5 rounded-full" data-i18n="appVsStreetBadge">অ্যাপ রেফারেন্স</span>
             </div>
 
             <!-- 3-Column Comparative Grid -->
@@ -697,16 +797,16 @@
             <!-- Dynamic App Comparison Tip -->
             <div class="text-[10px] text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-800/50 p-2 rounded-lg border border-slate-200/70 dark:border-slate-700/70 flex items-start space-x-1.5 leading-snug">
               <i class="fa-solid fa-lightbulb text-amber-500 shrink-0 mt-0.5"></i>
-              <span id="resUberTipText">রাস্তার সিএনজিতে দরকষাকষিতে অ্যাপের চেয়ে প্রায় ৳৩০-৫০ সাশ্রয় হয়। বৃষ্টিতে উবার/পাঠাও-এ সার্জ ২ গুণ পর্যন্ত হতে পারে।</span>
+              <span id="resUberTipText">অ্যাপের দাম বৃষ্টি বা জ্যামের সময় পরিবর্তনশীল হয়। এখানে দেওয়া দামটি আনুমানিক রেফারেন্স।</span>
             </div>
           </div>
 
-          <!-- Smart Negotiation Script Alert Box + WEB SPEECH AUDIO GUIDE -->
-          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-2">
+          <!-- SECTION 5: SAMPLE NEGOTIATION SCRIPT + WEB SPEECH TTS -->
+          <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 border border-slate-200 dark:border-slate-700 space-y-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-100">
-                <i class="fa-solid fa-quote-left text-emerald-600"></i>
-                <span data-i18n="negotiationTitle">দরকষাকষির নমুনা উদাহরণ</span>
+                <i class="fa-solid fa-comments text-emerald-600"></i>
+                <span data-i18n="negotiationTitle">দরকষাকষির নমুনা উদাহরণ (রেফারেন্স)</span>
               </div>
               <!-- Audio Guide TTS Button -->
               <button type="button" id="btnPlayNegotiationAudio" onclick="toggleNegotiationAudio()" aria-label="Play negotiation script aloud" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-900 dark:hover:bg-emerald-800 text-emerald-800 dark:text-emerald-200 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition active:scale-95 shadow-sm">
@@ -714,39 +814,32 @@
                 <span id="audioBtnText" data-i18n="listenVoice">শুনে নিন</span>
               </button>
             </div>
-            <p id="resNegotiationScript" class="text-xs text-slate-700 leading-relaxed font-medium bg-white p-2.5 rounded-lg border border-slate-100 shadow-inner">
-              প্রথমে ৳১৬০ বলুন। ড্রাইভার ৳২১০ চাইতে পারে। শেষ পর্যন্ত ৳১৭৫ এর মধ্যে রফা করার চেষ্টা করুন।
+            <p id="resNegotiationScript" class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 shadow-inner">
+              কথোপকথনের নমুনা লোড হচ্ছে...
             </p>
           </div>
 
-          <!-- Multimodal Dhaka Metro Rail Advisor Card (MRT Line 6) -->
-          <div id="resMetroAdvisorCard" class="hidden bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-xl p-3 border border-emerald-500/30 space-y-1.5 shadow-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold flex items-center space-x-1.5 text-emerald-200">
-                <i class="fa-solid fa-train-subway text-amber-300"></i>
-                <span data-i18n="multimodalTitle">মেট্রোরেল বিকল্প ও সাশ্রয়ী টিপস</span>
-              </span>
-              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-mono font-bold">MRT-6</span>
+          <!-- SECTION 6: TRIP SHARING ACTION BUTTONS (WEB SHARE API + WHATSAPP/SMS/COPY) -->
+          <div class="space-y-1.5 pt-1">
+            <button type="button" onclick="shareTripViaNativeShare()" class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl transition flex items-center justify-center space-x-2 shadow-md active:scale-95">
+              <i class="fa-solid fa-share-nodes text-sm"></i>
+              <span data-i18n="btnShareTripPlan">সম্পূর্ণ যাত্রাপরিকল্পনা শেয়ার করুন (Share Plan)</span>
+            </button>
+
+            <div class="grid grid-cols-3 gap-1.5">
+              <button type="button" onclick="shareTripViaWhatsApp()" class="py-2.5 px-1 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800 text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-xs active:scale-95">
+                <i class="fa-brands fa-whatsapp text-xs text-emerald-600"></i>
+                <span data-i18n="shareWhatsapp">হোয়াটসঅ্যাপ</span>
+              </button>
+              <button type="button" onclick="shareTripViaSms()" class="py-2.5 px-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-xs active:scale-95">
+                <i class="fa-solid fa-comment-sms text-xs text-amber-500"></i>
+                <span data-i18n="shareSms">এসএমএস</span>
+              </button>
+              <button type="button" onclick="copyTripShareText()" class="py-2.5 px-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-xs active:scale-95">
+                <i class="fa-solid fa-copy text-xs text-emerald-600"></i>
+                <span data-i18n="shareCopy">কপি</span>
+              </button>
             </div>
-            <p id="resMetroAdvisorText" class="text-xs text-emerald-100 leading-relaxed font-medium">
-              <!-- Dynamically populated via JS -->
-            </p>
-          </div>
-
-          <!-- Trip Sharing Action Buttons (WhatsApp & SMS) -->
-          <div class="grid grid-cols-3 gap-1.5 pt-0.5">
-            <button type="button" onclick="shareTripViaWhatsApp()" class="py-2.5 px-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm active:scale-95">
-              <i class="fa-brands fa-whatsapp text-xs"></i>
-              <span data-i18n="shareWhatsapp">হোয়াটসঅ্যাপ</span>
-            </button>
-            <button type="button" onclick="shareTripViaSms()" class="py-2.5 px-1 bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm active:scale-95">
-              <i class="fa-solid fa-comment-sms text-xs text-amber-300"></i>
-              <span data-i18n="shareSms">এসএমএস</span>
-            </button>
-            <button type="button" onclick="copyTripShareText()" class="py-2.5 px-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold rounded-xl transition flex items-center justify-center space-x-1 shadow-sm active:scale-95 border border-slate-200 dark:border-slate-700">
-              <i class="fa-solid fa-copy text-xs text-emerald-600"></i>
-              <span data-i18n="shareCopy">কপি</span>
-            </button>
           </div>
 
           <!-- CTA to contribute to community feed (Opens Quick-Report Modal) -->
@@ -849,7 +942,16 @@
           <button type="button" onclick="filterCommunityFeed('battery')" id="comFilterBattery" class="px-3 py-1 rounded-full text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shrink-0" data-i18n="filterBattery">ব্যাটারি রিকশা</button>
         </div>
 
-        <!-- Live Community Feed List -->
+        
+            <!-- Clear My Data Button (Local Privacy Control) -->
+            <div class="pt-2 text-center">
+              <button type="button" onclick="clearAllUserData()" class="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 font-bold inline-flex items-center space-x-1.5 py-1 px-2.5 rounded-lg border border-rose-200 dark:border-rose-900 bg-rose-50/60 dark:bg-rose-950/30 transition active:scale-95">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+                <span data-i18n="btnClearAllData">আমার লোকাল ডেটা মুছুন (Clear All My Data)</span>
+              </button>
+            </div>
+
+            <!-- Live Community Feed List -->
         <div id="communityFeedList" class="space-y-2.5">
           <!-- Populated dynamically via JS -->
         </div>
@@ -1254,6 +1356,7 @@
 
   </div>
 
+  <script src="fare_engine.js"></script>
   <!-- ============================================================== -->
   <!-- JAVASCRIPT APPLICATION LOGIC                                    -->
   <!-- ============================================================== -->
@@ -1557,6 +1660,21 @@
         qrInstruction: 'সিএনজি বা রিকশার কোড ফ্রেমের মধ্যে রাখুন',
         btnTestQr: 'টেস্ট কিউআর কোড স্ক্যান করুন',
         safetyTipsTitle: 'যাত্রীদের ৫টি আবশ্যিক নিরাপত্তা পরামর্শ',
+        dataVersionNotice: 'অফলাইন ডেটা সংস্করণ: ২০২৪.১০ (শেষ আপডেট: ০১ অক্টোবর ২০২৪)',
+        pwaInstallTitle: 'হোম স্ক্রিনে ইনস্টল করুন',
+        pwaInstallDesc: 'অফলাইনে দ্রুত ব্যবহারের জন্য নিরাপদ যাত্রা ওয়েব অ্যাপ ইনস্টল করুন।',
+        btnInstallPwa: 'ইনস্টল',
+        btnRunDemo: '⚡ ৩-মিনিট ডেমো চালান: ফার্মগেট ➔ গুলশান ১ (অফলাইন প্রস্তুত)',
+        phStartSearch: 'যাত্রা শুরু টাইপ করুন (যেমন: ফার্মগেট, মিরপুর ১০)...',
+        phEndSearch: 'গন্তব্য টাইপ করুন (যেমন: গুলশান ১, মতিঝিল)...',
+        btnSwapRoute: 'স্থান অদলবদল (Swap)',
+        optionsComparisonTitle: 'বাহন ও বিকল্পের তুলনা (কম খরচের ক্রমে সাজানো)',
+        tapToSelect: 'ট্যাপ করে সিলেক্ট করুন',
+        fareBreakdownTitle: 'ভাড়ার বিস্তারিত হিসাব (স্বচ্ছতার জন্য)',
+        journeyStepsTitle: 'যাত্রাপথের বাস্তবসম্মত ধাপসমূহ',
+        stepsTotal: 'মোট ধাপ',
+        btnShareTripPlan: 'সম্পূর্ণ যাত্রাপরিকল্পনা শেয়ার করুন (Share Plan)',
+        btnClearAllData: 'আমার লোকাল ডেটা মুছুন (Clear All My Data)',
         tip1Title: 'নম্বর প্লেট শেয়ার:',
         tip2Title: 'সিএনজির গ্রিল ও লক:',
         tip3Title: 'লাইভ রুট ট্র্যাকিং:',
@@ -1716,6 +1834,21 @@
         qrInstruction: 'Align vehicle QR code inside viewfinder',
         btnTestQr: 'Scan Test QR Code',
         safetyTipsTitle: '5 Essential Commuter Safety Tips',
+        dataVersionNotice: 'Offline Data Version: 2024.10 (Last Updated: 01 Oct 2024)',
+        pwaInstallTitle: 'Install on Home Screen',
+        pwaInstallDesc: 'Install Nirapod Jatra web app for instant offline transit estimates.',
+        btnInstallPwa: 'Install',
+        btnRunDemo: '⚡ Run 3-Min Demo: Farmgate ➔ Gulshan 1 (Offline Ready)',
+        phStartSearch: 'Type pickup point (e.g. Farmgate, Mirpur 10)...',
+        phEndSearch: 'Type destination (e.g. Gulshan 1, Motijheel)...',
+        btnSwapRoute: 'Swap Route',
+        optionsComparisonTitle: 'Compare Transit Options (Sorted by Cost)',
+        tapToSelect: 'Tap card to view details',
+        fareBreakdownTitle: 'Fare Breakdown (Named Line Items)',
+        journeyStepsTitle: 'Realistic Journey Itinerary Steps',
+        stepsTotal: 'Total Steps',
+        btnShareTripPlan: 'Share Complete Commute Plan',
+        btnClearAllData: 'Clear All My Local Data',
         tip1Title: 'Share Plate Number:',
         tip2Title: 'CNG Grill & Locks:',
         tip3Title: 'Live Route Tracking:',
@@ -2166,7 +2299,14 @@
       const lang = state.language;
 
       try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,precipitation,weather_code');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,precipitation,weather_code', {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
         if (!res.ok) throw new Error('Weather fetch failed');
         const data = await res.json();
         const current = data.current;
@@ -2201,9 +2341,14 @@
           showToast(lang === 'bn' ? `ঢাকায় বৃষ্টি সনাক্ত হয়েছে (${tempStr}) — রেইন সার্জ চালু করা হলো` : `Rain detected in Dhaka (${tempStr}) — rain surge auto-applied`);
         }
       } catch (e) {
-        console.warn('Weather auto-detect error:', e);
+        console.warn('Weather auto-detect error or timeout:', e.message);
         if (text) {
-          text.innerHTML = `<i class="fa-solid fa-cloud-sun text-amber-500 mr-1"></i><span>ঢাকা (২৮°C)</span>`;
+          text.innerHTML = `<i class="fa-solid fa-cloud-slash text-slate-400 mr-1"></i><span class="text-slate-500">${lang === 'bn' ? 'আবহাওয়া পাওয়া যায়নি' : 'Weather unavailable'}</span>`;
+        }
+        if (badge) {
+          badge.classList.remove('hidden');
+          badge.className = 'text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 flex items-center shrink-0 font-medium';
+          badge.innerHTML = `<span>${lang === 'bn' ? 'আবহাওয়া পাওয়া যায়নি' : 'Weather offline'}</span>`;
         }
       }
     }
@@ -2652,101 +2797,605 @@
       }).join('');
     }
 
-    function renderCalculationResult(result) {
+    // Cached Farmgate -> Gulshan 1 Route for offline / zero-network instant demo
+    const CACHED_DEMO_ROUTE = {
+      startId: 'farmgate',
+      endId: 'gulshan1',
+      distanceKm: 5.2,
+      durationMinutes: 22,
+      mode: 'osrm',
+      coordinates: [
+        [23.7561, 90.3872],
+        [23.7590, 90.3900],
+        [23.7650, 90.3950],
+        [23.7700, 90.4020],
+        [23.7750, 90.4100],
+        [23.7785, 90.4180]
+      ]
+    };
+
+    function runFarmgateGulshanDemo() {
+      const startLandmark = DHAKA_LANDMARKS.find(l => l.id === 'farmgate') || {
+        id: 'farmgate', nameBn: 'ফার্মগেট', nameEn: 'Farmgate', coords: [23.7561, 90.3872]
+      };
+      const endLandmark = DHAKA_LANDMARKS.find(l => l.id === 'gulshan1') || {
+        id: 'gulshan1', nameBn: 'গুলশান ১', nameEn: 'Gulshan 1', coords: [23.7785, 90.4180]
+      };
+
+      state.startPoint = {
+        landmarkId: startLandmark.id,
+        name: state.language === 'bn' ? startLandmark.nameBn : startLandmark.nameEn,
+        lat: startLandmark.coords[0],
+        lng: startLandmark.coords[1]
+      };
+
+      state.endPoint = {
+        landmarkId: endLandmark.id,
+        name: state.language === 'bn' ? endLandmark.nameBn : endLandmark.nameEn,
+        lat: endLandmark.coords[0],
+        lng: endLandmark.coords[1]
+      };
+
+      updateDropdownSelections();
+      updateMapMarkers();
+      validateRouteInputs();
+
+      // Render cached route coordinates immediately on map
+      renderRouteOnMap(CACHED_DEMO_ROUTE);
+
+      // Perform full multi-option calculation
+      executeMultiOptionCalculation(CACHED_DEMO_ROUTE);
+
+      showToast(state.language === 'bn' ? 'ফার্মগেট ➔ গুলশান ১ ডেমো রুট সফলভাবে লোড হয়েছে' : 'Demo route loaded: Farmgate ➔ Gulshan 1', 'success');
+    }
+
+    function executeMultiOptionCalculation(routeData) {
+      const dist = routeData.distanceKm;
+      const mins = routeData.durationMinutes;
+      const cond = state.conditions;
+      const lang = state.language;
+
+      // Pure engine calculations
+      const engine = (typeof FareEngine !== 'undefined') ? FareEngine : {
+        calculateFareEngine: typeof calculateFareEngine === 'function' ? calculateFareEngine : null,
+        findMultimodalRoute: typeof findMultimodalRoute === 'function' ? findMultimodalRoute : null,
+        calculateRideHailingEstimates: typeof calculateRideHailingEstimates === 'function' ? calculateRideHailingEstimates : null,
+        toBengaliNumber: typeof toBengaliNumber === 'function' ? toBengaliNumber : (n => n)
+      };
+
+      const cngData = engine.calculateFareEngine('cng', dist, mins, cond);
+      const rickshawData = engine.calculateFareEngine('rickshaw', dist, Math.round(mins * 1.5), cond);
+      const batteryData = engine.calculateFareEngine('battery', dist, Math.round(mins * 1.1), cond);
+      const multimodalData = engine.findMultimodalRoute(state.startPoint, state.endPoint);
+
+      const optionsList = [
+        {
+          id: 'cng',
+          nameBn: 'সিএনজি অটো-রিকশা',
+          nameEn: 'CNG Auto-Rickshaw',
+          icon: 'fa-solid fa-taxi text-emerald-600',
+          minFare: cngData.minFare,
+          maxFare: cngData.maxFare,
+          minutes: mins,
+          transfers: 0,
+          walkingMeters: 50,
+          reasonBn: 'দ্রুত ও সরাসরি গন্তব্যে পৌঁছায় (মিটারহীন দরকষাকষি)',
+          reasonEn: 'Fastest direct ride (negotiated rate)',
+          allowed: true,
+          data: cngData
+        },
+        {
+          id: 'rickshaw',
+          nameBn: 'সাধারণ রিকশা',
+          nameEn: 'Cycle Rickshaw',
+          icon: 'fa-solid fa-bicycle text-amber-600',
+          minFare: rickshawData.minFare,
+          maxFare: rickshawData.maxFare,
+          minutes: Math.round(mins * 1.5),
+          transfers: 0,
+          walkingMeters: 20,
+          reasonBn: 'মাঝারি দূরত্বের খোলা বাহন (শারীরিক পরিশ্রম নির্ভর)',
+          reasonEn: 'Pedal-powered open vehicle for short-to-mid trips',
+          allowed: dist <= 7.0,
+          disabledReasonBn: 'দূরত্ব ৭ কিমি-এর বেশি — রিকশা অনুপযুক্ত',
+          disabledReasonEn: 'Distance exceeds 7 km human limit',
+          data: rickshawData
+        },
+        {
+          id: 'battery',
+          nameBn: 'ব্যাটারি রিকশা / ইজিবাইক',
+          nameEn: 'Battery Easybike',
+          icon: 'fa-solid fa-bolt text-blue-600',
+          minFare: batteryData.minFare,
+          maxFare: batteryData.maxFare,
+          minutes: Math.round(mins * 1.1),
+          transfers: 0,
+          walkingMeters: 30,
+          reasonBn: 'স্বল্প খরচে সাশ্রয়ী স্থানীয় সংযোগ',
+          reasonEn: 'Low-cost motorized feeder trip',
+          allowed: dist <= 12.0,
+          disabledReasonBn: 'দূরত্ব ১২ কিমি-এর বেশি — ব্যাটারি রিকশার সীমার বাইরে',
+          disabledReasonEn: 'Distance exceeds 12 km battery range',
+          data: batteryData
+        }
+      ];
+
+      if (multimodalData) {
+        optionsList.push({
+          id: 'multimodal',
+          nameBn: 'রিকশা + এমআরটি-৬ মেট্রোরেল',
+          nameEn: 'Rickshaw + MRT-6 Metro',
+          icon: 'fa-solid fa-train-subway text-purple-600',
+          minFare: multimodalData.totalMin,
+          maxFare: multimodalData.totalMax,
+          minutes: multimodalData.totalMinutes,
+          transfers: 2,
+          walkingMeters: 150,
+          reasonBn: 'যানজটমুক্ত দ্রুততম ভ্রমণ (মেট্রোরেল করিডোর)',
+          reasonEn: 'Traffic-free commute via MRT-6 corridor',
+          allowed: true,
+          data: multimodalData
+        });
+      }
+
+      // Sort allowed options by minFare ascending
+      const viableOptions = optionsList.filter(o => o.allowed);
+      viableOptions.sort((a, b) => a.minFare - b.minFare);
+
+      state.calculatedOptions = optionsList;
+      state.viableOptions = viableOptions;
+      state.cheapestOption = viableOptions[0];
+
+      // If currently selected vehicle isn't chosen yet, pick cheapest
+      if (!state.selectedVehicle || !optionsList.find(o => o.id === state.selectedVehicle && o.allowed)) {
+        state.selectedVehicle = state.cheapestOption.id;
+      }
+
+      state.lastResult = {
+        distanceKm: dist,
+        durationMinutes: mins,
+        mode: routeData.mode
+      };
+
+      renderMultiOptionUI();
+      updateUrlHash();
+    }
+
+    function selectActiveOption(optionId) {
+      const opt = (state.calculatedOptions || []).find(o => o.id === optionId);
+      if (!opt || !opt.allowed) return;
+      state.selectedVehicle = optionId;
+      renderMultiOptionUI();
+      updateUrlHash();
+    }
+
+    function renderMultiOptionUI() {
       const resultCard = document.getElementById('resultCard');
       const resDistanceText = document.getElementById('resDistanceText');
       const resDurationText = document.getElementById('resDurationText');
-      const resFareAmount = document.getElementById('resFareAmount');
-      const resFareSubtext = document.getElementById('resFareSubtext');
       const resRoutingModeBadge = document.getElementById('resRoutingModeBadge');
-      const resVehicleNotice = document.getElementById('resVehicleNotice');
-      const resVehicleNoticeText = document.getElementById('resVehicleNoticeText');
-      const resNegotiationScript = document.getElementById('resNegotiationScript');
-
+      const optionsContainer = document.getElementById('resOptionsComparisonList');
+      const timeTradeoffNotice = document.getElementById('timeTradeoffNotice');
+      const timeTradeoffText = document.getElementById('timeTradeoffText');
+      const lineItemsContainer = document.getElementById('resLineItemsList');
+      const officialNote = document.getElementById('officialFareComparisonNote');
+      const sourceBadge = document.getElementById('resFareSourceBadge');
+      const sourceText = document.getElementById('resFareSourceText');
+      const dateText = document.getElementById('resFareDateText');
+      const stepsContainer = document.getElementById('resJourneyStepsList');
       const lang = state.language;
 
-      resDistanceText.textContent = lang === 'bn'
-        ? `${toBengaliNumber(result.distanceKm)} কিমি`
-        : `${result.distanceKm} km`;
+      if (!state.lastResult || !state.viableOptions) return;
 
-      resDurationText.textContent = lang === 'bn'
-        ? `${toBengaliNumber(result.travelMinutes)} মিনিট`
-        : `${result.travelMinutes} mins`;
+      const dist = state.lastResult.distanceKm;
+      const mins = state.lastResult.durationMinutes;
 
-      resFareAmount.textContent = `${formatCurrency(result.minFare, lang)} – ${formatCurrency(result.maxFare, lang)}`;
+      // Distance and duration
+      resDistanceText.textContent = lang === 'bn' ? `${toBengaliNumber(dist)} কিমি` : `${dist} km`;
+      resDurationText.textContent = lang === 'bn' ? `${toBengaliNumber(mins)} মিনিট` : `${mins} mins`;
 
-      let activeSurgesList = [];
-      if (state.conditions.rain) activeSurgesList.push(lang === 'bn' ? 'বৃষ্টি' : 'Rain');
-      if (state.conditions.peak) activeSurgesList.push(lang === 'bn' ? 'পিক-আওয়ার' : 'Peak');
-      if (state.conditions.night) activeSurgesList.push(lang === 'bn' ? 'রাত' : 'Night');
-
-      if (activeSurgesList.length > 0) {
-        resFareSubtext.textContent = lang === 'bn'
-          ? `সক্রিয় শর্ত: ${activeSurgesList.join(' + ')} (গুণিতক: ${toBengaliNumber(result.activeSurgeMultiplier.toFixed(2))}x)`
-          : `Active: ${activeSurgesList.join(' + ')} (Surge: ${result.activeSurgeMultiplier.toFixed(2)}x)`;
-      } else {
-        resFareSubtext.textContent = lang === 'bn'
-          ? 'স্বাভাবিক ট্রাফিক ও দূরত্ব অনুযায়ী নির্ধারিত'
-          : 'Standard rate based on real road distance & traffic';
-      }
-
-      if (result.mode === 'osrm') {
+      // Routing Mode badge
+      if (state.lastResult.mode === 'osrm') {
         resRoutingModeBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
-        resRoutingModeBadge.innerHTML = `<i class="fa-solid fa-route mr-1"></i>${translations[lang].osrmRoutingBadge}`;
+        resRoutingModeBadge.innerHTML = `<i class="fa-solid fa-route mr-1"></i>${lang === 'bn' ? 'ওএসআরএম রুট' : 'OSRM Route'}`;
       } else {
         resRoutingModeBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800';
-        resRoutingModeBadge.innerHTML = `<i class="fa-solid fa-compass mr-1"></i>${translations[lang].offlineRoutingBadge}`;
+        resRoutingModeBadge.innerHTML = `<i class="fa-solid fa-compass mr-1"></i>${lang === 'bn' ? 'মোটামুটি হিসাব (অফলাইন)' : 'Approximate Route (Offline)'}`;
       }
 
-      const cfg = VEHICLE_CONFIGS[result.vehicleId];
-      if (cfg && cfg.disclaimerLimitKm && result.distanceKm > cfg.disclaimerLimitKm) {
-        resVehicleNotice.classList.remove('hidden');
-        resVehicleNoticeText.textContent = lang === 'bn' ? cfg.disclaimerNoticeBn : cfg.disclaimerNoticeEn;
+      // Render Options Comparison Cards
+      const cheapest = state.cheapestOption;
+      optionsContainer.innerHTML = state.calculatedOptions.map(opt => {
+        const isSelected = opt.id === state.selectedVehicle;
+        const isCheapest = opt.id === cheapest.id;
+
+        if (!opt.allowed) {
+          return `
+            <div class="p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 opacity-60">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <i class="${opt.icon}"></i>
+                  <span class="font-bold text-xs text-slate-500">${lang === 'bn' ? opt.nameBn : opt.nameEn}</span>
+                </div>
+                <span class="text-[10px] bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 px-2 py-0.5 rounded-full font-bold">
+                  ${lang === 'bn' ? opt.disabledReasonBn : opt.disabledReasonEn}
+                </span>
+              </div>
+            </div>
+          `;
+        }
+
+        const fareText = `${formatCurrency(opt.minFare, lang)} – ${formatCurrency(opt.maxFare, lang)}`;
+        const timeText = lang === 'bn' ? `~${toBengaliNumber(opt.minutes)} মিনিট` : `~${opt.minutes} mins`;
+        const transferText = opt.transfers === 0
+          ? (lang === 'bn' ? 'সরাসরি (০ বদল)' : 'Direct (0 transfers)')
+          : (lang === 'bn' ? `${toBengaliNumber(opt.transfers)}টি ট্রানজিট বদল` : `${opt.transfers} transfers`);
+
+        return `
+          <div onclick="selectActiveOption('${opt.id}')" class="cursor-pointer p-3.5 rounded-2xl border-2 transition-all ${
+            isSelected
+              ? 'border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/30 shadow-md ring-2 ring-emerald-500/20'
+              : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800'
+          }">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                  <i class="${opt.icon} text-base"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <h4 class="text-xs font-extrabold text-slate-900 dark:text-slate-100">${lang === 'bn' ? opt.nameBn : opt.nameEn}</h4>
+                    ${isCheapest ? `<span class="bg-emerald-600 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">${lang === 'bn' ? 'সবচেয়ে সাশ্রয়ী' : 'Cheapest Option'}</span>` : ''}
+                  </div>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">${lang === 'bn' ? opt.reasonBn : opt.reasonEn}</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="block text-sm font-black text-emerald-700 dark:text-emerald-400 num-font">${fareText}</span>
+                <span class="text-[10px] text-slate-500">${timeText} • ${transferText}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Time vs Cost Trade-off Notice
+      const fastest = [...state.viableOptions].sort((a, b) => a.minutes - b.minutes)[0];
+      if (cheapest && fastest && cheapest.id !== fastest.id && (cheapest.minutes - fastest.minutes) >= 8) {
+        const diffMins = cheapest.minutes - fastest.minutes;
+        timeTradeoffNotice.classList.remove('hidden');
+        timeTradeoffText.innerHTML = lang === 'bn'
+          ? `<strong>💡 সময় বনাম সাশ্রয় ট্রেড-অফ:</strong> <strong>${cheapest.nameBn}</strong> সবচেয়ে সাশ্রয়ী হলেও <strong>${fastest.nameBn}</strong>-এর চেয়ে এতে প্রায় <strong>${toBengaliNumber(diffMins)} মিনিট</strong> বেশি সময় লাগতে পারে।`
+          : `<strong>💡 Time vs Cost Trade-off:</strong> While <strong>${cheapest.nameEn}</strong> is the cheapest, it takes ~<strong>${diffMins} mins longer</strong> than <strong>${fastest.nameEn}</strong>.`;
       } else {
-        resVehicleNotice.classList.add('hidden');
+        timeTradeoffNotice.classList.add('hidden');
       }
 
-      // Populate Ride-Hailing Benchmarks (Uber & Pathao)
-      const rh = calculateRideHailingEstimates(result.distanceKm, result.travelMinutes, state.conditions);
+      // Active Option Breakdown
+      const activeOpt = state.calculatedOptions.find(o => o.id === state.selectedVehicle) || cheapest;
+      renderDetailedBreakdown(activeOpt);
+      renderJourneySteps(activeOpt);
+
+      // Ride-Hailing Benchmarks
+      const rh = (typeof FareEngine !== 'undefined' ? FareEngine : window).calculateRideHailingEstimates(dist, mins, state.conditions);
       const resUberMotoFare = document.getElementById('resUberMotoFare');
       const resUberCngFare = document.getElementById('resUberCngFare');
       const resUberCarFare = document.getElementById('resUberCarFare');
-      const resUberTipText = document.getElementById('resUberTipText');
+      if (resUberMotoFare) resUberMotoFare.textContent = `${formatCurrency(rh.motoMin, lang)} - ${formatCurrency(rh.motoMax, lang)}`;
+      if (resUberCngFare) resUberCngFare.textContent = `${formatCurrency(rh.cngMin, lang)} - ${formatCurrency(rh.cngMax, lang)}`;
+      if (resUberCarFare) resUberCarFare.textContent = `${formatCurrency(rh.carMin, lang)} - ${formatCurrency(rh.carMax, lang)}`;
 
-      if (resUberMotoFare) {
-        resUberMotoFare.textContent = `${formatCurrency(rh.motoMin, lang)} - ${formatCurrency(rh.motoMax, lang)}`;
-      }
-      if (resUberCngFare) {
-        resUberCngFare.textContent = `${formatCurrency(rh.cngMin, lang)} - ${formatCurrency(rh.cngMax, lang)}`;
-      }
-      if (resUberCarFare) {
-        resUberCarFare.textContent = `${formatCurrency(rh.carMin, lang)} - ${formatCurrency(rh.carMax, lang)}`;
-      }
-      if (resUberTipText) {
-        if (result.vehicleId === 'cng') {
-          const savings = Math.max(20, Math.round((rh.cngMin - result.minFare) / 5) * 5);
-          resUberTipText.textContent = lang === 'bn'
-            ? `রাস্তার সিএনজিতে দরকষাকষিতে অ্যাপ সিএনজির চেয়ে প্রায় ${formatCurrency(savings, 'bn')} সাশ্রয় সম্ভব।${rh.surge > 1 ? ` (বৃষ্টি/পিকে অ্যাপে ${toBengaliNumber(rh.surge.toFixed(1))}x সার্জ প্রযোজ্য)` : ''}`
-            : `Haggling street CNG saves ~${formatCurrency(savings, 'en')} vs Uber/Pathao CNG.${rh.surge > 1 ? ` (${rh.surge.toFixed(1)}x surge active on apps)` : ''}`;
-        } else if (result.vehicleId === 'rickshaw' || result.vehicleId === 'battery') {
-          const savings = Math.max(15, Math.round((rh.motoMin - result.minFare) / 5) * 5);
-          resUberTipText.textContent = lang === 'bn'
-            ? `স্বল্প দূরত্বে রিকশা/ইজিবাইকে পাঠাও বাইকের চেয়েও প্রায় ${formatCurrency(savings, 'bn')} সাশ্রয় হয়।`
-            : `Rickshaw/Easybike saves ~${formatCurrency(savings, 'en')} compared to Pathao/Uber bike for short hops.`;
+      // Negotiation script
+      const scriptElem = document.getElementById('resNegotiationScript');
+      if (scriptElem) {
+        if (lang === 'bn') {
+          scriptElem.textContent = `প্রথমে ${formatCurrency(activeOpt.minFare, 'bn')} বলুন। ড্রাইভার ${formatCurrency(activeOpt.maxFare + 30, 'bn')} চাইতে পারে। শেষ পর্যন্ত ${formatCurrency(Math.round((activeOpt.minFare + activeOpt.maxFare)/2), 'bn')} এর মধ্যে রফা করার চেষ্টা করুন (এটি একটি নমুনা উদাহরণ)।`;
         } else {
-          resUberTipText.textContent = lang === 'bn'
-            ? `রাস্তার সিএনজিতে দরকষাকষিতে অ্যাপের চেয়ে প্রায় ৳৩০-৫০ সাশ্রয় হয়। বৃষ্টিতে উবার/পাঠাও-এ সার্জ ২ গুণ পর্যন্ত হতে পারে।`
-            : `Street bargaining saves ~৳30-50 compared to app rates. Surge on apps can reach 1.8x+ in rain/peak hours.`;
+          scriptElem.textContent = `Offer ${formatCurrency(activeOpt.minFare, 'en')} first. The driver may ask ${formatCurrency(activeOpt.maxFare + 30, 'en')}. Settle around ${formatCurrency(Math.round((activeOpt.minFare + activeOpt.maxFare)/2), 'en')} (sample negotiation script).`;
         }
       }
 
-      resNegotiationScript.textContent = result.script;
-
-      // Check Multimodal Dhaka Metro Rail recommendation
-      checkMultimodalMetroRecommendation(state.startPoint, state.endPoint, result);
-
       resultCard.classList.remove('hidden');
       resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function renderDetailedBreakdown(activeOpt) {
+      const container = document.getElementById('resLineItemsList');
+      const officialNote = document.getElementById('officialFareComparisonNote');
+      const sourceBadge = document.getElementById('resFareSourceBadge');
+      const sourceText = document.getElementById('resFareSourceText');
+      const dateText = document.getElementById('resFareDateText');
+      const lang = state.language;
+
+      if (activeOpt.id === 'multimodal') {
+        const m = activeOpt.data;
+        sourceBadge.className = 'text-[10px] bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 font-bold px-2 py-0.5 rounded-full';
+        sourceBadge.textContent = lang === 'bn' ? 'সরকারি অনুমোদিত মেট্রো রেট' : 'Official DMTCL Metro Rate';
+        sourceText.textContent = lang === 'bn' ? 'উৎস: DMTCL সরকারি এমআরটি-৬ ভাড়ার তালিকা ২০২৩-২০২৪' : 'Source: Official DMTCL MRT-6 Chart';
+        dateText.textContent = lang === 'bn' ? 'শেষ আপডেট: ২০২৪-০১-২০' : 'Updated: 2024-01-20';
+
+        container.innerHTML = `
+          <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+            <span>${lang === 'bn' ? '১. রিকশা সংযোগ ১ (' + m.startStation.nameBn + ' স্টেশন পর্যন্ত ' + toBengaliNumber(m.feeder1Dist) + ' কিমি)' : '1. Feeder Rickshaw to ' + m.startStation.nameEn + ' (' + m.feeder1Dist + ' km)'}</span>
+            <span class="font-bold num-font">~${formatCurrency(m.feeder1Cost, lang)}</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+            <span>${lang === 'bn' ? '২. এমআরটি-৬ ট্রেন টিকিট (' + m.startStation.nameBn + ' ➔ ' + m.endStation.nameBn + ')' : '2. MRT-6 Single Ticket (' + m.startStation.nameEn + ' ➔ ' + m.endStation.nameEn + ')'}</span>
+            <span class="font-bold text-emerald-700 dark:text-emerald-400 num-font">${formatCurrency(m.metroFare, lang)} (${lang === 'bn' ? 'সরকারি' : 'Official'})</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+            <span>${lang === 'bn' ? '৩. রিকশা সংযোগ ২ (' + m.endStation.nameBn + ' থেকে গন্তব্য ' + toBengaliNumber(m.feeder2Dist) + ' কিমি)' : '3. Dropoff Feeder from ' + m.endStation.nameEn + ' (' + m.feeder2Dist + ' km)'}</span>
+            <span class="font-bold num-font">~${formatCurrency(m.feeder2Cost, lang)}</span>
+          </div>
+          <div class="flex justify-between py-1.5 font-bold text-emerald-800 dark:text-emerald-300 text-sm">
+            <span>${lang === 'bn' ? 'মোট সমন্বিত আনুমানিক খরচ:' : 'Total Multimodal Est. Cost:'}</span>
+            <span class="num-font">${formatCurrency(m.totalMin, lang)} – ${formatCurrency(m.totalMax, lang)}</span>
+          </div>
+        `;
+
+        officialNote.innerHTML = lang === 'bn'
+          ? `<i class="fa-solid fa-circle-check text-purple-600 mr-1"></i>এমআরটি-৬ টিকিটের হার ডিএমটিসিএল অনুমোদিত সরকারি ভাড়ার চার্ট অনুযায়ী নির্ভুল। রিকশা ফিডার রেট আনুমানিক।`
+          : `<i class="fa-solid fa-circle-check text-purple-600 mr-1"></i>MRT-6 fare is exact according to official DMTCL chart. Feeder rickshaw fares are estimated.`;
+        return;
+      }
+
+      // Single vehicle named lines breakdown
+      const d = activeOpt.data;
+      sourceBadge.className = 'text-[10px] bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 font-bold px-2 py-0.5 rounded-full';
+      sourceBadge.textContent = lang === 'bn' ? 'অনানুষ্ঠানিক দরকষাকষি রেট (আনুমানিক)' : 'Informal Negotiation Rate (Est.)';
+      sourceText.textContent = lang === 'bn' ? `উৎস: ${d.source}` : `Source: ${d.sourceEn}`;
+      dateText.textContent = lang === 'bn' ? `শেষ আপডেট: ${toBengaliNumber(d.sourceDate)}` : `Updated: ${d.sourceDate}`;
+
+      const baseText = lang === 'bn' ? `বেস ভাড়া (প্রথম ${toBengaliNumber(d.coveredKm)} কিমি)` : `Base Fare (First ${d.coveredKm} km)`;
+      const distText = lang === 'bn' ? `দূরত্বের চার্জ (${toBengaliNumber(d.billableKm)} কিমি × ৳${toBengaliNumber(d.perKmRate)}/কিমি)` : `Distance Charge (${d.billableKm} km × ৳${d.perKmRate}/km)`;
+      const congText = lang === 'bn' ? `যানজট বাফারিং (~${toBengaliNumber(d.travelMinutes)} মিনিট × ৳${toBengaliNumber(d.congestionRate)}/মিনিট)` : `Congestion Buffer (~${d.travelMinutes} mins × ৳${d.congestionRate}/min)`;
+      const surgeText = lang === 'bn' ? `সার্জ গুণিতক (বৃষ্টি/পিক/নাইট)` : `Surge Multiplier (Rain/Peak/Night)`;
+
+      container.innerHTML = `
+        <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+          <span>${baseText}</span>
+          <span class="font-bold num-font">${formatCurrency(d.baseFare, lang)}</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+          <span>${distText}</span>
+          <span class="font-bold num-font">+${formatCurrency(d.distanceCost, lang)}</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+          <span>${congText}</span>
+          <span class="font-bold num-font">+${formatCurrency(d.congestionCost, lang)}</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-700">
+          <span>${surgeText}</span>
+          <span class="font-bold num-font">${toBengaliNumber(d.activeSurgeMultiplier.toFixed(2))}x</span>
+        </div>
+        <div class="flex justify-between py-1 font-semibold text-slate-700 dark:text-slate-300">
+          <span>${lang === 'bn' ? 'সম্ভাব্য মোট ভিত্তি (Subtotal):' : 'Estimated Base Subtotal:'}</span>
+          <span class="num-font">${formatCurrency(d.subtotalBeforeSurge, lang)}</span>
+        </div>
+        <div class="flex justify-between py-1.5 font-black text-emerald-800 dark:text-emerald-300 text-sm border-t border-slate-200 dark:border-slate-700">
+          <span>${lang === 'bn' ? 'প্রস্তাবিত দরকষাকষি সীমা:' : 'Negotiation Target Range:'}</span>
+          <span class="num-font">${formatCurrency(d.minFare, lang)} – ${formatCurrency(d.maxFare, lang)} (${lang === 'bn' ? 'আনুমানিক' : 'est.'})</span>
+        </div>
+      `;
+
+      if (d.isOfficialMeterAvailable && d.officialMeterFare) {
+        officialNote.innerHTML = lang === 'bn'
+          ? `<i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i><strong>সরকারি বনাম স্ট্রিট রিয়েলিটি:</strong> বিআরটিএ ২০১৫ গেজেটের মিটার রেট প্রায় <strong>${formatCurrency(d.officialMeterFare, 'bn')}</strong> (বেস ৳৪০ + ৳১২/কিমি + ৳২/মিনিট)। তবে ঢাকায় চালকরা মিটারে না যাওয়ায় যানজট বাফারিং যুক্ত করে <strong>${formatCurrency(d.minFare, 'bn')}–${formatCurrency(d.maxFare, 'bn')}</strong> বাস্তবসম্মত দরকষাকষি সীমা দেখানো হয়েছে।`
+          : `<i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i><strong>Official vs Reality:</strong> BRTA 2015 gazette meter rate is ~<strong>${formatCurrency(d.officialMeterFare, 'en')}</strong>. Because drivers universally refuse meters, realistic street bargaining is estimated at <strong>${formatCurrency(d.minFare, 'en')}–${formatCurrency(d.maxFare, 'en')}</strong> with congestion buffer.`;
+      } else {
+        officialNote.innerHTML = lang === 'bn'
+          ? `<i class="fa-solid fa-circle-info text-blue-500 mr-1"></i>রিকশা ও ব্যাটারিচালিত বাহনের কোনো সরকারি মিটার হার নেই। সিটি করপোরেশন এলাকার বাস্তব যাত্রী অভিজ্ঞতা ও দূরত্বের ভিত্তিতে এই আনুমানিক সীমা তৈরি।`
+          : `<i class="fa-solid fa-circle-info text-blue-500 mr-1"></i>Rickshaws and easybikes are not meter-regulated. This range reflects commuter norms.`;
+      }
+    }
+
+    function renderJourneySteps(activeOpt) {
+      const container = document.getElementById('resJourneyStepsList');
+      const lang = state.language;
+      const startName = state.startPoint ? state.startPoint.name : (lang === 'bn' ? 'শুরুর স্থান' : 'Pickup');
+      const endName = state.endPoint ? state.endPoint.name : (lang === 'bn' ? 'গন্তব্য' : 'Destination');
+      const dist = state.lastResult ? state.lastResult.distanceKm : 5.2;
+      const mins = activeOpt.minutes;
+
+      if (activeOpt.id === 'multimodal') {
+        const m = activeOpt.data;
+        container.innerHTML = `
+          <div class="flex items-start space-x-2.5">
+            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">১</span>
+            <div class="space-y-0.5">
+              <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'ফিডার রিকশা গ্রহণ: ' + startName + ' থেকে ' + m.startStation.nameBn + ' স্টেশন' : 'Take feeder rickshaw from ' + startName + ' to ' + m.startStation.nameEn}</strong>
+              <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'দূরত্ব: ' + toBengaliNumber(m.feeder1Dist) + ' কিমি • সময়: ~' + toBengaliNumber(m.feeder1Minutes) + ' মিনিট • আনুমানিক ভাড়া: ~' + formatCurrency(m.feeder1Cost, 'bn') : 'Dist: ' + m.feeder1Dist + ' km • ~' + m.feeder1Minutes + ' mins • ~' + formatCurrency(m.feeder1Cost, 'en')}</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">২</span>
+            <div class="space-y-0.5">
+              <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'মেট্রোরেল (MRT-6) বোর্ডিং: ' + m.startStation.nameBn + ' ➔ ' + m.endStation.nameBn : 'Board MRT-6 at ' + m.startStation.nameEn + ' towards ' + m.endStation.nameEn}</strong>
+              <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'দূরত্ব: ' + toBengaliNumber(m.metroDistanceKm) + ' কিমি • টিকিট: ৳' + toBengaliNumber(m.metroFare) + ' (সরকারি রেট) • সময়: ~' + toBengaliNumber(m.metroMinutes) + ' মিনিট' : 'Dist: ' + m.metroDistanceKm + ' km • Ticket: ৳' + m.metroFare + ' (Official) • ~' + m.metroMinutes + ' mins'}</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">৩</span>
+            <div class="space-y-0.5">
+              <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'স্টেশনে প্রস্থান: ' + m.endStation.nameBn + ' স্টেশনে নামুন' : 'Exit at ' + m.endStation.nameEn + ' Station'}</strong>
+              <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'নিচতলায় এসে গেট পাঞ্চ করুন ও ফিডার রিকশা নিন' : 'Tap out at fare gates and head to ground floor'}</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">৪</span>
+            <div class="space-y-0.5">
+              <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'শেষ ধাপ: ' + endName + '-এ পৌঁছান' : 'Final Step: Reach ' + endName}</strong>
+              <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'দূরত্ব: ' + toBengaliNumber(m.feeder2Dist) + ' কিমি • সময়: ~' + toBengaliNumber(m.feeder2Minutes) + ' মিনিট • আনুমানিক ফিডার ভাড়া: ~' + formatCurrency(m.feeder2Cost, 'bn') : 'Dist: ' + m.feeder2Dist + ' km • ~' + m.feeder2Minutes + ' mins • ~' + formatCurrency(m.feeder2Cost, 'en')}</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const vName = lang === 'bn' ? activeOpt.nameBn : activeOpt.nameEn;
+      container.innerHTML = `
+        <div class="flex items-start space-x-2.5">
+          <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">১</span>
+          <div class="space-y-0.5">
+            <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'বোর্ডিং: ' + startName + ' থেকে ' + vName + ' নিন' : 'Board ' + vName + ' from ' + startName}</strong>
+            <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'ওঠার আগে দাম ঠিক করুন (বোর্ডিং বিবরণ: যাচাই করা হয়নি)' : 'Agree on fare before riding (boarding point: unverified)'}</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2.5">
+          <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">২</span>
+          <div class="space-y-0.5">
+            <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'যাত্রাপথ ও রুট পর্যবেক্ষণ' : 'En Route'}</strong>
+            <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'দূরত্ব: ' + toBengaliNumber(dist) + ' কিমি • সম্ভাব্য সময়: ~' + toBengaliNumber(mins) + ' মিনিট (ম্যাপে নজর রাখুন)' : 'Distance: ' + dist + ' km • Est. time: ~' + mins + ' mins'}</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2.5">
+          <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">৩</span>
+          <div class="space-y-0.5">
+            <strong class="text-slate-800 dark:text-slate-100 block">${lang === 'bn' ? 'গন্তব্যে পৌঁছানো: ' + endName : 'Destination: Reach ' + endName}</strong>
+            <p class="text-[11px] text-slate-500">${lang === 'bn' ? 'আনুমানিক প্রদেয় ভাড়া: ' + formatCurrency(activeOpt.minFare, 'bn') + ' – ' + formatCurrency(activeOpt.maxFare, 'bn') + ' (জরুরিতে ৯৯৯)' : 'Estimated payable fare: ' + formatCurrency(activeOpt.minFare, 'en') + ' – ' + formatCurrency(activeOpt.maxFare, 'en') + ' (Emergency: 999)'}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateUrlHash() {
+      if (!state.startPoint || !state.endPoint) return;
+      const sId = state.startPoint.landmarkId || 'start';
+      const eId = state.endPoint.landmarkId || 'end';
+      const vId = state.selectedVehicle || 'cng';
+      const hashStr = `start=${sId}&end=${eId}&vehicle=${vId}`;
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '#' + hashStr);
+      } else {
+        window.location.hash = hashStr;
+      }
+    }
+
+    function generateTripShareText() {
+      const lang = state.language;
+      const startName = state.startPoint ? state.startPoint.name : 'ফার্মগেট';
+      const endName = state.endPoint ? state.endPoint.name : 'গুলশান ১';
+      const dist = state.lastResult ? state.lastResult.distanceKm : 5.2;
+      const mins = state.lastResult ? state.lastResult.durationMinutes : 22;
+      const activeOpt = (state.calculatedOptions || []).find(o => o.id === state.selectedVehicle) || {
+        nameBn: 'সিএনজি অটো', minFare: 120, maxFare: 145
+      };
+
+      const fareStr = `${formatCurrency(activeOpt.minFare, lang)} - ${formatCurrency(activeOpt.maxFare, lang)}`;
+      const mapsLink = `https://www.google.com/maps/dir/?api=1&origin=${state.startPoint ? state.startPoint.lat + ',' + state.startPoint.lng : ''}&destination=${state.endPoint ? state.endPoint.lat + ',' + state.endPoint.lng : ''}`;
+      const planUrl = `${window.location.origin}${window.location.pathname}#start=${state.startPoint?.landmarkId || 'farmgate'}&end=${state.endPoint?.landmarkId || 'gulshan1'}&vehicle=${state.selectedVehicle}`;
+
+      if (lang === 'bn') {
+        return `🛡️ *নিরাপদ যাত্রা — ট্রিপ পরিকল্পনা*
+📍 শুরু: ${startName}
+🏁 গন্তব্য: ${endName}
+🛺 নির্বাচিত বাহন: ${activeOpt.nameBn}
+💰 আনুমানিক ন্যায্য ভাড়া: ${fareStr} (আনুমানিক)
+⏱️ সময়: ~${toBengaliNumber(mins)} মিনিট • দূরত্ব: ${toBengaliNumber(dist)} কিমি
+🚦 ধাপ ১: ${startName} থেকে বোর্ডিং (যাচাই করা হয়নি)
+🚦 ধাপ ২: মূল রুট হয়ে ${endName}-এ পৌঁছান
+🚨 জরুরি পুলিশ হেল্পলাইন: ৯৯৯
+📱 লাইভ ট্রিপ প্ল্যান দেখুন: ${planUrl}
+🗺️ গুগল ম্যাপস: ${mapsLink}`;
+      } else {
+        return `🛡️ *Nirapod Jatra — Commute Plan*
+📍 Pickup: ${startName}
+🏁 Destination: ${endName}
+🛺 Vehicle: ${activeOpt.nameEn || activeOpt.nameBn}
+💰 Fair Fare: ${fareStr} (est.)
+⏱️ Time: ~${mins} mins • Distance: ${dist} km
+🚨 Emergency Helpline: 999
+📱 View plan in web app: ${planUrl}
+🗺️ Map: ${mapsLink}`;
+      }
+    }
+
+    async function shareTripViaNativeShare() {
+      const shareData = {
+        title: 'নিরাপদ যাত্রা — ট্রিপ বিবরণ',
+        text: generateTripShareText(),
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          showToast(state.language === 'bn' ? 'যাত্রাপরিকল্পনা সফলভাবে শেয়ার হয়েছে' : 'Plan shared successfully!', 'success');
+          return;
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            console.warn('Native share failed, using fallback:', err);
+          }
+        }
+      }
+      // Fallback to clipboard
+      await copyTripShareText();
+    }
+
+    function shareTripViaWhatsApp() {
+      const text = generateTripShareText();
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function shareTripViaSms() {
+      const text = generateTripShareText();
+      const url = `sms:?body=${encodeURIComponent(text)}`;
+      window.location.href = url;
+    }
+
+    async function copyTripShareText() {
+      const text = generateTripShareText();
+      const lang = state.language;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          showToast(lang === 'bn' ? 'যাত্রার বিবরণ ও লিংক ক্লিপবোর্ডে কপি হয়েছে' : 'Trip plan copied to clipboard!', 'success');
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showToast(lang === 'bn' ? 'যাত্রার বিবরণ ক্লিপবোর্ডে কপি হয়েছে' : 'Trip plan copied to clipboard!', 'success');
+        }
+      } catch (e) {
+        showToast(lang === 'bn' ? 'কপি করা যায়নি — ম্যানুয়ালি কপি করুন' : 'Could not copy', 'error');
+      }
+    }
+
+    function handleUrlHashOnLoad() {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (!hash) return;
+      const params = new URLSearchParams(hash);
+      const startId = params.get('start') || params.get('from');
+      const endId = params.get('end') || params.get('to');
+      const vehicle = params.get('vehicle');
+
+      if (startId && endId) {
+        const startLandmark = DHAKA_LANDMARKS.find(l => l.id === startId);
+        const endLandmark = DHAKA_LANDMARKS.find(l => l.id === endId);
+        if (startLandmark && endLandmark) {
+          state.startPoint = {
+            landmarkId: startLandmark.id,
+            name: state.language === 'bn' ? startLandmark.nameBn : startLandmark.nameEn,
+            lat: startLandmark.coords[0],
+            lng: startLandmark.coords[1]
+          };
+          state.endPoint = {
+            landmarkId: endLandmark.id,
+            name: state.language === 'bn' ? endLandmark.nameBn : endLandmark.nameEn,
+            lat: endLandmark.coords[0],
+            lng: endLandmark.coords[1]
+          };
+          if (vehicle) state.selectedVehicle = vehicle;
+          updateDropdownSelections();
+          updateMapMarkers();
+          validateRouteInputs();
+          requestRouteAndCalculate();
+        }
+      }
     }
 
     function renderCommunityFeed() {
@@ -2823,7 +3472,7 @@
             <div class="flex items-start justify-between">
               <div class="space-y-0.5">
                 <div class="flex items-center space-x-2">
-                  <span class="text-xs font-bold text-slate-900 dark:text-slate-100">${trip.start} ➔ ${trip.end}</span>
+                  <span class="text-xs font-bold text-slate-900 dark:text-slate-100">${escapeHtml(trip.start)} ➔ ${escapeHtml(trip.end)}</span>
                   <span class="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded font-medium">${vName}</span>
                 </div>
                 <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
@@ -2850,7 +3499,7 @@
 
             <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60 text-xs">
               <div class="text-[11px] text-slate-600 dark:text-slate-400 italic truncate max-w-[200px]">
-                ${trip.note ? '"' + trip.note + '"' : (lang === 'bn' ? 'নিয়মিত ট্রিপ' : 'Regular ride')}
+                ${trip.note ? '"' + escapeHtml(trip.note) + '"' : (lang === 'bn' ? 'নিয়মিত ট্রিপ' : 'Regular ride')}
               </div>
               <div>${badgeHtml}</div>
             </div>
@@ -3003,6 +3652,80 @@
       }
     }
 
+    
+    function handlePlaceInput(type, query) {
+      const suggestionsBox = document.getElementById(type + 'Suggestions');
+      const lang = state.language;
+
+      if (!query || query.trim().length === 0) {
+        if (suggestionsBox) {
+          suggestionsBox.classList.add('hidden');
+          suggestionsBox.innerHTML = '';
+        }
+        return;
+      }
+
+      const engine = (typeof FareEngine !== 'undefined') ? FareEngine : {
+        fuzzyMatchPlace: typeof fuzzyMatchPlace === 'function' ? fuzzyMatchPlace : () => []
+      };
+      const matches = engine.fuzzyMatchPlace(query.trim(), DHAKA_LANDMARKS);
+
+      if (!suggestionsBox) return;
+      suggestionsBox.classList.remove('hidden');
+
+      if (matches.length === 0) {
+        suggestionsBox.innerHTML = `
+          <div class="px-3 py-2 text-xs text-rose-600 dark:text-rose-400 font-semibold text-center bg-rose-50/50 dark:bg-rose-950/30">
+            <i class="fa-solid fa-circle-exclamation mr-1"></i>
+            <span>${lang === 'bn' ? 'কোনো স্থান মেলেনি — কাছাকাছি স্থান বা ড্রপডাউন নির্বাচন করুন' : 'No matching place found — select nearby place or use dropdown'}</span>
+          </div>
+        `;
+        return;
+      }
+
+      suggestionsBox.innerHTML = matches.slice(0, 6).map(l => {
+        const name = lang === 'bn' ? l.nameBn : l.nameEn;
+        const sub = lang === 'bn' ? l.nameEn : l.nameBn;
+        const catIcon = l.category === 'metro' ? 'fa-train-subway text-purple-600' : (l.category === 'hub' ? 'fa-building text-blue-600' : 'fa-location-dot text-emerald-600');
+        return `
+          <div onclick="selectPlaceFromSuggestion('${type}', '${l.id}')" class="px-3 py-2.5 text-xs hover:bg-emerald-50 dark:hover:bg-slate-700 cursor-pointer border-b border-slate-100 dark:border-slate-700 last:border-none flex items-center justify-between transition">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid ${catIcon} text-xs"></i>
+              <span class="font-bold text-slate-800 dark:text-slate-100">${name}</span>
+              <span class="text-[10px] text-slate-400">(${sub})</span>
+            </div>
+            <span class="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded font-mono">${l.category}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectPlaceFromSuggestion(type, landmarkId) {
+      const landmark = DHAKA_LANDMARKS.find(l => l.id === landmarkId);
+      if (!landmark) return;
+
+      const input = document.getElementById(type + 'SearchInput');
+      const suggestionsBox = document.getElementById(type + 'Suggestions');
+      if (input) input.value = state.language === 'bn' ? landmark.nameBn : landmark.nameEn;
+      if (suggestionsBox) suggestionsBox.classList.add('hidden');
+
+      onLandmarkSelect(type, landmarkId);
+    }
+
+    document.addEventListener('click', (e) => {
+      const startBox = document.getElementById('startSuggestions');
+      const startInput = document.getElementById('startSearchInput');
+      const endBox = document.getElementById('endSuggestions');
+      const endInput = document.getElementById('endSearchInput');
+
+      if (startBox && !startBox.contains(e.target) && e.target !== startInput) {
+        startBox.classList.add('hidden');
+      }
+      if (endBox && !endBox.contains(e.target) && e.target !== endInput) {
+        endBox.classList.add('hidden');
+      }
+    });
+
     function onLandmarkSelect(type, landmarkId) {
       const landmark = DHAKA_LANDMARKS.find(l => l.id === landmarkId);
       if (!landmark) return;
@@ -3016,8 +3739,12 @@
 
       if (type === 'start') {
         state.startPoint = pointData;
+        const sInput = document.getElementById('startSearchInput');
+        if (sInput) sInput.value = pointData.name;
       } else {
         state.endPoint = pointData;
+        const eInput = document.getElementById('endSearchInput');
+        if (eInput) eInput.value = pointData.name;
       }
 
       updateMapMarkers();
@@ -3136,7 +3863,13 @@
         return false;
       }
 
-      if (straightDistKm > 40) {
+      if (straightDistKm < 0.30) {
+        noticeBox.className = 'bg-blue-50 dark:bg-blue-950/40 border border-blue-300 dark:border-blue-800/60 rounded-xl p-2.5 text-xs text-blue-800 dark:text-blue-300 flex items-center space-x-2';
+        noticeBox.classList.remove('hidden');
+        noticeText.textContent = lang === 'bn'
+          ? 'দূরত্ব অত্যন্ত কম (৩০০ মিটারের কম) — হেঁটে যাওয়াই সাশ্রয়ী ও সুবিধাজনক।'
+          : 'Trip is under 300 meters — walking is faster, free and recommended.';
+      } else if (straightDistKm > 40) {
         noticeBox.className = 'bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 rounded-xl p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-center space-x-2';
         noticeBox.classList.remove('hidden');
         noticeText.textContent = translations[lang].tooLongError;
@@ -3203,19 +3936,7 @@
 
         renderRouteOnMap(routeData);
 
-        const fareResult = calculateFareEngine(
-          state.selectedVehicle,
-          routeData.distanceKm,
-          routeData.durationMinutes,
-          state.conditions
-        );
-
-        state.lastResult = {
-          ...fareResult,
-          mode: routeData.mode
-        };
-
-        renderCalculationResult(state.lastResult);
+        executeMultiOptionCalculation(routeData);
         showToast(state.language === 'bn' ? 'ন্যায্য ভাড়া সফলভাবে গণনা করা হয়েছে' : 'Fair fare calculated successfully!', 'success');
       } catch (err) {
         console.error('Calculation error:', err);
@@ -3298,6 +4019,43 @@
       switchTab('community');
     }
 
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function clearAllUserData() {
+      const confirmMsg = state.language === 'bn'
+        ? 'আপনি কি নিশ্চিত যে আপনার সমস্ত সংরক্ষিত লোকাল ডেটা (ভাড়ার হিসেব, কন্টাক্ট, প্রেফারেন্স) মুছে ফেলতে চান?'
+        : 'Are you sure you want to delete all locally stored data on this device?';
+      if (!confirm(confirmMsg)) return;
+
+      localStorage.removeItem(STORAGE_KEY_LANG);
+      localStorage.removeItem(STORAGE_KEY_THEME);
+      localStorage.removeItem(STORAGE_KEY_COMMUNITY);
+      localStorage.removeItem(STORAGE_KEY_CONTACTS);
+      localStorage.removeItem('nj_community_trips');
+      localStorage.removeItem('nj_language');
+
+      state.communityTrips = [...SEED_COMMUNITY_TRIPS];
+      state.sosContacts = [...DEFAULT_SOS_CONTACTS];
+      state.language = 'bn';
+      state.theme = 'light';
+
+      applyTheme('light');
+      applyTranslations('bn');
+      renderCommunityFeed();
+      renderSosContacts();
+
+      showToast(state.language === 'bn' ? 'আপনার সমস্ত লোকাল ডেটা সফলভাবে মুছে ফেলা হয়েছে' : 'All local data has been cleared', 'success');
+    }
+
     function appendCommunityTrip(newTrip) {
       state.communityTrips.unshift(newTrip);
       try {
@@ -3332,9 +4090,21 @@
       const end = document.getElementById('comEnd').value.trim();
       const farePaid = parseFloat(document.getElementById('comFare').value);
       const note = document.getElementById('comNote').value.trim();
+      const lang = state.language;
 
-      if (!vehicle || isNaN(distanceKm) || distanceKm <= 0 || !start || !end || isNaN(farePaid) || farePaid <= 0) {
-        showToast(state.language === 'bn' ? 'সঠিক তথ্য প্রদান করুন' : 'Please provide valid trip information');
+      if (!vehicle || isNaN(distanceKm) || isNaN(farePaid) || !start || !end) {
+        showToast(lang === 'bn' ? 'সঠিক তথ্য প্রদান করুন' : 'Please provide valid trip information', 'error');
+        return;
+      }
+
+      // Enforce strict numeric ranges & character limits
+      if (distanceKm < 0.1 || distanceKm > 60) {
+        showToast(lang === 'bn' ? 'দূরত্ব ০.১ থেকে ৬০ কিমি-এর মধ্যে হতে হবে' : 'Distance must be between 0.1 and 60 km', 'error');
+        return;
+      }
+
+      if (farePaid < 1 || farePaid > 5000) {
+        showToast(lang === 'bn' ? 'ভাড়া ১ থেকে ৫,০০০ টাকার মধ্যে হতে হবে' : 'Fare must be between 1 and 5000 Taka', 'error');
         return;
       }
 
@@ -3346,11 +4116,11 @@
       const newTrip = {
         id: Date.now(),
         vehicle,
-        distanceKm,
-        start,
-        end,
-        farePaid,
-        note,
+        distanceKm: parseFloat(distanceKm.toFixed(1)),
+        start: start.substring(0, 60),
+        end: end.substring(0, 60),
+        farePaid: Math.round(farePaid),
+        note: note ? note.substring(0, 200) : '',
         timestamp: Date.now()
       };
 
@@ -3698,11 +4468,50 @@
         console.warn('Could not read saved language:', e);
       }
 
+      
+      // 2.5 Service Worker Registration for PWA Offline Functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then((reg) => {
+            console.log('[PWA] Service Worker registered successfully with scope:', reg.scope);
+          }).catch((err) => {
+            console.warn('[PWA] Service Worker registration failed:', err);
+          });
+        });
+      }
+
+      // PWA Install Prompt Handler
+      let deferredInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const banner = document.getElementById('pwaInstallPromptCard');
+        if (banner) banner.classList.remove('hidden');
+      });
+
+      window.installPwaApplication = function() {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          deferredInstallPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('[PWA] User accepted install prompt');
+            }
+            deferredInstallPrompt = null;
+            const banner = document.getElementById('pwaInstallPromptCard');
+            if (banner) banner.classList.add('hidden');
+          });
+        } else {
+          showToast(state.language === 'bn' ? 'ব্রাউজার মেনু থেকে "Install" বা "Add to Home Screen" নির্বাচন করুন' : 'Select "Install" or "Add to Home Screen" from your browser menu', 'info');
+        }
+      };
+
       // 3. Load or seed community trips
       try {
         const savedTrips = localStorage.getItem(STORAGE_KEY_COMMUNITY) || localStorage.getItem('nj_community_trips');
         if (savedTrips) {
-          state.communityTrips = JSON.parse(savedTrips);
+          const parsed = JSON.parse(savedTrips);
+          const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+          state.communityTrips = parsed.filter(t => t.timestamp && t.timestamp > thirtyDaysAgo);
         } else {
           state.communityTrips = [...SEED_COMMUNITY_TRIPS];
           localStorage.setItem(STORAGE_KEY_COMMUNITY, JSON.stringify(state.communityTrips));
