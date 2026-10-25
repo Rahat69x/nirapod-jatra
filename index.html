@@ -2247,14 +2247,10 @@
       }
     }
 
-    // ===== WHATSAPP & SMS RIDE SHARING =====
+    // ===== WHATSAPP, SMS & CLIPBOARD RIDE SHARING =====
 
-    function shareTripViaWhatsApp() {
-      if (!state.lastResult || !state.startPoint || !state.endPoint) {
-        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first');
-        return;
-      }
-
+    function generateTripShareText() {
+      if (!state.lastResult || !state.startPoint || !state.endPoint) return '';
       const lang = state.language;
       const startName = state.startPoint.name;
       const endName = state.endPoint.name;
@@ -2266,20 +2262,26 @@
         ? `📱 উবার/পাঠাও আনুমানিক: বাইক ${formatCurrency(rh.motoMin, 'bn')}-${formatCurrency(rh.motoMax, 'bn')}, সিএনজি ${formatCurrency(rh.cngMin, 'bn')}-${formatCurrency(rh.cngMax, 'bn')}`
         : `📱 Uber/Pathao Est: Bike ${formatCurrency(rh.motoMin, 'en')}-${formatCurrency(rh.motoMax, 'en')}, CNG ${formatCurrency(rh.cngMin, 'en')}-${formatCurrency(rh.cngMax, 'en')}`;
 
-      const text = lang === 'bn'
+      return lang === 'bn'
         ? `🛡️ *নিরাপদ যাত্রা ট্রিপ আপডেট:*\n📍 শুরু: ${startName}\n🏁 গন্তব্য: ${endName}\n🛺 বাহন: ${vName} (${toBengaliNumber(state.lastResult.distanceKm)} কিমি)\n💰 ন্যায্য ভাড়া: ${fare}\n${uberRef}\n📍 লাইভ লোকেশন: ${mapsLink}\n🚨 জরুরি হেল্পলাইন: ৯৯৯`
         : `🛡️ *Nirapod Jatra Trip Alert:*\n📍 Pickup: ${startName}\n🏁 Dropoff: ${endName}\n🛺 Vehicle: ${state.selectedVehicle.toUpperCase()} (${state.lastResult.distanceKm} km)\n💰 Fair Fare: ${fare}\n${uberRef}\n📍 Live GPS: ${mapsLink}\n🚨 Emergency Helpline: 999`;
+    }
 
+    function shareTripViaWhatsApp() {
+      if (!state.lastResult || !state.startPoint || !state.endPoint) {
+        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first', 'error');
+        return;
+      }
+      const text = generateTripShareText();
       const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
       window.open(url, '_blank');
     }
 
     function shareTripViaSms() {
       if (!state.lastResult || !state.startPoint || !state.endPoint) {
-        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first');
+        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first', 'error');
         return;
       }
-
       const lang = state.language;
       const startName = state.startPoint.name;
       const endName = state.endPoint.name;
@@ -2292,6 +2294,25 @@
 
       const body = `নিরাপদ যাত্রা: ${startName} -> ${endName}, ভাড়া: ${fare} ${uberRef}. লোকেশন: ${mapsLink}`;
       window.location.href = `sms:?body=${encodeURIComponent(body)}`;
+    }
+
+    async function copyTripShareText() {
+      if (!state.lastResult || !state.startPoint || !state.endPoint) {
+        showToast(state.language === 'bn' ? 'প্রথমে রুট গণনা করুন' : 'Please calculate route first', 'error');
+        return;
+      }
+      const text = generateTripShareText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast(translations[state.language].clipboardSuccess, 'success');
+        } catch (err) {
+          console.warn('Clipboard write error:', err);
+          showToast(translations[state.language].clipboardFailed, 'error');
+        }
+      } else {
+        showToast(translations[state.language].clipboardFailed, 'error');
+      }
     }
 
     // ===== SAFETY TIPS TOGGLE =====
