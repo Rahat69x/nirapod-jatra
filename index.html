@@ -57,7 +57,11 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <style>
-    /* Global Typography & Font Stacking */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+    }
+
     body {
       font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #0b1120;
@@ -258,7 +262,7 @@
 <body class="h-full flex flex-col items-center justify-start bg-slate-950 md:py-6 select-none sm:select-auto">
 
   <!-- Desktop Backdrop Glow & Frame -->
-  <div class="fixed inset-0 pointer-events-none opacity-20 z-0 flex items-center justify-center">
+  <div class="fixed inset-0 pointer-events-none opacity-20 z-0 flex items-center justify-center overflow-hidden">
     <div class="w-[620px] h-[620px] bg-emerald-600 rounded-full blur-[150px]"></div>
   </div>
 
