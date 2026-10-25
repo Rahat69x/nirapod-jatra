@@ -1992,7 +1992,7 @@
 
         audioCtx = new AudioContext();
         if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
+          audioCtx.resume().catch(() => {});
         }
 
         sirenOscillator = audioCtx.createOscillator();
@@ -2045,7 +2045,7 @@
       }
       if (audioCtx) {
         try {
-          audioCtx.close();
+          audioCtx.close().catch(() => {});
         } catch (e) {}
         audioCtx = null;
       }
@@ -3059,12 +3059,20 @@
     function handleQuickReportSubmit(e) {
       e.preventDefault();
 
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      if (submitBtn && submitBtn.disabled) return;
+
       const farePaid = parseFloat(document.getElementById('modalFarePaid').value);
       const note = document.getElementById('modalTripNote').value.trim();
 
       if (isNaN(farePaid) || farePaid <= 0 || !state.lastResult) {
         showToast(state.language === 'bn' ? 'সঠিক ভাড়া লিখুন' : 'Please enter valid fare');
         return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        setTimeout(() => { submitBtn.disabled = false; }, 1000);
       }
 
       const newTrip = {
@@ -3109,6 +3117,9 @@
     function handleCommunitySubmit(e) {
       e.preventDefault();
 
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      if (submitBtn && submitBtn.disabled) return;
+
       const vehicle = document.getElementById('comVehicle').value;
       const distanceKm = parseFloat(document.getElementById('comDistance').value);
       const start = document.getElementById('comStart').value.trim();
@@ -3119,6 +3130,11 @@
       if (!vehicle || isNaN(distanceKm) || distanceKm <= 0 || !start || !end || isNaN(farePaid) || farePaid <= 0) {
         showToast(state.language === 'bn' ? 'সঠিক তথ্য প্রদান করুন' : 'Please provide valid trip information');
         return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        setTimeout(() => { submitBtn.disabled = false; }, 1000);
       }
 
       const newTrip = {
