@@ -79,6 +79,21 @@
       overflow-wrap: anywhere;
     }
 
+    /* Mobile input zoom prevention & iOS safe-area insets */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      header {
+        padding-top: max(0.875rem, env(safe-area-inset-top));
+      }
+    }
+    @media (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+    .overscroll-contain {
+      overscroll-behavior: contain;
+    }
+
     body {
       font-family: 'Hind Siliguri', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #0b1120;
@@ -1095,7 +1110,7 @@
     </main>
 
     <!-- ===== FIXED BOTTOM NAVIGATION BAR ===== -->
-    <nav class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-1.5 px-4 flex items-center justify-around z-30 shadow-lg">
+    <nav id="bottomNav" class="absolute bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-1.5 px-4 flex items-center justify-around z-30 shadow-lg pb-[max(0.375rem,env(safe-area-inset-bottom,0px))]">
       <!-- Tab 1: Fare Estimator -->
       <button type="button" id="navBtnFare" onclick="switchTab('fare')" class="flex flex-col items-center justify-center py-1 px-3 rounded-xl transition text-emerald-600" aria-label="ন্যায্য ভাড়া ট্যাব">
         <i class="fa-solid fa-calculator text-base mb-0.5"></i>
@@ -1120,7 +1135,7 @@
 
     <!-- ===== MODAL: QUICK-REPORT TRIP (From Fare Result) ===== -->
     <div id="quickReportModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 space-y-3 fade-slide-up">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 dark:border-emerald-800 space-y-3 fade-slide-up max-h-[90vh] overflow-y-auto overscroll-contain">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
           <span class="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
             <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
@@ -1165,7 +1180,7 @@
 
     <!-- ===== MODAL: SOS CONFIRMATION ===== -->
     <div id="sosConfirmModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-2xl border border-red-200 text-center space-y-3 fade-slide-up">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xs w-full p-5 shadow-2xl border border-red-200 dark:border-red-900 text-center space-y-3 fade-slide-up max-h-[90vh] overflow-y-auto overscroll-contain">
         <div class="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl mx-auto">
           <i class="fa-solid fa-circle-exclamation animate-bounce"></i>
         </div>
@@ -1182,7 +1197,7 @@
 
     <!-- ===== MODAL: SOS RECEIPT / ACTIVE ALERT ===== -->
     <div id="sosReceiptModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 space-y-3.5 fade-slide-up">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-emerald-200 dark:border-emerald-800 space-y-3.5 fade-slide-up max-h-[90vh] overflow-y-auto overscroll-contain">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2">
           <span class="text-xs font-bold text-emerald-800 flex items-center space-x-1.5">
             <i class="fa-solid fa-circle-check text-emerald-600"></i>
