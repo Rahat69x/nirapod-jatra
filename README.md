@@ -1,8 +1,8 @@
 # নিরাপদ যাত্রা (Nirapod Jatra)
 **Fair Fare Companion & Transparency Engine for Dhaka's Informal Commuters**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-059669?style=for-the-badge&logo=github)](https://rahat69x.github.io/nirapod-jatra/)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/Rahat69x/nirapod-jatra)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-059669?style=for-the-badge&logo=github)](https://rahat4528.github.io/nirapod-jatra/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/rahat4528/nirapod-jatra)
 [![Test Suite](https://img.shields.io/badge/Tests-27%2F27%20PASS-emerald?style=for-the-badge&logo=checkmarx)](TEST_REPORT.md)
 [![Platform](https://img.shields.io/badge/Platform-Installable%20Web%20App%20(PWA)-blue?style=for-the-badge)](manifest.json)
 
@@ -89,7 +89,7 @@ The app supports comprehensive Dhaka landmarks with bilingual matching and Benga
 ### Running with Node.js
 ```bash
 # Clone the repository
-git clone https://github.com/Rahat69x/nirapod-jatra.git
+git clone https://github.com/rahat4528/nirapod-jatra.git
 cd nirapod-jatra
 
 # Switch to the demo-ready branch
