@@ -78,6 +78,6 @@ In Dhaka, Bangladesh, millions of commuters rely daily on informal transport (CN
 
 1. **Real Driver-Side Onboarding & Live GPS Meter Mode:** Phase 2 would let actual CNG/rickshaw drivers register a vehicle, receive a printable QR sticker, and run a lightweight companion web app that shares live trip location—turning the static fare estimate into a dynamic digital meter without requiring expensive in-vehicle hardware.
 2. **City-Wide Expansion Beyond Dhaka:** Expand the fare matrix, landmarks, and congestion modeling to Chittagong, Sylhet, and Rajshahi by enabling local route captains to seed municipal pricing tables.
-3. **SMS / USSD Fallback for Feature-Phone Users:** Dedicated `*XXX#` USSD or plain SMS gateway (*"Send pickup & dropoff, receive fair fare range"*) reaching elderly, low-income, and rural commuters without smartphones or mobile data.
+3. **SMS / USSD Fallback for Feature-Phone Users:** Planned SMS / USSD commuter service gateway (*"Send pickup & dropoff, receive fair fare range"*) reaching elderly, low-income, and rural commuters without smartphones or mobile data.
 4. **Verified-Driver Trust Score Fed by Real Community Ratings:** Machine-learning audit layer aggregating real rider ratings and trip reports over time, featuring spoof detection and driver safety tier badges.
 5. **Integration with Law-Enforcement / BRTA Incident Reporting:** Direct escalation pipeline connecting severe commuter safety reports with Dhaka Metropolitan Police and Bangladesh Road Transport Authority (BRTA).
